@@ -1,2 +1,2 @@
 # spectrogram
-A live spectrogram audio visualizer for Pulseaudio
+A live spectrogram audio visualizer for system audio
