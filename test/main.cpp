@@ -5,5 +5,9 @@
 
 int main() {
 
+    Audio::placeholder();
+    Fourier::placeholder();
+    Graphics::placeholder();
+
     return 1;
 }

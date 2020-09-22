@@ -1,12 +1,10 @@
-#ifndef SPECTROGRAM_PLACEHOLDER_CPP
-#define SPECTROGRAM_PLACEHOLDER_H
+#ifndef SPECTROGRAM_GRAPHICS_PLACEHOLDER_CPP
+#define SPECTROGRAM_GRAPHICS_PLACEHOLDER_H
 
 namespace Graphics {
 
-    void placeholder() {
-
-    }
+    void placeholder();
 
 }
 
-#endif //SPECTROGRAM_PLACEHOLDER_CPP
+#endif //SPECTROGRAM_GRAPHICS_PLACEHOLDER_CPP

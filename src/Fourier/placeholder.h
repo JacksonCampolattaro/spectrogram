@@ -1,12 +1,10 @@
-#ifndef SPECTROGRAM_PLACEHOLDER_CPP
-#define SPECTROGRAM_PLACEHOLDER_H
+#ifndef SPECTROGRAM_FOURIER_PLACEHOLDER_CPP
+#define SPECTROGRAM_FOURIER_PLACEHOLDER_H
 
 namespace Fourier {
 
-    void placeholder() {
-
-    }
+    void placeholder();
 
 }
 
-#endif //SPECTROGRAM_PLACEHOLDER_CPP
+#endif //SPECTROGRAM_FOURIER_PLACEHOLDER_CPP

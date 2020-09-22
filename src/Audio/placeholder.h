@@ -1,12 +1,10 @@
-#ifndef SPECTROGRAM_PLACEHOLDER_CPP
-#define SPECTROGRAM_PLACEHOLDER_CPP
+#ifndef SPECTROGRAM_AUDIO_PLACEHOLDER_CPP
+#define SPECTROGRAM_AUDIO_PLACEHOLDER_CPP
 
 namespace Audio {
 
-    void placeholder() {
-
-    }
+    void placeholder();
 
 }
 
-#endif //SPECTROGRAM_PLACEHOLDER_CPP
+#endif //SPECTROGRAM_AUDIO_PLACEHOLDER_CPP
