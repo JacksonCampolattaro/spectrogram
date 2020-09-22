@@ -7,6 +7,10 @@ namespace Audio {
 
     class System {
 
+    public:
+
+        System() = default;
+
         RtAudio _rtAudio;
 
     };

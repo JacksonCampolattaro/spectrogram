@@ -5,5 +5,5 @@
 
 TEST_CASE("Connecting to system audio", "[Audio::System]") {
 
-//    Audio::System system;
+    Audio::System system;
 }
