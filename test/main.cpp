@@ -9,5 +9,5 @@ int main() {
     Fourier::placeholder();
     Graphics::placeholder();
 
-    return 1;
+    return 0;
 }

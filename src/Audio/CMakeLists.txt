@@ -1,4 +1,7 @@
 
+# This is causing trouble, and I don't know why...
+find_package(portaudio)
+
 add_library(Audio
         placeholder.h
         placeholder.cpp)
