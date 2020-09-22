@@ -1,13 +1,11 @@
 
-#include <Audio/placeholder.h>
-#include <Fourier/placeholder.h>
-#include <Graphics/placeholder.h>
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
 
-int main() {
-
-    Audio::placeholder();
-    Fourier::placeholder();
-    Graphics::placeholder();
-
-    return 0;
-}
+/*
+ * Don't edit this file!
+ *
+ * Create new tests in new .cpp files,
+ * adding code to this file requires the catch header to be re-compiled
+ * every time its edited, massively increasing compile time.
+ */
