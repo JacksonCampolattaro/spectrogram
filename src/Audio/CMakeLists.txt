@@ -1,5 +1,5 @@
 
-find_package(portaudio REQUIRED)
+find_package(RtAudio REQUIRED)
 
 add_library(Audio
         placeholder.h

@@ -1,7 +1,6 @@
 #ifndef SPECTROGRAM_AUDIO_PLACEHOLDER_CPP
 #define SPECTROGRAM_AUDIO_PLACEHOLDER_CPP
 
-#include <portaudio.h>
 
 namespace Audio {
 
