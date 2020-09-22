@@ -1,4 +1,4 @@
-#ifndef SPECTROGRAM_PLACEHOLDER_H
+#ifndef SPECTROGRAM_PLACEHOLDER_CPP
 #define SPECTROGRAM_PLACEHOLDER_H
 
 namespace Graphics {
@@ -9,4 +9,4 @@ namespace Graphics {
 
 }
 
-#endif //SPECTROGRAM_PLACEHOLDER_H
+#endif //SPECTROGRAM_PLACEHOLDER_CPP

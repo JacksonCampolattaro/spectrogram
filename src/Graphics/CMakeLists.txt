@@ -1,6 +1,6 @@
 
 add_library(Graphics
-        placeholder.h
+        placeholder.cpp
         )
 
 target_include_directories(Graphics PUBLIC
