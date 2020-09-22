@@ -1,7 +1,8 @@
 
 find_package(Catch2 REQUIRED)
 
-add_executable(test main.cpp)
+add_executable(test main.cpp
+        test_Audio_System.cpp)
 
 target_link_libraries(test LINK_PUBLIC
         Audio
