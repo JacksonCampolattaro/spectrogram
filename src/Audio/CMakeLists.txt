@@ -1,6 +1,5 @@
 
-# This is causing trouble, and I don't know why...
-find_package(portaudio)
+find_package(portaudio REQUIRED)
 
 add_library(Audio
         placeholder.h
