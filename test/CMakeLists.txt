@@ -1,5 +1,6 @@
 
 find_package(Catch2 REQUIRED)
+find_package(Portaudio REQUIRED)
 
 add_executable(test main.cpp
         test_Audio_System.cpp)
@@ -7,7 +8,8 @@ add_executable(test main.cpp
 target_link_libraries(test LINK_PUBLIC
         Audio
         Graphics
-        Fourier)
+        Fourier
+        ${PORTAUDIO_LIBRARIES})
 
 target_include_directories(test PUBLIC
         ${PROJECT_BINARY_DIR}
