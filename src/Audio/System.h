@@ -1,7 +1,7 @@
 #ifndef SPECTROGRAM_SYSTEM_H
 #define SPECTROGRAM_SYSTEM_H
 
-#include <rtaudio/RtAudio.h>
+#include <RtAudio.h>
 
 namespace Audio {
 
@@ -11,15 +11,14 @@ namespace Audio {
 
         System() = default;
 
-        std::vector<std::string> devices() {
-
-            std::vector<std::string> d;
+        void devices() {
+            // TODO: What should the return type be?
 
             for (int i = 0; i < _rtAudio.getDeviceCount(); ++i) {
-                d.emplace_back(_rtAudio.getDeviceInfo(i).name);
+
+                std::cout << _rtAudio.getDeviceInfo(i) << std::endl;
             }
 
-            return d;
         }
 
         RtAudio _rtAudio;

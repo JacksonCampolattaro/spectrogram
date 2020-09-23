@@ -14,6 +14,5 @@ TEST_CASE("Printing out all devices", "[Audio::System]") {
 
     Audio::System system;
 
-    for (auto deviceName : system.devices())
-        std::cout << deviceName << std::endl;
+    system.devices();
 }
