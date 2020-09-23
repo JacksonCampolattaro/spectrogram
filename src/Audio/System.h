@@ -16,7 +16,7 @@ namespace Audio {
 
             for (int i = 0; i < _rtAudio.getDeviceCount(); ++i) {
 
-                std::cout << _rtAudio.getDeviceInfo(i) << std::endl;
+                std::cout << i << " " << _rtAudio.getDeviceInfo(i) << std::endl;
             }
 
         }
