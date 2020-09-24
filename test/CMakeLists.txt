@@ -1,6 +1,5 @@
 
 find_package(Catch2 REQUIRED)
-find_package(Portaudio REQUIRED)
 
 add_executable(test main.cpp
         test_Audio_System.cpp)
