@@ -1,10 +1,9 @@
 
 #include <catch2/catch.hpp>
 
-#include <Audio/System.h>
+#include <Spectrogram/Audio/System.h>
 
 #include <portaudio.h>
-#include <soundio/soundio.h>
 
 TEST_CASE("Connecting to system audio", "[Audio::System]") {
 //
@@ -31,7 +30,7 @@ TEST_CASE("Printing out all devices with portaudio", "[Audio::System]") {
 }
 
 TEST_CASE("Printing out all devices with libsoundio", "[Audio::System]") {
-
-    auto soundio = soundio_create();
-    std::cout << soundio_output_device_count(soundio) << std::endl;
+//
+//    auto soundio = soundio_create();
+//    std::cout << soundio_output_device_count(soundio) << std::endl;
 }
