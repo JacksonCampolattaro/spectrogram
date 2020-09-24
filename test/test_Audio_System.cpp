@@ -3,7 +3,7 @@
 
 #include <Spectrogram/Audio/System.h>
 
-#include <portaudio.h>
+#include <soundio/soundio.h>
 
 TEST_CASE("Connecting to system audio", "[Audio::System]") {
 //
@@ -30,7 +30,19 @@ TEST_CASE("Printing out all devices with portaudio", "[Audio::System]") {
 }
 
 TEST_CASE("Printing out all devices with libsoundio", "[Audio::System]") {
-//
-//    auto soundio = soundio_create();
-//    std::cout << soundio_output_device_count(soundio) << std::endl;
+
+    auto soundio = soundio_create();
+    REQUIRE(soundio);
+    REQUIRE(!soundio_connect(soundio));
+    soundio_flush_events(soundio);
+    std::cout << "Output devices:" << std::endl;
+    for (int i = 0; i < soundio_output_device_count(soundio); ++i) {
+        auto device = soundio_get_output_device(soundio, i);
+        std::cout << "\t" << device->name << std::endl;
+    }
+    std::cout << "Input devices:" << std::endl;
+    for (int i = 0; i < soundio_input_device_count(soundio); ++i) {
+        auto device = soundio_get_input_device(soundio, i);
+        std::cout << "\t" << device->name << std::endl;
+    }
 }
