@@ -3,6 +3,8 @@
 
 #include <Spectrogram/Audio/System.h>
 
+#include <rtaudio/RtAudio.h>
+#include <portaudio.h>
 #include <soundio/soundio.h>
 
 TEST_CASE("Connecting to system audio", "[Audio::System]") {
@@ -12,25 +14,29 @@ TEST_CASE("Connecting to system audio", "[Audio::System]") {
 //    std::cout << system._rtAudio.getDeviceCount() << " Devices" << std::endl;
 }
 
-TEST_CASE("Printing out all devices", "[Audio::System]") {
-//
-//    Audio::System system;
-//
-//    system.devices();
+TEST_CASE("Printing out all devices with rtaudio", "[Audio::System]") {
+
+    std::cout << "\nRtaudio\n"
+                 "~~~~~~~" << std::endl;
 }
 
 TEST_CASE("Printing out all devices with portaudio", "[Audio::System]") {
-//
-//    Pa_Initialize();
-//    std::cout << Pa_GetDeviceCount() << std::endl;
-//    for (int i = 0; i < Pa_GetDeviceCount(); ++i) {
-//        std::cout << Pa_GetDeviceInfo(i)->name << std::endl;
-//    }
-//
+
+    std::cout << "\nPortaudio\n"
+                 "~~~~~~~~~" << std::endl;
+
+    Pa_Initialize();
+    std::cout << Pa_GetDeviceCount() << std::endl;
+    for (int i = 0; i < Pa_GetDeviceCount(); ++i) {
+        std::cout << Pa_GetDeviceInfo(i)->name << std::endl;
+    }
+
 }
 
 TEST_CASE("Printing out all devices with libsoundio", "[Audio::System]") {
 
+    std::cout << "\nLibsoundio\n"
+                 "~~~~~~~~~~" << std::endl;
     auto soundio = soundio_create();
     REQUIRE(soundio);
     REQUIRE(!soundio_connect(soundio));
@@ -45,4 +51,8 @@ TEST_CASE("Printing out all devices with libsoundio", "[Audio::System]") {
         auto device = soundio_get_input_device(soundio, i);
         std::cout << "\t" << device->name << std::endl;
     }
+    std::cout << "Default output:" << std::endl;
+    int d = soundio_default_output_device_index(soundio);
+    auto device = soundio_get_input_device(soundio, d);
+    std::cout << "\t" << device->name << std::endl;
 }
