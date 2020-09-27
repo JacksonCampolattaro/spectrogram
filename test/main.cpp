@@ -1,13 +1,3 @@
 
-#include <Audio/placeholder.h>
-#include <Fourier/placeholder.h>
-#include <Graphics/placeholder.h>
-
-int main() {
-
-    Audio::placeholder();
-    Fourier::placeholder();
-    Graphics::placeholder();
-
-    return 0;
-}
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
