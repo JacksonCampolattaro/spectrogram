@@ -2,7 +2,7 @@
 find_package(RtAudio REQUIRED)
 
 add_library(Audio
-        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibRtAudio.cpp System/LibRtAudio.h System/LibSoundio.cpp System/LibSoundio.h)
+        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibRtAudio.cpp System/LibRtAudio.h System/LibSoundio.cpp System/LibSoundio.h System/LibPortAudio.cpp System/LibPortAudio.h)
 
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
