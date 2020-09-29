@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 
-#include <Fourier/fourier.h>
+#include <Spectrogram/Fourier/fourier.h>
 
 TEST_CASE("Doing sample transforms", "[Fourier::process]") {
 

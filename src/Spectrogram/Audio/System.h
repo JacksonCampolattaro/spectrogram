@@ -1,7 +1,7 @@
 #ifndef SPECTROGRAM_SYSTEM_H
 #define SPECTROGRAM_SYSTEM_H
 
-#include <RtAudio.h>
+#include <Spectrogram/Audio/RtAudio.h>
 
 namespace Audio {
 
