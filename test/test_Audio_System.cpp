@@ -5,7 +5,7 @@
 #include <soundio/soundio.h>
 
 #include <Spectrogram/Audio/System/System.h>
-#include <Spectrogram/Audio/System/RtAudio.h>
+#include <Spectrogram/Audio/System/LibRtAudio.h>
 
 #include <iostream>
 
@@ -23,7 +23,13 @@ TEST_CASE("RtAudio", "[Spectrogram::Audio::System::RtAudio]") {
     std::cout << "\nRtaudio"
                  "\n~~~~~~~" << std::endl;
 
-    System::System &system = System::RtAudio();
+    System::LibRtAudio system{};
+
+    for (auto device : system.getDevices()) {
+
+        std::cout << device.name << std::endl;
+    }
+
 
 }
 

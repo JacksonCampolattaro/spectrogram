@@ -2,8 +2,8 @@
 // Created by jackcamp on 9/29/20.
 //
 
-#ifndef SPECTROGRAM_RTAUDIO_H
-#define SPECTROGRAM_RTAUDIO_H
+#ifndef SPECTROGRAM_LIBRTAUDIO_H
+#define SPECTROGRAM_LIBRTAUDIO_H
 
 #include <Spectrogram/Audio/System/System.h>
 
@@ -13,17 +13,23 @@
 
 namespace Spectrogram::Audio::System {
 
-    class RtAudio : public System {
-
+    class LibRtAudio : public System {
     public:
+
+        LibRtAudio() = default;
+
         void setBufferSize(size_t size) override;
 
         Buffer getBuffer() override;
 
         std::vector<Device> getDevices() override;
 
+    private:
+
+        RtAudio _rtAudio;
+
     };
 
 }
 
-#endif //SPECTROGRAM_RTAUDIO_H
+#endif //SPECTROGRAM_LIBRTAUDIO_H
