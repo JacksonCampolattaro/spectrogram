@@ -9,6 +9,8 @@ namespace Spectrogram::Audio {
     class System {
     public:
 
+        virtual void setBufferSize(size_t size) = 0;
+
         virtual Buffer getBuffer() = 0;
 
         virtual std::vector<Device> getDevices() = 0;

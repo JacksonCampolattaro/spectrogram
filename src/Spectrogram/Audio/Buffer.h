@@ -4,7 +4,8 @@
 #include <vector>
 
 namespace Spectrogram::Audio {
-    typedef std::vector<float> Buffer;
+    typedef float Sample;
+    typedef std::vector<Sample> Buffer;
 }
 
 
