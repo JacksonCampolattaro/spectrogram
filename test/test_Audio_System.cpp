@@ -28,8 +28,7 @@ TEST_CASE("RtAudio", "[Spectrogram::Audio::System::RtAudio]") {
 
     for (auto device : system.getDevices()) {
 
-        std::cout << device.name
-                << (device.defaultOutput ? " *" : "")
+        std::cout << device
                 << std::endl;
     }
 
@@ -45,8 +44,7 @@ TEST_CASE("LibSoundio", "[Spectrogram::Audio::System::LibSoundio]") {
 
     for (auto device : system.getDevices()) {
 
-        std::cout << device.name
-                  << (device.defaultOutput ? " *" : "")
+        std::cout << device
                   << std::endl;
     }
 
@@ -61,8 +59,7 @@ TEST_CASE("PortAudio", "[Spectrogram::Audio::System::PortAudio]") {
 
     for (auto device : system.getDevices()) {
 
-        std::cout << device.name
-                  << (device.defaultOutput ? " *" : "")
+        std::cout << device
                   << std::endl;
     }
 
