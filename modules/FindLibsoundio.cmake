@@ -18,17 +18,19 @@ find_path(LIBSOUNDIO_INCLUDE_DIRS
         PATHS ${LIBSOUNDIO_PATHS}
         )
 mark_as_advanced(LIBSOUNDIO_INCLUDE_DIRS)
-message(${LIBSOUNDIO_INCLUDE_DIRS})
+#message(${LIBSOUNDIO_INCLUDE_DIRS})
 
 # Finds the library
-#find_library(LIBSOUNDIO_LIBRARIES
-#        NAMES libsoundio
-#        HINTS ${LIBSOUNDIO_HINTS}
-#        PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32
-#        PATHS ${LIBSOUNDIO_PATHS}
-#        )
-set(LIBSOUNDIO_LIBRARIES "/usr/lib64/libsoundio.so")
+unset(LIBSOUNDIO_LIBRARIES CACHE)
+find_library(LIBSOUNDIO_LIBRARIES
+        NAMES libsoundio.so
+        HINTS ${LIBSOUNDIO_HINTS}
+        PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32
+        PATHS ${LIBSOUNDIO_PATHS}
+        )
+#set(LIBSOUNDIO_LIBRARIES "/usr/lib64/libsoundio.so")
 mark_as_advanced(LIBSOUNDIO_LIBRARIES)
+message(Libsoundio)
 message(${LIBSOUNDIO_LIBRARIES})
 
 # Notification messages
