@@ -9,8 +9,8 @@ namespace Spectrogram::Audio {
 
     struct Device {
 
-        Device(std::string name, int id, bool isDefault) :
-                name(std::move(name)), id(id), isDefault(isDefault) {}
+        Device(std::string name, int id, bool isDefault, bool isInput) :
+                name(std::move(name)), id(id), isDefault(isDefault), isInput(isInput) {}
 
         std::string name;
         int id;
@@ -19,9 +19,10 @@ namespace Spectrogram::Audio {
 
         friend std::ostream &operator<<(std::ostream &os, const Device &device) {
 
+            os << device.id << ": ";
             os << (device.isInput ? "I" : "O");
             os << (device.isDefault ? "* " : "  ");
-            os << device.name;
+            os << "\"" << device.name << "\"";
 
             return os;
         }

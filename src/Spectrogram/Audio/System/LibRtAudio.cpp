@@ -17,13 +17,12 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibRtAudio::
 
     std::vector<Device> devices;
 
-    size_t defaultDevice = _rtAudio.getDefaultOutputDevice();
-
     for (size_t i = 0; i < _rtAudio.getDeviceCount(); ++i) {
 
         RtAudio::DeviceInfo deviceInfo = _rtAudio.getDeviceInfo(i);
 
-        devices.emplace_back(deviceInfo.name, i, i == defaultDevice);
+        devices.emplace_back(deviceInfo.name, i, deviceInfo.isDefaultOutput || deviceInfo.isDefaultInput,
+                             (bool) deviceInfo.inputChannels);
     }
 
     return devices;

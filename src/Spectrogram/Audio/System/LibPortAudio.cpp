@@ -21,14 +21,16 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibPortAudio
 
     std::vector<Device> devices;
 
-    size_t defaultDevice = Pa_GetDefaultOutputDevice();
+    size_t defaultOutput = Pa_GetDefaultOutputDevice();
+    size_t defaultInput = Pa_GetDefaultInputDevice();
 
     for (size_t i = 0; i < Pa_GetDeviceCount(); ++i) {
 
         auto deviceInfo = Pa_GetDeviceInfo(i);
 
         if (deviceInfo->maxOutputChannels)
-            devices.emplace_back(deviceInfo->name, i, i == defaultDevice);
+            devices.emplace_back(deviceInfo->name, i, i == defaultInput || i == defaultOutput,
+                                 (bool) deviceInfo->maxInputChannels);
     }
 
     return devices;
