@@ -1,11 +1,15 @@
 
 #include <catch2/catch.hpp>
 
-#include <Spectrogram/Audio/System.h>
-
-#include <rtaudio/RtAudio.h>
 #include <portaudio.h>
 #include <soundio/soundio.h>
+
+#include <Spectrogram/Audio/System/System.h>
+#include <Spectrogram/Audio/System/RtAudio.h>
+
+#include <iostream>
+
+using namespace Spectrogram::Audio;
 
 TEST_CASE("Connecting to system audio", "[Audio::System]") {
 //
@@ -14,10 +18,13 @@ TEST_CASE("Connecting to system audio", "[Audio::System]") {
 //    std::cout << system._rtAudio.getDeviceCount() << " Devices" << std::endl;
 }
 
-TEST_CASE("Printing out all devices with rtaudio", "[Audio::System]") {
+TEST_CASE("RtAudio", "[Spectrogram::Audio::System::RtAudio]") {
 
-    std::cout << "\nRtaudio\n"
-                 "~~~~~~~" << std::endl;
+    std::cout << "\nRtaudio"
+                 "\n~~~~~~~" << std::endl;
+
+    System::System &system = System::RtAudio();
+
 }
 
 TEST_CASE("Printing out all devices with portaudio", "[Audio::System]") {

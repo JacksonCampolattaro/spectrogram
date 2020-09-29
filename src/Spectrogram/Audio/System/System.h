@@ -4,7 +4,7 @@
 #include <Spectrogram/Audio/Buffer.h>
 #include <Spectrogram/Audio/Device.h>
 
-namespace Spectrogram::Audio {
+namespace Spectrogram::Audio::System {
 
     class System {
     public:
