@@ -10,15 +10,17 @@
 namespace Spectrogram::Audio::System {
 
     class LibPortAudio : public System {
-
     public:
+
+        LibPortAudio();
+
         void setBufferSize(size_t size) override;
 
         Buffer getBuffer() override;
 
         std::vector<Device> getDevices() override;
 
-        LibPortAudio();
+        void setDevice(Device &device) override;
     };
 
 }

@@ -1,3 +1,4 @@
+#include <cassert>
 #include "LibSoundio.h"
 
 Spectrogram::Audio::System::LibSoundio::LibSoundio() {
@@ -34,4 +35,10 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibSoundio::
     }
 
     return devices;
+}
+
+void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Device &device) {
+
+    auto soundio_device = soundio_get_input_device(_soundio, device.id);
+    assert(!soundio_device->probe_error);
 }

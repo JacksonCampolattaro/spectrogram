@@ -15,6 +15,8 @@ namespace Spectrogram::Audio::System {
 
         virtual std::vector<Device> getDevices() = 0;
 
+        virtual void setDevice(Device &device) = 0;
+
     };
 }
 

@@ -7,7 +7,6 @@
 Spectrogram::Audio::System::LibPortAudio::LibPortAudio() {
 
     Pa_Initialize();
-
 }
 
 void Spectrogram::Audio::System::LibPortAudio::setBufferSize(size_t size) {
@@ -33,4 +32,8 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibPortAudio
     }
 
     return devices;
+}
+
+void Spectrogram::Audio::System::LibPortAudio::setDevice(Spectrogram::Audio::Device &device) {
+
 }

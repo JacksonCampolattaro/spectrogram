@@ -21,6 +21,8 @@ namespace Spectrogram::Audio::System {
 
         std::vector<Device> getDevices() override;
 
+        void setDevice(Device &device) override;
+
     private:
 
         SoundIo *_soundio;

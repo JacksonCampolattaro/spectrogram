@@ -28,3 +28,7 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibRtAudio::
 
     return devices;
 }
+
+void Spectrogram::Audio::System::LibRtAudio::setDevice(Spectrogram::Audio::Device &device) {
+
+}

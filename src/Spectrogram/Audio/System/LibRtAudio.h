@@ -24,6 +24,8 @@ namespace Spectrogram::Audio::System {
 
         std::vector<Device> getDevices() override;
 
+        void setDevice(Device &device) override;
+
     private:
 
         RtAudio _rtAudio;
