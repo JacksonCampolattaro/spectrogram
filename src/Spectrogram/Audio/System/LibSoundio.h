@@ -13,6 +13,7 @@ namespace Spectrogram::Audio::System {
     public:
 
         LibSoundio();
+
         ~LibSoundio();
 
         void setBufferSize(size_t size) override;
@@ -27,8 +28,36 @@ namespace Spectrogram::Audio::System {
 
         SoundIo *_soundio;
 
-    };
+        std::vector<enum SoundIoFormat> _prioritizedAudioFormats = {
+                SoundIoFormatFloat32NE,
+                SoundIoFormatFloat32FE,
+                SoundIoFormatS32NE,
+                SoundIoFormatS32FE,
+                SoundIoFormatS24NE,
+                SoundIoFormatS24FE,
+                SoundIoFormatS16NE,
+                SoundIoFormatS16FE,
+                SoundIoFormatFloat64NE,
+                SoundIoFormatFloat64FE,
+                SoundIoFormatU32NE,
+                SoundIoFormatU32FE,
+                SoundIoFormatU24NE,
+                SoundIoFormatU24FE,
+                SoundIoFormatU16NE,
+                SoundIoFormatU16FE,
+                SoundIoFormatS8,
+                SoundIoFormatU8,
+                SoundIoFormatInvalid
+        };
 
+        std::vector<int> _prioritizedSampleRates = {
+                48000,
+                44100,
+                96000,
+                24000,
+                0
+        };
+    };
 }
 
 

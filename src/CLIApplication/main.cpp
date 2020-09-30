@@ -11,13 +11,17 @@ int main() {
     // Initialize the system
     std::shared_ptr<System::System> system = std::make_shared<System::LibSoundio>();
 
+    // List the devices
     std::cout << "Devices:" << std::endl;
     for (auto device : system->getDevices())
         std::cout << device << std::endl;
 
+    system->setDevice(system->getDevices()[2]);
+
+
     for (;;) {
 
-        return EXIT_FAILURE;
+        system->getBuffer();
     }
 
     return EXIT_SUCCESS;
