@@ -27,6 +27,7 @@ namespace Spectrogram::Audio::System {
     private:
 
         SoundIo *_soundio;
+        SoundIoInStream *_inStream;
 
         std::vector<enum SoundIoFormat> _prioritizedAudioFormats = {
                 SoundIoFormatFloat32NE,

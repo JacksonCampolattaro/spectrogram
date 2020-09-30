@@ -7,12 +7,9 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     //std::cout << "read callback invoked" << std::endl;
 
     struct SoundIoChannelArea *areas;
-    int frames = 10;
+    int frames = 1000;
 
-    int err;
-    if ((err = soundio_instream_begin_read(instream, &areas, &frames))) {
-        std::cerr << "error" << std::endl;
-    }
+    soundio_instream_begin_read(instream, &areas, &frames);
     assert(areas);
     assert(frames);
 
@@ -20,12 +17,13 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
 
         for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
 
-            std::cout << (uint64_t) (*areas[channel].ptr) << " ";
-            areas[channel].ptr += areas[channel].step;
+            float sample = *((float *) (areas[channel].ptr + (areas[channel].step * frame)));
+            std::cout << sample << "\t";
         }
         std::cout << "\n";
     }
-    std::cout << "\n\n" << std::flush;
+
+    std::cout << "\n\n";
 }
 
 static void overflow_callback(struct SoundIoInStream *instream) {
@@ -61,7 +59,7 @@ void Spectrogram::Audio::System::LibSoundio::setBufferSize(size_t size) {
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::LibSoundio::getBuffer() {
     soundio_flush_events(_soundio);
-    sleep(1);
+
     return Spectrogram::Audio::Buffer();
 }
 
@@ -119,27 +117,22 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
     assert(SoundIoFormatInvalid != format);
 
     // Configure the input stream
-    auto instream = soundio_instream_create(soundioDevice);
-    assert(instream);
-    instream->sample_rate = sampleRate;
-    instream->format = format;
-    instream->read_callback = read_callback;
-    instream->overflow_callback = overflow_callback;
+    _inStream = soundio_instream_create(soundioDevice);
+    assert(_inStream);
+    _inStream->sample_rate = sampleRate;
+    _inStream->format = format;
+    _inStream->read_callback = read_callback;
+    _inStream->overflow_callback = overflow_callback;
 
-    soundio_instream_open(instream);
-    soundio_instream_start(instream);
 
-    /*
+
     int err;
-    if ((err = soundio_instream_open(instream))) {
+    if ((err = soundio_instream_open(_inStream))) {
         std::cerr << "error" << std::endl;
-        //fprintf(stderr, "unable to open input stream: %s", soundio_strerror(err));
     }
-    if ((err = soundio_instream_start(instream))) {
+    if ((err = soundio_instream_start(_inStream))) {
         std::cerr << "error" << std::endl;
-        //fprintf(stderr, "unable to start input device: %s", soundio_strerror(err));
     }
-     */
 
 
     // TODO

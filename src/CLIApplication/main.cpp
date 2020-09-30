@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <zconf.h>
 
 using namespace Spectrogram::Audio;
 
@@ -18,10 +19,11 @@ int main() {
 
     system->setDevice(system->getDevices()[2]);
 
+    system->getBuffer();
 
     for (;;) {
 
-        system->getBuffer();
+        sleep(0.01);
     }
 
     return EXIT_SUCCESS;
