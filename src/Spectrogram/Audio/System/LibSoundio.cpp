@@ -19,7 +19,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
 
         for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
 
-            int16_t sample = *((int16_t *) areas[channel].ptr);
+            Spectrogram::Audio::Sample sample = *((Spectrogram::Audio::Sample *) areas[channel].ptr);
             areas[channel].ptr += areas[channel].step;
             std::cout << sample << "\t";
         }
@@ -111,8 +111,7 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
     soundio_device_sort_channel_layouts(soundioDevice);
 
     // Select a sample rate
-    int sampleRate = soundioDevice->sample_rates[0].min;
-    assert(sampleRate);
+    int sampleRate = soundioDevice->sample_rate_current;
     std::cout << "sample rate = " << sampleRate << "\n";
 
     // Select a format
@@ -126,7 +125,7 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
 //        }
 //    }
 //    assert(SoundIoFormatInvalid != format);
-    format = SoundIoFormatS16LE;
+    format = sampleTypeToFormat<Sample>();
     assert(soundio_device_supports_format(soundioDevice, format));
     std::cout << "format = " << soundio_format_string(format) << "\n";
 
@@ -151,5 +150,5 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
     }
 
     // TODO
-    std::cout << "Done" << std::endl;
+    std::cout << "Done\n" << std::endl;
 }
