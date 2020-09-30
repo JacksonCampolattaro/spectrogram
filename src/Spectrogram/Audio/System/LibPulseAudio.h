@@ -11,6 +11,17 @@
 namespace Spectrogram::Audio::System {
 
     class LibPulseAudio : public System {
+    public:
+
+        LibPulseAudio();
+
+        void setBufferSize(size_t size) override;
+
+        Buffer getBuffer() override;
+
+        std::vector<Device> getDevices() override;
+
+        void setDevice(Device &device) override;
 
         // TODO
     };

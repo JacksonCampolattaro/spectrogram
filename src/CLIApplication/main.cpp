@@ -1,10 +1,10 @@
 
-/*
+//*
 #include <Spectrogram/Audio/System/LibSoundio.h>
+#include <Spectrogram/Audio/System/LibPulseAudio.h>
 
 #include <iostream>
 #include <memory>
-#include <zconf.h>
 
 using namespace Spectrogram::Audio;
 
@@ -29,8 +29,12 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-*/
+//*/
 
-#include <pulse/error.h>
-#include <pulse/pulseaudio.h>
-#include <pulse/simple.h>
+//#include <pulse/error.h>
+//#include <pulse/pulseaudio.h>
+//#include <pulse/simple.h>
+//
+//int main() {
+//
+//}
