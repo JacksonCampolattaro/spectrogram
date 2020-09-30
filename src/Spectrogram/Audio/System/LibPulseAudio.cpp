@@ -17,7 +17,7 @@ void Spectrogram::Audio::System::LibPulseAudio::setBufferSize(size_t size) {
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::LibPulseAudio::getBuffer() {
 
-    static const pa_sample_spec sampleSpec = {.format = PA_SAMPLE_S16BE, .rate = 44100, .channels = 2};
+    static const pa_sample_spec sampleSpec = {.format = PA_SAMPLE_S16LE, .rate = 44100, .channels = 2};
 
     const int frames = 10000;
     const int fragmentSize = frames * sampleSpec.channels * sampleSpec.format;
