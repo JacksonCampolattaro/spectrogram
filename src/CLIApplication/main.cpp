@@ -20,7 +20,7 @@ int main() {
 
     std::cout << "\nInput device" << std::endl;
     std::cout << system->getDevices()[1];
-    system->setDevice(system->getDevices()[2]);
+    system->setDevice(system->getDevices()[4]);
 
     for (;;) {
 

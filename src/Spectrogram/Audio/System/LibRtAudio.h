@@ -16,7 +16,7 @@ namespace Spectrogram::Audio::System {
     class LibRtAudio : public System {
     public:
 
-        LibRtAudio() = default;
+        LibRtAudio();
 
         void setBufferSize(size_t size) override;
 

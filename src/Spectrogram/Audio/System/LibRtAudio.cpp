@@ -4,6 +4,10 @@
 
 #include "LibRtAudio.h"
 
+Spectrogram::Audio::System::LibRtAudio::LibRtAudio() : _rtAudio(RtAudio::Api::LINUX_PULSE) {
+
+}
+
 void Spectrogram::Audio::System::LibRtAudio::setBufferSize(size_t size) {
 
     // TODO
@@ -14,6 +18,8 @@ Spectrogram::Audio::Buffer Spectrogram::Audio::System::LibRtAudio::getBuffer() {
 }
 
 std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibRtAudio::getDevices() {
+
+    //std::cout << _rtAudio.getApiName(_rtAudio.getCurrentApi()) << std::endl;
 
     std::vector<Device> devices;
 

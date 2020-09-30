@@ -4,6 +4,7 @@
 
 #include <Spectrogram/Audio/System/System.h>
 
+#include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
 
 #include <iostream>
@@ -23,7 +24,15 @@ namespace Spectrogram::Audio::System {
 
         void setDevice(Device &device) override;
 
-        // TODO
+    private:
+
+        pa_simple *_pulseAudio;
+
+        pa_sample_spec _sampleSpec = {
+                .format = PA_SAMPLE_S16LE,
+                .rate = 44100,
+                .channels = 2
+        };
     };
 
 }
