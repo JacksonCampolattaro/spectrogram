@@ -28,11 +28,7 @@ namespace Spectrogram::Audio::System {
 
         pa_simple *_pulseAudio;
 
-        pa_sample_spec _sampleSpec = {
-                .format = PA_SAMPLE_S16LE,
-                .rate = 44100,
-                .channels = 2
-        };
+
     };
 
 }
