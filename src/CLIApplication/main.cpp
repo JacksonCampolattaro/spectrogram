@@ -1,6 +1,6 @@
 
+/*
 #include <Spectrogram/Audio/System/LibSoundio.h>
-#include <Spectrogram/Audio/System/LibPortAudio.h>
 
 #include <iostream>
 #include <memory>
@@ -18,14 +18,19 @@ int main() {
     for (auto device : system->getDevices())
         std::cout << device << std::endl;
 
+    std::cout << "\nInput device" << std::endl;
+    std::cout << system->getDevices()[1];
     system->setDevice(system->getDevices()[2]);
-
-    system->getBuffer();
 
     for (;;) {
 
-        sleep(0.01);
+        system->getBuffer();
     }
 
     return EXIT_SUCCESS;
 }
+*/
+
+#include <pulse/error.h>
+#include <pulse/pulseaudio.h>
+#include <pulse/simple.h>

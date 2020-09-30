@@ -7,7 +7,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     //std::cout << "read callback invoked" << std::endl;
 
     struct SoundIoChannelArea *areas;
-    int frames = 1000;
+    int frames = 10;
 
     soundio_instream_begin_read(instream, &areas, &frames);
     assert(areas);
@@ -58,8 +58,8 @@ void Spectrogram::Audio::System::LibSoundio::setBufferSize(size_t size) {
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::LibSoundio::getBuffer() {
-    soundio_flush_events(_soundio);
 
+    soundio_wait_events(_soundio);
     return Spectrogram::Audio::Buffer();
 }
 
@@ -71,6 +71,7 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibSoundio::
     for (size_t i = 0; i < soundio_output_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_output_device(_soundio, i);
+        assert(!deviceInfo->probe_error);
         devices.emplace_back(deviceInfo->name, i, i == defaultOutput, false);
     }
 
@@ -121,10 +122,9 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
     assert(_inStream);
     _inStream->sample_rate = sampleRate;
     _inStream->format = format;
+    _inStream->layout = soundioDevice->current_layout;
     _inStream->read_callback = read_callback;
     _inStream->overflow_callback = overflow_callback;
-
-
 
     int err;
     if ((err = soundio_instream_open(_inStream))) {
@@ -134,6 +134,7 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
         std::cerr << "error" << std::endl;
     }
 
+    soundio_flush_events(_soundio);
 
     // TODO
     std::cout << " Done" << std::endl;
