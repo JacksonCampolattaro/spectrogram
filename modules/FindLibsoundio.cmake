@@ -30,8 +30,6 @@ find_library(LIBSOUNDIO_LIBRARIES
         )
 #set(LIBSOUNDIO_LIBRARIES "/usr/lib64/libsoundio.so")
 mark_as_advanced(LIBSOUNDIO_LIBRARIES)
-message(Libsoundio)
-message(${LIBSOUNDIO_LIBRARIES})
 
 # Notification messages
 if(NOT LIBSOUNDIO_INCLUDE_DIRS)

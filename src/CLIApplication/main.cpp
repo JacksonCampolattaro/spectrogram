@@ -1,5 +1,6 @@
 
 #include <Spectrogram/Audio/System/LibSoundio.h>
+#include <Spectrogram/Audio/System/LibPortAudio.h>
 
 #include <iostream>
 #include <memory>
