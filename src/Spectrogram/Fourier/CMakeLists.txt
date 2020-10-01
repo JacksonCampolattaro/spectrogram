@@ -1,6 +1,6 @@
 find_package(FFTW REQUIRED)
 add_library(Fourier
-        fourier.h fourier.cpp)
+        processor.h processor.cpp)
 
 target_include_directories(Fourier PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
