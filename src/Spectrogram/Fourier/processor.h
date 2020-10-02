@@ -27,11 +27,15 @@ class Processor {
         // Assignment operator
         Processor& operator=(const Processor &rhs);
         std::vector<float> compute(float[]);
+        void printIn();
+        int getSampleSize();
+        int getOutputSize();
+        void setSampleSize(int newSampleSize);
 
     private:
         float calcComplexSize() const;
         void executeFFT();
-        void applyHanningWindow(float samples[]);
+        double* applyHanningWindow(float samples[]);
         std::vector<float> calcMagnitudeInDB();
         float convertToDb(const float &val);
         std::vector<float>& normalize(std::vector<float>& v);
@@ -39,9 +43,9 @@ class Processor {
         // Calculate Hann
         float hann(const int&, const int&);
         void copyProcessor(const Processor &rhs);
+        void setMembers(int newWindowSize);
         // Destroy the plan and free the arrays
         void cleanUp();
-        void printIn();
 
         //int strideSize;
         //int sampleSize; 
