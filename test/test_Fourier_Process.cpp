@@ -2,6 +2,7 @@
 
 #include <Spectrogram/Fourier/processor.h>
 #include <iostream>
+#include <vector>
 
 TEST_CASE("Test constructors", "[Fourier::Processor]") {
 
@@ -40,7 +41,7 @@ TEST_CASE("Test math", "[Fourier::Processor]") {
     
     int aFreq = 3; // Hz
     int aSampleRate = 100; 
-    float aSamples[aSampleRate];
+    std::vector<float> aSamples(aSampleRate, 0);
 
     for (int t = 0; t < aSampleRate; t++)
     {
@@ -54,13 +55,13 @@ TEST_CASE("Test math", "[Fourier::Processor]") {
     for(float db : aProcessedWindow)
         std::cout << db << ", ";
     std::cout << std::endl;
-    REQUIRE(aProcessedWindow[aFreq] == Approx(1));
+    REQUIRE(aProcessedWindow[aFreq] == 1);
 
     ////////////////////////////////////////////////////////////////
 
     int bFreq = 1024; 
     int bSampleRate = 4096; 
-    float bSamples[bSampleRate];
+    std::vector<float> bSamples(bSampleRate, 0);
 
     for (int t = 0; t < bSampleRate; t++)
     {
@@ -69,12 +70,12 @@ TEST_CASE("Test math", "[Fourier::Processor]") {
 
     Fourier::Processor b(bSampleRate); 
     std::vector<float> bProcessedWindow = b.compute(bSamples);
-    REQUIRE(bProcessedWindow[bFreq] == Approx(1));
+    REQUIRE(bProcessedWindow[bFreq] == 1);
 
     /////////////////////////////////////////////////////////////////
 
     int cFreq = 512; 
-    float cSamples[bSampleRate];
+    std::vector<float> cSamples(bSampleRate, 0);
 
     for (int t = 0; t < bSampleRate; t++)
     {
@@ -83,12 +84,12 @@ TEST_CASE("Test math", "[Fourier::Processor]") {
 
     Fourier::Processor c(bSampleRate); 
     std::vector<float> cProcessedWindow = c.compute(cSamples);
-    REQUIRE(cProcessedWindow[cFreq] == Approx(1));
+    REQUIRE(cProcessedWindow[cFreq] == 1);
 
     //////////////////////////////////////////////////////////////////
 
     int dFreq = 190;
-    float dSamples[bSampleRate];
+    std::vector<float> dSamples(bSampleRate, 0);
 
     for (int t = 0; t < bSampleRate; t++)
     {
@@ -97,7 +98,7 @@ TEST_CASE("Test math", "[Fourier::Processor]") {
 
     Fourier::Processor d(bSampleRate); 
     std::vector<float> dProcessedWindow = d.compute(dSamples);
-    REQUIRE(dProcessedWindow[bFreq] == Approx(1));
-    REQUIRE(dProcessedWindow[cFreq] == Approx(1));
-    REQUIRE(dProcessedWindow[dFreq] == Approx(1));
+    REQUIRE(dProcessedWindow[bFreq] == 1);
+    REQUIRE(dProcessedWindow[cFreq] == 1);
+    REQUIRE(dProcessedWindow[dFreq] == 1);
 }

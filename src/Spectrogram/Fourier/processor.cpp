@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <string>
 
-
 #define REAL 0
 #define IMAG 1
 #define POWER_TO_DB_MULT 10
@@ -53,7 +52,7 @@ Processor& Processor::operator=(const Processor &rhs)
     return *this;
 }
 
-float Processor::calcComplexSize() const
+int Processor::calcComplexSize() const
 {
     return  windowSize/2 + 1;
 }
@@ -74,21 +73,24 @@ void Processor::setMembers(int newWindowSize)
 
 void Processor::setSampleSize(int newSampleSize)
 {
-    cleanUp();
-    setMembers(newSampleSize);
+    if (newSampleSize != windowSize)
+    {
+        cleanUp();
+        setMembers(newSampleSize);
+    }
 }
 
-int Processor::getSampleSize()
+int Processor::getSampleSize() const
 {
     return windowSize;
 }
 
-int Processor::getOutputSize()
+int Processor::getOutputSize() const
 {
     return complexSize;
 }
 
-std::vector<float> Processor::compute(float samples[])
+std::vector<float> Processor::compute(const std::vector<float>& samples)
 {
     in = applyHanningWindow(samples);
 
@@ -110,7 +112,7 @@ float Processor::hann(const int &i, const int &n)
     return ( 1.0 - cos(2.0 * M_PI * i/ (n-1)) ) * 0.5;
 }
 
-double* Processor::applyHanningWindow(float samples[])
+double* Processor::applyHanningWindow(const std::vector<float>& samples)
 {
     // The following for loop is a modification of the two for loops provided in URL
     //https://stackoverflow.com/questions/25061441/correct-way-to-implement-windowing/25061729#25061729?newreg=2a07fefa30ba41e1a286e025123513f8
@@ -121,7 +123,7 @@ double* Processor::applyHanningWindow(float samples[])
     return in;
 }
 
-// Power and decibel equations adapted from stackoverflow user Hartmut Pfitzinger
+// Magnitude equation adapted from stackoverflow user Hartmut Pfitzinger
 // https://stackoverflow.com/questions/21283144/generating-correct-spectrogram-using-fftw-and-window-function
 std::vector<float> Processor::calcMagnitudeInDB()
 {
@@ -166,12 +168,6 @@ std::vector<float>& Processor::normalize(std::vector<float>& v)
         *it = (*it - min) / (max - min);
     }
     return v;
-}
-
-void Processor::printIn()
-{
-    for (int i=0; i< windowSize; i++)
-        std::cout << in[i] << ", ";
 }
 
 }
