@@ -76,15 +76,6 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibSoundio::
 
     soundio_flush_events(_soundio);
 
-    size_t defaultOutput = soundio_default_output_device_index(_soundio);
-    for (size_t i = 0; i < soundio_output_device_count(_soundio); ++i) {
-
-        auto deviceInfo = soundio_get_output_device(_soundio, i);
-        assert(!deviceInfo->probe_error);
-        devices.emplace_back(deviceInfo->name, i, i == defaultOutput, false);
-        soundio_device_unref(deviceInfo);
-    }
-
     size_t defaultInput = soundio_default_input_device_index(_soundio);
     for (size_t i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
@@ -99,11 +90,7 @@ void Spectrogram::Audio::System::LibSoundio::setDevice(Spectrogram::Audio::Devic
 
     std::cout << "Setting device...\n";
 
-    SoundIoDevice *soundioDevice = nullptr;
-    if (device.isInput)
-        soundioDevice = soundio_get_input_device(_soundio, device.id);
-    else
-        soundioDevice = soundio_get_output_device(_soundio, device.id);
+    SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
 
     assert(soundioDevice);
     assert(!soundioDevice->probe_error);

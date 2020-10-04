@@ -20,7 +20,7 @@ Spectrogram::Audio::Buffer Spectrogram::Audio::System::LibPulseAudio::getBuffer(
     static const pa_sample_spec sampleSpec = {.format = PA_SAMPLE_S16LE, .rate = 44100, .channels = 2};
 
     const int frames = 10000;
-    const int fragmentSize = frames * sampleSpec.channels * sampleSpec.format;
+    uint32_t fragmentSize = frames * sampleSpec.channels * sampleSpec.format;
     pa_buffer_attr buffer = {.maxlength = (uint32_t)-1, .fragsize = fragmentSize};
 
     _pulseAudio = pa_simple_new(nullptr, "spectrogram",
