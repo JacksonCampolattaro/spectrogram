@@ -1,17 +1,11 @@
 
-find_package(RtAudio REQUIRED)
-find_package(Portaudio REQUIRED)
 find_package(Libsoundio REQUIRED)
-find_package(PulseAudio REQUIRED)
 
 add_library(Audio
-        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibRtAudio.cpp System/LibRtAudio.h System/LibSoundio.cpp System/LibSoundio.h System/LibPortAudio.cpp System/LibPortAudio.h System/LibPulseAudio.cpp System/LibPulseAudio.h)
+        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibSoundio.cpp System/LibSoundio.h)
 
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(Audio
-        ${RTAUDIO_LIBRARIES}
-        ${PORTAUDIO_LIBRARIES}
-        ${LIBSOUNDIO_LIBRARIES}
-        ${LIBPULSEAUDIO_LIBRARIES})
+        ${LIBSOUNDIO_LIBRARIES})
