@@ -1,7 +1,5 @@
 
 //*
-#include <Spectrogram/Audio/System/LibSoundio.h>
-
 #include <Spectrogram/Audio/System/Blocking.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
 
@@ -25,11 +23,14 @@ int main() {
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device]);
 
-    for (;;) {
+    for (int i = 0; i < 100; ++i) {
+
         for (auto sample : system.getBuffer()) {
             std::cout << sample << std::endl;
         }
     }
+
+    system.stop();
 
     return EXIT_SUCCESS;
 }
