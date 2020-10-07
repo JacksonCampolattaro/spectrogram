@@ -4,8 +4,6 @@
 
 #include "Callback.h"
 
-using namespace std::placeholders;
-
 Spectrogram::Audio::System::Callback::Callback(std::unique_ptr<Backend::Backend> backend) :
         _backend(std::move(backend)) {}
 
@@ -14,11 +12,15 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::Callback::devi
 }
 
 void Spectrogram::Audio::System::Callback::start(Spectrogram::Audio::Device &device) {
-    _backend->start(device, std::bind(&Callback::newBufferHandler, this, _1));
+    _backend->start(device,
+                    [this](auto buffer) {
+                        newBufferHandler(buffer);
+                    }
+    );
 }
 
 void Spectrogram::Audio::System::Callback::stop() {
-
+    _backend->stop();
 }
 
 void Spectrogram::Audio::System::Callback::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
