@@ -5,7 +5,7 @@
 #ifndef SPECTROGRAM_BLOCKING_H
 #define SPECTROGRAM_BLOCKING_H
 
-#include <Spectrogram/Audio/System/Callback.h>
+#include <Spectrogram/Audio/System/System.h>
 
 #include <queue>
 #include <mutex>
@@ -13,7 +13,7 @@
 
 namespace Spectrogram::Audio::System {
 
-    class Blocking : public Callback {
+    class Blocking : public System {
     public:
 
         Blocking(std::unique_ptr<Backend::Backend> backend);

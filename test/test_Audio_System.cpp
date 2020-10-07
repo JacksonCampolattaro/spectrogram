@@ -1,7 +1,7 @@
 
 #include <catch2/catch.hpp>
 
-#include <Spectrogram/Audio/System/Callback.h>
+#include <Spectrogram/Audio/System/System.h>
 #include <Spectrogram/Audio/System/Blocking.h>
 
 #include <Spectrogram/Audio/Backend/Dummy.h>

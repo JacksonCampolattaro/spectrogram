@@ -6,7 +6,7 @@
 
 
 Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend> backend) :
-        Callback(std::move(backend)) {
+        System(std::move(backend)) {
 
 }
 

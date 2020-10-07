@@ -1,15 +1,15 @@
-#ifndef SPECTROGRAM_CALLBACK_H
-#define SPECTROGRAM_CALLBACK_H
+#ifndef SPECTROGRAM_SYSTEM_H
+#define SPECTROGRAM_SYSTEM_H
 
 #include <Spectrogram/Audio/Backend/Backend.h>
 #include <memory>
 
 namespace Spectrogram::Audio::System {
 
-    class Callback {
+    class System {
     public:
 
-        Callback(std::unique_ptr<Backend::Backend> backend);
+        System(std::unique_ptr<Backend::Backend> backend);
 
         const DeviceList &devices();
 
@@ -27,4 +27,4 @@ namespace Spectrogram::Audio::System {
 }
 
 
-#endif //SPECTROGRAM_CALLBACK_H
+#endif //SPECTROGRAM_SYSTEM_H
