@@ -22,10 +22,3 @@ void Spectrogram::Audio::System::Callback::start(const Spectrogram::Audio::Devic
 void Spectrogram::Audio::System::Callback::stop() {
     _backend->stop();
 }
-
-void Spectrogram::Audio::System::Callback::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
-
-    for (auto sample : buffer) {
-        std::cout << sample << std::endl;
-    }
-}
