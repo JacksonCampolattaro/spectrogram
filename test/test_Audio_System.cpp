@@ -2,7 +2,10 @@
 #include <catch2/catch.hpp>
 
 #include <Spectrogram/Audio/System/System.h>
+#include <Spectrogram/Audio/System/Callback.h>
 #include <Spectrogram/Audio/System/LibSoundio.h>
+
+#include <Spectrogram/Audio/Backend/Dummy.h>
 
 #include <iostream>
 
@@ -27,5 +30,11 @@ TEST_CASE("LibSoundio", "[Spectrogram::Audio::System::LibSoundio]") {
         std::cout << device
                   << std::endl;
     }
+
+}
+
+TEST_CASE("Dummy devices", "[Dummy]") {
+
+    auto callbackSystem = System::Callback(std::make_unique<Backend::Dummy>());
 
 }

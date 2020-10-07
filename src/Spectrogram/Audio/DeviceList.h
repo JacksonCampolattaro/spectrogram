@@ -10,6 +10,10 @@ namespace Spectrogram::Audio {
     class DeviceList : private std::vector<Device> {
     public:
 
+        typedef std::vector<Device> vector;
+
+        using vector::vector;
+
         // TODO: Accessor methods and iterators will be made available here
 
         // This will be called and

@@ -3,3 +3,7 @@
 //
 
 #include "DeviceList.h"
+
+void Spectrogram::Audio::DeviceList::onDevicesChanged(const std::vector<Device> &devices) {
+
+}

@@ -2,7 +2,7 @@
 find_package(Libsoundio REQUIRED)
 
 add_library(Audio
-        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibSoundio.cpp System/LibSoundio.h Backend/Backend.h DeviceList.cpp DeviceList.h)
+        System/System.h Buffer.cpp Buffer.h Device.cpp Device.h System/LibSoundio.cpp System/LibSoundio.h Backend/Backend.h DeviceList.cpp DeviceList.h Backend/Dummy.h System/Callback.cpp System/Callback.h)
 
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

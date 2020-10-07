@@ -8,12 +8,8 @@
 
 namespace Spectrogram::Audio::Backend {
 
-    template <class Interface>
-    class Backend : public Interface {
+    class Backend {
     public:
-
-        typedef Sample Sample;
-        typedef Buffer Buffer;
 
         typedef std::function<void(const std::vector<Device> &)> DevicesChangedCallback;
         typedef std::function<void(Buffer)> NewBufferCallback;
