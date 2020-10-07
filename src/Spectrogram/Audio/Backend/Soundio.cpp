@@ -108,10 +108,11 @@ void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Devic
         std::cerr << "failed to start input stream: " << soundio_strerror(err) << std::endl;
         exit(1);
     }
-
-    std::cout << "started" << std::endl;
 }
 
 void Spectrogram::Audio::Backend::Soundio::stop() {
 
+    soundio_device_unref(_inStream->device);
+    soundio_instream_destroy(_inStream);
+    _inStream = nullptr;
 }
