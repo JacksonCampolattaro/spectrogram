@@ -20,18 +20,21 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     assert(frames);
 
     Spectrogram::Audio::Buffer buffer;
+    buffer.assign((Spectrogram::Audio::Sample *) areas[0].ptr, ((Spectrogram::Audio::Sample *) areas[0].ptr) + frames);
 
-    for (int frame = 0; frame < frames; ++frame) {
+//    buffer.assign(areas[0].ptr, areas[0].ptr + frames);
 
-        for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
-
-            Spectrogram::Audio::Sample sample = *((Spectrogram::Audio::Sample *) areas[channel].ptr);
-            areas[channel].ptr += areas[channel].step;
-
-            // Put samples from all channels in one buffer for now
-            buffer.push_back(sample);
-        }
-    }
+//    for (int frame = 0; frame < frames; ++frame) {
+//
+//        for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
+//
+//            Spectrogram::Audio::Sample sample = *((Spectrogram::Audio::Sample *) areas[channel].ptr);
+//            areas[channel].ptr += areas[channel].step;
+//
+//            // Put samples from all channels in one buffer for now
+//            buffer.push_back(sample);
+//        }
+//    }
 
     (*callback)(buffer);
 
