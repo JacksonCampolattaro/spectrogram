@@ -7,6 +7,10 @@
 
 #include <Spectrogram/Audio/System/Callback.h>
 
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+
 namespace Spectrogram::Audio::System {
 
     class Blocking : public Callback {
@@ -17,6 +21,12 @@ namespace Spectrogram::Audio::System {
         void newBufferHandler(Buffer buffer) override;
 
         Buffer getBuffer();
+
+    private:
+
+        std::queue<Buffer> _bufferQueue;
+        std::mutex _bufferQueueMutex;
+        std::condition_variable _newBufferCondition;
 
     };
 }

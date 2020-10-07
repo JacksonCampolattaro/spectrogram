@@ -12,11 +12,23 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 void Spectrogram::Audio::System::Blocking::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
 
-    for (auto sample : buffer) {
-        std::cout << "x" << sample << std::endl;
+    {
+        std::unique_lock<std::mutex> lock(_bufferQueueMutex);
+        _bufferQueue.push(buffer);
     }
+    _newBufferCondition.notify_one();
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
-    return Spectrogram::Audio::Buffer();
+
+    std::unique_lock<std::mutex> lock(_bufferQueueMutex);
+    _newBufferCondition.wait(lock,
+                             [=] {
+                                 return !_bufferQueue.empty();
+                             }
+    );
+
+    auto b = _bufferQueue.front();
+    _bufferQueue.pop();
+    return b;
 }

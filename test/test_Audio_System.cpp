@@ -42,6 +42,10 @@ TEST_CASE("Dummy devices", "[Dummy]") {
     Device d{"test", 0, false};
     system.start(d);
 
-    sleep(1);
+    for (auto sample : system.getBuffer()) {
+        std::cout << sample << " ";
+    }
+    std::cout << std::endl;
+
     system.stop();
 }
