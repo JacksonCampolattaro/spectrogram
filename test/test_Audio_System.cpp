@@ -37,4 +37,6 @@ TEST_CASE("Dummy devices", "[Dummy]") {
 
     auto callbackSystem = System::Callback(std::make_unique<Backend::Dummy>());
 
+    Device d{"test", 0, false};
+    callbackSystem.start(d);
 }

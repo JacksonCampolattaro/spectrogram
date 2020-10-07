@@ -11,21 +11,16 @@ namespace Spectrogram::Audio::Backend {
 
         Dummy() = default;
 
-        DeviceList &devices() override {
-            return _devices;
-        }
+        DeviceList &devices() override;
 
-        void start(const Device &device, typename Backend::NewBufferCallback callback) override {
+        void start(const Device &device, typename Backend::NewBufferCallback callback) override;
 
-        }
-
-        void stop() override {
-
-        }
+        void stop() override;
 
     private:
 
         DeviceList _devices;
+
     };
 
 }

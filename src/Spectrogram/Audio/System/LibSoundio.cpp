@@ -80,7 +80,7 @@ std::vector<Spectrogram::Audio::Device> Spectrogram::Audio::System::LibSoundio::
     for (size_t i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
-        devices.emplace_back(deviceInfo->name, i, i == defaultInput, true);
+        devices.emplace_back(deviceInfo->name, i, i == defaultInput);
         soundio_device_unref(deviceInfo);
     }
     return devices;
