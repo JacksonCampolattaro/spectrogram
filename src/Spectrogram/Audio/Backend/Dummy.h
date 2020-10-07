@@ -2,6 +2,8 @@
 #define SPECTROGRAM_DUMMY_H
 
 #include <Spectrogram/Audio/Backend/Backend.h>
+#include <thread>
+#include <atomic>
 
 namespace Spectrogram::Audio::Backend {
 
@@ -20,6 +22,8 @@ namespace Spectrogram::Audio::Backend {
     private:
 
         DeviceList _devices;
+        std::thread _t;
+        std::atomic<bool> _stop;
 
     };
 

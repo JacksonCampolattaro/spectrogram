@@ -7,16 +7,25 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
 void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device &device,
                                                Spectrogram::Audio::Backend::Backend::NewBufferCallback callback) {
 
-    for (;;) {
+    _stop = false;
 
-        Buffer b;
-        for (int i = 0; i < 100; ++i) {
-            b.push_back(i % 2);
-        }
-        callback(b);
-    }
+    _t = std::thread(
+            [=] {
+
+                while (!_stop) {
+
+                    Buffer b;
+                    for (int i = 0; i < 100; ++i) {
+                        b.push_back(i % 2);
+                    }
+                    callback(b);
+                }
+            }
+    );
 }
 
 void Spectrogram::Audio::Backend::Dummy::stop() {
 
+    _stop = true;
+    _t.join();
 }

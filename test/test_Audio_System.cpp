@@ -8,6 +8,7 @@
 #include <Spectrogram/Audio/Backend/Dummy.h>
 
 #include <iostream>
+#include <unistd.h>
 
 using namespace Spectrogram::Audio;
 
@@ -39,4 +40,7 @@ TEST_CASE("Dummy devices", "[Dummy]") {
 
     Device d{"test", 0, false};
     callbackSystem.start(d);
+
+    sleep(1);
+    callbackSystem.stop();
 }
