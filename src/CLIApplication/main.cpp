@@ -22,10 +22,15 @@ int main() {
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device]);
 
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 10000; ++i) {
 
         for (auto sample : system.getBuffer()) {
-            std::cout << sample << std::endl;
+
+            for (int j = 0; j < (sample + 1.0f) * 50; ++j) {
+                std::cout << " ";
+            }
+
+            std::cout << "*" << std::endl;
         }
     }
 

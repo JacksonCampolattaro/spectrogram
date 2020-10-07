@@ -12,7 +12,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     int err;
 
     struct SoundIoChannelArea *areas;
-    int frames = 10000;
+    int frames = 10;
 
     err = soundio_instream_begin_read(instream, &areas, &frames);
     if (err) exit(1);
