@@ -1,36 +1,31 @@
 
 #include <catch2/catch.hpp>
 
-#include <Spectrogram/Audio/System.h>
+#include <Spectrogram/Audio/System/System.h>
+#include <Spectrogram/Audio/System/Blocking.h>
 
-#include <portaudio.h>
+#include <Spectrogram/Audio/Backend/Dummy.h>
 
-TEST_CASE("Connecting to system audio", "[Audio::System]") {
-//
-//    Audio::System system;
-//
-//    std::cout << system._rtAudio.getDeviceCount() << " Devices" << std::endl;
-}
+#include <iostream>
+#include <unistd.h>
 
-TEST_CASE("Printing out all devices", "[Audio::System]") {
-//
-//    Audio::System system;
-//
-//    system.devices();
-}
+using namespace Spectrogram::Audio;
 
-TEST_CASE("Printing out all devices with portaudio", "[Audio::System]") {
-//
-//    Pa_Initialize();
-//    std::cout << Pa_GetDeviceCount() << std::endl;
-//    for (int i = 0; i < Pa_GetDeviceCount(); ++i) {
-//        std::cout << Pa_GetDeviceInfo(i)->name << std::endl;
-//    }
-//
-}
+TEST_CASE("Dummy devices", "[Dummy]") {
 
-TEST_CASE("Printing out all devices with libsoundio", "[Audio::System]") {
-//
-//    auto soundio = soundio_create();
-//    std::cout << soundio_output_device_count(soundio) << std::endl;
+    auto system = System::Blocking(std::make_unique<Backend::Dummy>());
+
+    Device d{"test", 0, false};
+    system.start(d);
+
+    for (auto channel : system.getBuffer()) {
+        for (auto sample : channel) {
+            std::cout << sample << "\t";
+        }
+        std::cout << "\n";
+    }
+    std::cout << std::endl;
+
+
+    system.stop();
 }

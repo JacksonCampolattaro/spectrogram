@@ -1,11 +1,13 @@
 
-find_package(RtAudio REQUIRED)
+find_package(Libsoundio REQUIRED)
+find_package(Threads)
 
 add_library(Audio
-        RtAudio.h System.h System.cpp)
+        Buffer.cpp Buffer.h Device.cpp Device.h Backend/Backend.h DeviceList.cpp DeviceList.h Backend/Dummy.h System/System.cpp System/System.h Backend/Dummy.cpp System/Blocking.cpp System/Blocking.h Backend/Soundio.cpp Backend/Soundio.h)
 
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(Audio
-        ${RTAUDIO_LIBRARIES})
+        ${LIBSOUNDIO_LIBRARIES}
+        Threads::Threads)
