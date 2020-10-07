@@ -17,7 +17,7 @@ namespace Spectrogram::Audio::System {
 
         void stop();
 
-        void newBufferHandler(Buffer buffer);
+        virtual void newBufferHandler(Buffer buffer);
 
     private:
 
