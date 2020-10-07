@@ -69,6 +69,8 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
 void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Device &device,
                                                  Spectrogram::Audio::Backend::Backend::NewBufferCallback callback) {
 
+    stop();
+
     _callback = callback;
 
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
@@ -112,7 +114,10 @@ void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Devic
 
 void Spectrogram::Audio::Backend::Soundio::stop() {
 
-    soundio_device_unref(_inStream->device);
-    soundio_instream_destroy(_inStream);
-    _inStream = nullptr;
+    if (_inStream) {
+
+        soundio_device_unref(_inStream->device);
+        soundio_instream_destroy(_inStream);
+        _inStream = nullptr;
+    }
 }

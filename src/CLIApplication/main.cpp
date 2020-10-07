@@ -1,5 +1,4 @@
 
-//*
 #include <Spectrogram/Audio/System/Blocking.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
 
@@ -34,12 +33,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-//*/
-
-//#include <pulse/error.h>
-//#include <pulse/pulseaudio.h>
-//#include <pulse/simple.h>
-//
-//int main() {
-//
-//}
