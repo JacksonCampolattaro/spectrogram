@@ -13,6 +13,10 @@ namespace Spectrogram::Audio {
         typedef std::vector<Device> vector;
 
         using vector::vector;
+        using vector::emplace_back;
+        using vector::begin;
+        using vector::end;
+        using vector::operator[];
 
         // TODO: Accessor methods and iterators will be made available here
 

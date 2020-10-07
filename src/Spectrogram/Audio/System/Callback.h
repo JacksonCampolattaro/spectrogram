@@ -13,7 +13,7 @@ namespace Spectrogram::Audio::System {
 
         const DeviceList &devices();
 
-        void start(Device &device);
+        void start(const Device &device);
 
         void stop();
 

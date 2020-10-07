@@ -12,6 +12,8 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 void Spectrogram::Audio::System::Blocking::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
 
+    std::cout << "test" << std::endl;
+
     {
         std::unique_lock<std::mutex> lock(_bufferQueueMutex);
         _bufferQueue.push(buffer);

@@ -11,7 +11,7 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::Callback::devi
     return _backend->devices();
 }
 
-void Spectrogram::Audio::System::Callback::start(Spectrogram::Audio::Device &device) {
+void Spectrogram::Audio::System::Callback::start(const Spectrogram::Audio::Device &device) {
     _backend->start(device,
                     [this](auto buffer) {
                         newBufferHandler(buffer);
