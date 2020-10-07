@@ -11,14 +11,6 @@
 
 using namespace Spectrogram::Audio;
 
-TEST_CASE("Connecting to system audio", "[Audio::System]") {
-//
-//    Audio::System system;
-//
-//    std::cout << system._rtAudio.getDeviceCount() << " Devices" << std::endl;
-}
-
-
 TEST_CASE("Dummy devices", "[Dummy]") {
 
     auto system = System::Blocking(std::make_unique<Backend::Dummy>());
@@ -26,13 +18,14 @@ TEST_CASE("Dummy devices", "[Dummy]") {
     Device d{"test", 0, false};
     system.start(d);
 
-    auto b = system.getBuffer();
-    for (int sample = 0; sample < b[0].size(); ++sample) {
-        for (int channel = 0; channel < b.size(); ++channel) {
-            std::cout << b[channel][sample] << " ";
+    for (auto channel : system.getBuffer()) {
+        for (auto sample : channel) {
+            std::cout << sample << "\t";
         }
+        std::cout << "\n";
     }
     std::cout << std::endl;
+
 
     system.stop();
 }

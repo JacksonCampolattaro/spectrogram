@@ -14,11 +14,20 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
 
                 while (!_stop) {
 
-                    Buffer b;
-                    b.reserve(1);
+                    Channel l;
                     for (int i = 0; i < 100; ++i) {
-                        b[0].push_back(i % 2);
+                        l.push_back(i % 2);
                     }
+
+                    Channel r;
+                    for (int i = 0; i < 100; ++i) {
+                        r.push_back(i % 2);
+                    }
+
+                    Buffer b;
+                    b.push_back(l);
+                    b.push_back(r);
+
                     callback(b);
                 }
             }
