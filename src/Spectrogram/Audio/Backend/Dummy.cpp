@@ -15,8 +15,9 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
                 while (!_stop) {
 
                     Buffer b;
+                    b.reserve(1);
                     for (int i = 0; i < 100; ++i) {
-                        b.push_back(i % 2);
+                        b[0].push_back(i % 2);
                     }
                     callback(b);
                 }

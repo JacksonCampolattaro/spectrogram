@@ -26,8 +26,11 @@ TEST_CASE("Dummy devices", "[Dummy]") {
     Device d{"test", 0, false};
     system.start(d);
 
-    for (auto sample : system.getBuffer()) {
-        std::cout << sample << " ";
+    auto b = system.getBuffer();
+    for (int sample = 0; sample < b[0].size(); ++sample) {
+        for (int channel = 0; channel < b.size(); ++channel) {
+            std::cout << b[channel][sample] << " ";
+        }
     }
     std::cout << std::endl;
 
