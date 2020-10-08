@@ -11,7 +11,7 @@ namespace Spectrogram::Audio::Backend {
 
     public:
 
-        Dummy() = default;
+        Dummy(float frequency);
 
         DeviceList &devices() override;
 
@@ -25,6 +25,9 @@ namespace Spectrogram::Audio::Backend {
         std::thread _t;
         std::atomic<bool> _stop;
 
+        float _frequency;
+        float _sampleRate = 1000;
+        int _sampleNumber = 0;
     };
 
 }

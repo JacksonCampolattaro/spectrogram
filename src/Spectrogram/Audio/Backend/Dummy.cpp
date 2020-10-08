@@ -1,5 +1,9 @@
 #include "Dummy.h"
 
+#include <math.h>
+
+Spectrogram::Audio::Backend::Dummy::Dummy(float frequency) : _frequency(frequency) {}
+
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
@@ -15,13 +19,12 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
                 while (!_stop) {
 
                     Channel l;
-                    for (int i = 0; i < 100; ++i) {
-                        l.push_back(i % 2);
-                    }
-
                     Channel r;
                     for (int i = 0; i < 100; ++i) {
-                        r.push_back(i % 2);
+                        _sampleNumber++;
+
+                        l.push_back(sin((float) _sampleNumber * _frequency / _sampleRate));
+                        r.push_back(sin((float) _sampleNumber * _frequency / _sampleRate));
                     }
 
                     Buffer b;

@@ -13,7 +13,7 @@ using namespace Spectrogram::Audio;
 
 TEST_CASE("Dummy devices", "[Dummy]") {
 
-    auto system = System::Blocking(std::make_unique<Backend::Dummy>());
+    auto system = System::Blocking(std::make_unique<Backend::Dummy>(440));
 
     Device d{"test", 0, false};
     system.start(d);
