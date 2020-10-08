@@ -26,7 +26,7 @@ namespace Spectrogram::Audio::Backend {
         std::atomic<bool> _stop;
 
         float _frequency;
-        float _sampleRate = 1000;
+        float _sampleRate = 48000;
         int _sampleNumber = 0;
     };
 

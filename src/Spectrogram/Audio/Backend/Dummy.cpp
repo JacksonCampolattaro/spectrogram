@@ -27,8 +27,23 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
                     for (int i = 0; i < 100; ++i) {
                         _sampleNumber++;
 
-                        l.push_back(sin((float) _sampleNumber * _frequency / _sampleRate));
-                        r.push_back(sin((float) _sampleNumber * _frequency / _sampleRate));
+                        float time = (float) _sampleNumber / (float) _sampleRate;
+
+                        if (device.name == "Sinusoid") {
+
+                            l.push_back(sin((float) time * _frequency * 2 * M_PI));
+                            r.push_back(sin((float) time * _frequency * 2 * M_PI));
+                        }
+
+                        if (device.name == "Square") {
+
+                            l.push_back(
+                                    sin((float) time * _frequency * 2 * M_PI) >= 0 ? 1.0 : -1.0
+                                    );
+                            r.push_back(
+                                    sin((float) time * _frequency * 2 * M_PI) >= 0 ? 1.0 : -1.0
+                            );
+                        }
                     }
 
                     Buffer b;
