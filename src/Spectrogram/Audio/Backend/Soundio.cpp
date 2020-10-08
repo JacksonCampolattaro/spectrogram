@@ -7,12 +7,14 @@
 
 static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
 
+    //std::cout << maxFrameCount << std::endl;
+
     auto callback = static_cast<Spectrogram::Audio::Backend::Backend::NewBufferCallback *>(instream->userdata);
 
     int err;
 
     struct SoundIoChannelArea *areas;
-    int frames = 10;
+    int frames = 500;
 
     err = soundio_instream_begin_read(instream, &areas, &frames);
     if (err) exit(1);
