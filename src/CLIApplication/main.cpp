@@ -1,6 +1,7 @@
 
 #include <Spectrogram/Audio/System/Blocking.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
+#include <Spectrogram/Audio/Backend/Dummy.h>
 
 #include <iostream>
 #include <memory>
@@ -11,6 +12,8 @@ int main() {
 
     // Initialize the system
     auto system = System::Blocking(std::make_unique<Backend::Soundio>());
+//    auto system = System::Blocking(std::make_unique<Backend::Dummy>(440));
+
 
     // List the devices
     std::cout << "Devices:" << std::endl;
@@ -22,15 +25,22 @@ int main() {
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device]);
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 10000; ++i) {
 
-        for (auto channel : system.getBuffer()) {
-            for (auto sample : channel) {
-                std::cout << sample << "\t";
+        auto buffer = system.getBuffer();
+        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); ++sampleIndex) {
+
+            for (int channel = 0; channel < buffer.size(); ++channel) {
+
+                auto sample = buffer[channel][sampleIndex];
+
+                std::string view = "          |          ";
+                view.replace(view.size() * (sample + 1) / 2, 1, "*");
+
+                std::cout << view;
             }
-            std::cout << "\n";
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
 
     }
 

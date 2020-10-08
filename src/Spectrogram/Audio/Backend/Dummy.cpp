@@ -2,7 +2,11 @@
 
 #include <math.h>
 
-Spectrogram::Audio::Backend::Dummy::Dummy(float frequency) : _frequency(frequency) {}
+Spectrogram::Audio::Backend::Dummy::Dummy(float frequency) : _frequency(frequency) {
+    _devices.emplace_back("Sinusoid", 0, true);
+    _devices.emplace_back("Square", 1, false);
+    _devices.emplace_back("Sawtooth", 2, false);
+}
 
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
