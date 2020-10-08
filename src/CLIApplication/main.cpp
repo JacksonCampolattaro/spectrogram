@@ -34,7 +34,7 @@ int main() {
 
                 auto sample = buffer[channel][sampleIndex];
 
-                std::string view = "          |          ";
+                std::string view = "               |               ";
                 view.replace(view.size() * (sample + 1) / 2, 1, "*");
 
                 std::cout << view;
