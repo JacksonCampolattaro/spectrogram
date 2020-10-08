@@ -44,6 +44,16 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
                                     sin((float) time * _frequency * 2 * M_PI) >= 0 ? 1.0 : -1.0
                             );
                         }
+
+                        if (device.name == "Sawtooth") {
+
+                            l.push_back(
+                                    acos(sin((float) time * _frequency * 2 * M_PI)) / M_PI_2 - 1.0f
+                            );
+                            r.push_back(
+                                    acos(sin((float) time * _frequency * 2 * M_PI)) / M_PI_2 - 1.0f
+                            );
+                        }
                     }
 
                     Buffer b;
