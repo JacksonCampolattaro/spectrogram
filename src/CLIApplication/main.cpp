@@ -23,12 +23,12 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 100);
+    system.start(system.devices()[device], 2560);
 
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 10000; ++i) {
 
         auto buffer = system.getBuffer();
-        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); ++sampleIndex) {
+        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex++) {
 
             for (int channel = 0; channel < buffer.size(); ++channel) {
 
@@ -39,8 +39,9 @@ int main() {
 
                 std::cout << view;
             }
-            std::cout << std::endl;
+            std::cout << "\n";
         }
+        std::cout << std::endl;
 
     }
 

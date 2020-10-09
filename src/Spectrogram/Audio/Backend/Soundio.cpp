@@ -12,8 +12,6 @@ typedef struct {
 
 static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
 
-    //std::cout << maxFrameCount << std::endl;
-
     auto options = static_cast<CallbackOptions *>(instream->userdata);
 
     int err;
@@ -21,25 +19,27 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     struct SoundIoChannelArea *areas;
     int frames = options->frames;
 
-    err = soundio_instream_begin_read(instream, &areas, &frames);
-    if (err) exit(1);
-    assert(areas);
-    assert(frames);
-
     Spectrogram::Audio::Buffer buffer;
 
-//    buffer.assign((Spectrogram::Audio::Sample *) areas[0].ptr, ((Spectrogram::Audio::Sample *) areas[0].ptr) + frames);
-    for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
+    {
+        err = soundio_instream_begin_read(instream, &areas, &frames);
+        if (err) exit(1);
 
-        buffer.emplace_back((Spectrogram::Audio::Sample *) areas[channel].ptr,
-                            ((Spectrogram::Audio::Sample *) areas[channel].ptr) + frames);
+        assert(areas);
+        assert(frames);
+
+        for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
+
+            buffer.emplace_back((Spectrogram::Audio::Sample *) areas[channel].ptr,
+                                ((Spectrogram::Audio::Sample *) areas[channel].ptr) + frames);
+        }
+
+        err = soundio_instream_end_read(instream);
+        if (err) exit(1);
     }
 
     std::cout << buffer[0].size() << std::endl;
     (options->handler)(buffer);
-
-    err = soundio_instream_end_read(instream);
-    if (err) exit(1);
 }
 
 static void overflow_callback(struct SoundIoInStream *instream) {
@@ -116,7 +116,7 @@ void Spectrogram::Audio::Backend::Soundio::stop() {
 
     if (_inStream) {
 
-        delete (CallbackOptions*)_inStream->userdata;
+        delete (CallbackOptions *) _inStream->userdata;
         soundio_device_unref(_inStream->device);
         soundio_instream_destroy(_inStream);
         _inStream = nullptr;
