@@ -16,7 +16,7 @@ TEST_CASE("Dummy devices", "[Dummy]") {
     auto system = System::Blocking(std::make_unique<Backend::Dummy>(440));
 
     Device d{"test", 0, false};
-    system.start(d);
+    system.start(d, 512);
 
     for (auto channel : system.getBuffer()) {
         for (auto sample : channel) {

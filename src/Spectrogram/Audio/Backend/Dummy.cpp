@@ -12,7 +12,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewBufferCallback callback, size_t frames) {
+void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewBufferCallback callback) {
 
     _stop = false;
 

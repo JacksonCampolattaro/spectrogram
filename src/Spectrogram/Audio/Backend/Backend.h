@@ -15,7 +15,7 @@ namespace Spectrogram::Audio::Backend {
         typedef std::function<void(Buffer)> NewBufferCallback;
 
         virtual DeviceList &devices() = 0;
-        virtual void start(const Device &device, NewBufferCallback callback, size_t frames) = 0;
+        virtual void start(const Device &device, size_t frames, NewBufferCallback callback) = 0;
         virtual void stop() = 0;
 
     private:
