@@ -18,7 +18,7 @@ namespace Spectrogram::Audio::Backend {
 
         DeviceList &devices() override;
 
-        void start(const Device &device, typename Backend::NewBufferCallback callback) override;
+        void start(const Device &device, NewBufferCallback callback, size_t frames) override;
 
         void stop() override;
 

@@ -12,8 +12,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device &device,
-                                               Spectrogram::Audio::Backend::Backend::NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewBufferCallback callback, size_t frames) {
 
     _stop = false;
 
@@ -22,7 +21,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Spectrogram::Audio::Device 
 
                 while (!_stop) {
 
-                    size_t bufferSize = 100;
+                    size_t bufferSize = frames;
 
                     // Sleep for the amount of time it should take to fill a buffer this size
                     float bufferTime = bufferSize / _sampleRate;

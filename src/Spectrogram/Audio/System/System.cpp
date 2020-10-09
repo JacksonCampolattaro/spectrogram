@@ -15,8 +15,7 @@ void Spectrogram::Audio::System::System::start(const Spectrogram::Audio::Device 
     _backend->start(device,
                     [this](auto buffer) {
                         newBufferHandler(buffer);
-                    }
-    );
+                    }, 512);
 }
 
 void Spectrogram::Audio::System::System::stop() {

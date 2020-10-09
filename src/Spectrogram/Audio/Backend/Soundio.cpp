@@ -69,8 +69,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Device &device,
-                                                 Spectrogram::Audio::Backend::Backend::NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, NewBufferCallback callback, size_t frames) {
 
     stop();
 
@@ -99,7 +98,7 @@ void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Devic
     _inStream->layout = soundioDevice->current_layout;
     _inStream->read_callback = read_callback;
     _inStream->overflow_callback = overflow_callback;
-    _inStream->userdata = new CallbackOptions{200, callback};
+    _inStream->userdata = new CallbackOptions{frames, callback};
 
     int err;
     if ((err = soundio_instream_open(_inStream))) {
