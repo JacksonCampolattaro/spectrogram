@@ -11,8 +11,8 @@ using namespace Spectrogram::Audio;
 int main() {
 
     // Initialize the system
-//    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
-    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
+    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
+//    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
 
 
     // List the devices
@@ -20,7 +20,7 @@ int main() {
     for (const auto &device : system.devices())
         std::cout << device << std::endl;
 
-    int device = 0;
+    int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device]);
