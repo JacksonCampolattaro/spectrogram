@@ -14,7 +14,7 @@ set(LIBSOUNDIO_PATHS
 find_path(LIBSOUNDIO_INCLUDE_DIRS
         NAMES soundio.h
         HINTS ${LIBSOUNDIO_HINTS}
-        PATH_SUFFIXES include api inc include/x86_64 include/x64
+        PATH_SUFFIXES include api inc include/x86_64 include/x64 include/soundio
         PATHS ${LIBSOUNDIO_PATHS}
         )
 mark_as_advanced(LIBSOUNDIO_INCLUDE_DIRS)
