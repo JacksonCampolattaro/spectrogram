@@ -22,13 +22,13 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 20000);
+    system.start(system.devices()[device], 8000);
 
     for (int i = 0; i < 10000; ++i) {
 
         auto buffer = system.getBuffer();
-//        std::cout << buffer[0].size() << std::endl;
-        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 100) {
+
+        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 50) {
 
             for (int channel = 0; channel < buffer.size(); ++channel) {
 
