@@ -13,13 +13,13 @@ namespace Spectrogram::Audio::System {
 
         Blocking(std::unique_ptr<Backend::Backend> backend);
 
-        void newBufferHandler(Buffer buffer) override;
+        void newBufferHandler(Buffer &buffer) override;
 
         Buffer getBuffer();
 
     private:
 
-        boost::lockfree::spsc_queue<Buffer> _bufferQueue{1024};
+        boost::lockfree::spsc_queue<Buffer> _bufferQueue{16};
         std::condition_variable _bufferAdded;
 
     };
