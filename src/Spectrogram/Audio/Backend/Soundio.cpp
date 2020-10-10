@@ -5,33 +5,41 @@
 #include <cassert>
 #include "Soundio.h"
 
+typedef struct {
+    size_t frames;
+    Spectrogram::Audio::Backend::Backend::NewBufferCallback handler;
+} CallbackOptions;
+
 static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
 
-    auto callback = static_cast<Spectrogram::Audio::Backend::Backend::NewBufferCallback *>(instream->userdata);
+    auto options = static_cast<CallbackOptions *>(instream->userdata);
 
     int err;
 
     struct SoundIoChannelArea *areas;
-    int frames = 10;
-
-    err = soundio_instream_begin_read(instream, &areas, &frames);
-    if (err) exit(1);
-    assert(areas);
-    assert(frames);
+    int frames = options->frames;
 
     Spectrogram::Audio::Buffer buffer;
 
-//    buffer.assign((Spectrogram::Audio::Sample *) areas[0].ptr, ((Spectrogram::Audio::Sample *) areas[0].ptr) + frames);
-    for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
+    {
+        err = soundio_instream_begin_read(instream, &areas, &frames);
+        if (err) exit(1);
 
-        buffer.emplace_back((Spectrogram::Audio::Sample *) areas[channel].ptr,
-                               ((Spectrogram::Audio::Sample *) areas[channel].ptr) + frames);
+        assert(areas);
+        assert(frames);
+
+        for (int channel = 0; channel < instream->layout.channel_count; ++channel) {
+
+            buffer.emplace_back((Spectrogram::Audio::Sample *) areas[channel].ptr,
+                                ((Spectrogram::Audio::Sample *) areas[channel].ptr) + frames);
+        }
+
+        err = soundio_instream_end_read(instream);
+        if (err) exit(1);
     }
 
-    (*callback)(buffer);
-
-    err = soundio_instream_end_read(instream);
-    if (err) exit(1);
+    std::cout << buffer[0].size() << std::endl;
+    (options->handler)(buffer);
 }
 
 static void overflow_callback(struct SoundIoInStream *instream) {
@@ -61,12 +69,9 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Device &device,
-                                                 Spectrogram::Audio::Backend::Backend::NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, size_t frames, NewBufferCallback callback) {
 
     stop();
-
-    _callback = callback;
 
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
 
@@ -93,7 +98,7 @@ void Spectrogram::Audio::Backend::Soundio::start(const Spectrogram::Audio::Devic
     _inStream->layout = soundioDevice->current_layout;
     _inStream->read_callback = read_callback;
     _inStream->overflow_callback = overflow_callback;
-    _inStream->userdata = &_callback;
+    _inStream->userdata = new CallbackOptions{frames, callback};
 
     int err;
     if ((err = soundio_instream_open(_inStream))) {
@@ -111,6 +116,7 @@ void Spectrogram::Audio::Backend::Soundio::stop() {
 
     if (_inStream) {
 
+        delete (CallbackOptions *) _inStream->userdata;
         soundio_device_unref(_inStream->device);
         soundio_instream_destroy(_inStream);
         _inStream = nullptr;
