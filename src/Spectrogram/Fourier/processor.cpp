@@ -11,14 +11,11 @@
 #define POWER_TO_DB_MULT 10
 #define EPSILON 1e-9
 
-namespace Fourier {
+namespace Spectrogram::Fourier {
 
 Processor::Processor(int wSize=2048) : windowSize(wSize)
 {
-    if(wSize < 1)
-    {
-        throw std::invalid_argument("windowSize = " + std::to_string(wSize) + ", must be larger than 1.");
-    }
+    validateWindowSize(wSize);
     setMembers(wSize);
 }
 
@@ -27,6 +24,14 @@ Processor::Processor() : Processor(2048) {}
 Processor::Processor(const Processor &rhs) 
 {
     copyProcessor(rhs);
+}
+
+void Processor::validateWindowSize(const int& wSize) const
+{
+    if(wSize < 1)
+    {
+        throw std::invalid_argument("ERROR: windowSize = " + std::to_string(wSize) + ", must be larger than 1.");
+    }
 }
 
 Processor::~Processor()
@@ -41,7 +46,6 @@ void Processor::cleanUp()
     fftw_free(out);
 }
 
-// assignment operator
 Processor& Processor::operator=(const Processor &rhs)
 {
     if(this != &rhs)
@@ -73,6 +77,7 @@ void Processor::setMembers(int newWindowSize)
 
 void Processor::setSampleSize(int newSampleSize)
 {
+    validateWindowSize(newSampleSize);
     if (newSampleSize != windowSize)
     {
         cleanUp();
@@ -90,29 +95,31 @@ int Processor::getOutputSize() const
     return complexSize;
 }
 
-std::vector<float> Processor::compute(const std::vector<float>& samples)
+Audio::Channel Processor::compute(const Audio::Channel& samples)
 {
     in = applyHanningWindow(samples);
 
-    executeFFT();
+    out = executeFFT();
 
-    std::vector<float> processedOutput = calcMagnitudeInDB();
+    Audio::Channel processedOutput = calcMagnitudeInDB();
     processedOutput = normalize(processedOutput);
 
     return processedOutput;
 }
 
-void Processor::executeFFT() 
+fftw_complex* Processor::executeFFT() 
 {
     fftw_execute(plan);
+
+    return out;
 }
 
-float Processor::hann(const int &i, const int &n)
+Audio::Sample Processor::hann(const int &i, const int &n)
 {
     return ( 1.0 - cos(2.0 * M_PI * i/ (n-1)) ) * 0.5;
 }
 
-double* Processor::applyHanningWindow(const std::vector<float>& samples)
+double* Processor::applyHanningWindow(const Audio::Channel& samples)
 {
     // The following for loop is a modification of the two for loops provided in URL
     //https://stackoverflow.com/questions/25061441/correct-way-to-implement-windowing/25061729#25061729?newreg=2a07fefa30ba41e1a286e025123513f8
@@ -125,41 +132,43 @@ double* Processor::applyHanningWindow(const std::vector<float>& samples)
 
 // Magnitude equation adapted from stackoverflow user Hartmut Pfitzinger
 // https://stackoverflow.com/questions/21283144/generating-correct-spectrogram-using-fftw-and-window-function
-std::vector<float> Processor::calcMagnitudeInDB()
+Audio::Channel Processor::calcMagnitudeInDB()
 {
-    std::vector<float> magnitudeDB(complexSize, 0);
+    Audio::Channel magnitudeDB(complexSize, 0);
     // Since only have half the complex values multiply by 2, (do not have conjugates)
     // And divide by sample size to get ratio
     float scale = 2.0 / windowSize;
     for (int i = 0; i < complexSize; i++)
     {
-        // Power spectral density is |real|^2 + |imagin|^2
+        // Power spectral density is |real|^2 + |imag|^2
         magnitudeDB[i] = pow(out[i][REAL] * scale, 2) + pow(out[i][IMAG] * scale, 2);
 
         // Convert from power to decibel for color intensity display 
-        // Epsilon is to make sure we don't do log(0)
         magnitudeDB[i] = convertToDb(magnitudeDB[i]);
     }
 
     return magnitudeDB;
 }
 
-float Processor::convertToDb(const float &val)
+Audio::Sample Processor::convertToDb(const Audio::Sample &val)
 {
-    float dBVal = POWER_TO_DB_MULT * std::log10(val + EPSILON); 
+    // Epsilon is to make sure we don't do log(0)
+    Audio::Sample dBVal = POWER_TO_DB_MULT * std::log10(val + EPSILON); 
 
     return dBVal;
 }
 
-// TODO: if this is slowing down the processing too much, there may be
+// TODO: if this is slowing down the processing too much, there is
 // a rougher way to normalize without having to find the min and max
-std::vector<float>& Processor::normalize(std::vector<float>& v)
+Audio::Channel& Processor::normalize(Audio::Channel& v)
 {
-    float max = *std::max_element(v.begin(), v.end());
-    float min = *std::min_element(v.begin(), v.end());
-    //TODO: figure out a better way to handle this
+    Audio::Sample max = *std::max_element(v.begin(), v.end());
+    Audio::Sample min = *std::min_element(v.begin(), v.end());
+
     if (max == min)
-        return v;
+    {
+        throw std::domain_error("ERROR: " + std::to_string(max) + ", all the values are the same in this Channel.");
+    }
 
     // Normalization adapted from user Alex I from stackoverflow
     // https://stackoverflow.com/questions/21283144/generating-correct-spectrogram-using-fftw-and-window-function

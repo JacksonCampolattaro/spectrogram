@@ -1,14 +1,9 @@
-//
-// Created by jackcamp on 10/6/20.
-//
-
 #ifndef SPECTROGRAM_BLOCKING_H
 #define SPECTROGRAM_BLOCKING_H
 
 #include <Spectrogram/Audio/System/System.h>
 
-#include <queue>
-#include <mutex>
+#include <boost/lockfree/spsc_queue.hpp>
 #include <condition_variable>
 
 namespace Spectrogram::Audio::System {
@@ -18,15 +13,14 @@ namespace Spectrogram::Audio::System {
 
         Blocking(std::unique_ptr<Backend::Backend> backend);
 
-        void newBufferHandler(Buffer buffer) override;
+        void newBufferHandler(Buffer &buffer) override;
 
         Buffer getBuffer();
 
     private:
 
-        std::queue<Buffer> _bufferQueue;
-        std::mutex _bufferQueueMutex;
-        std::condition_variable _newBufferCondition;
+        boost::lockfree::spsc_queue<Buffer> _bufferQueue{16};
+        std::condition_variable _bufferAdded;
 
     };
 }

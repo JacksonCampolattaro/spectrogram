@@ -10,25 +10,27 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 }
 
-void Spectrogram::Audio::System::Blocking::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
+void Spectrogram::Audio::System::Blocking::newBufferHandler(Buffer &buffer) {
 
-    {
-        std::unique_lock<std::mutex> lock(_bufferQueueMutex);
-        _bufferQueue.push(buffer);
-    }
-    _newBufferCondition.notify_one();
+    // Add a buffer to the queue
+    auto success = _bufferQueue.push(buffer);
+    assert(success);
+
+    // Make sure the consuming end is notified
+    _bufferAdded.notify_one();
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
 
-    std::unique_lock<std::mutex> lock(_bufferQueueMutex);
-    _newBufferCondition.wait(lock,
-                             [=] {
-                                 return !_bufferQueue.empty();
-                             }
-    );
+    if (_bufferQueue.empty()) {
 
-    auto b = _bufferQueue.front();
+        std::mutex m;
+        std::unique_lock<std::mutex> lock(m);
+        _bufferAdded.wait(lock, [=] { return !_bufferQueue.empty(); });
+    }
+
+    // Consume the next buffer from the queue
+    auto buffer = _bufferQueue.front();
     _bufferQueue.pop();
-    return b;
+    return buffer;
 }

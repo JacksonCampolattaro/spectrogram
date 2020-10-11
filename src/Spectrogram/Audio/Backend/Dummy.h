@@ -11,11 +11,11 @@ namespace Spectrogram::Audio::Backend {
 
     public:
 
-        Dummy() = default;
+        Dummy(float frequency);
 
         DeviceList &devices() override;
 
-        void start(const Device &device, typename Backend::NewBufferCallback callback) override;
+        void start(const Device &device, size_t frames, NewBufferCallback callback) override;
 
         void stop() override;
 
@@ -25,6 +25,9 @@ namespace Spectrogram::Audio::Backend {
         std::thread _t;
         std::atomic<bool> _stop;
 
+        float _frequency;
+        float _sampleRate = 48000;
+        int _sampleNumber = 0;
     };
 
 }

@@ -11,12 +11,11 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::System::device
     return _backend->devices();
 }
 
-void Spectrogram::Audio::System::System::start(const Spectrogram::Audio::Device &device) {
-    _backend->start(device,
+void Spectrogram::Audio::System::System::start(const Device &device, size_t frames) {
+    _backend->start(device, frames,
                     [this](auto buffer) {
                         newBufferHandler(buffer);
-                    }
-    );
+                    });
 }
 
 void Spectrogram::Audio::System::System::stop() {

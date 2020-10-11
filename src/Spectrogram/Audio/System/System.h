@@ -13,11 +13,11 @@ namespace Spectrogram::Audio::System {
 
         const DeviceList &devices();
 
-        void start(const Device &device);
+        void start(const Device &device, size_t frames);
 
         void stop();
 
-        virtual void newBufferHandler(Buffer buffer) = 0;
+        virtual void newBufferHandler(Buffer &buffer) = 0;
 
     private:
 
