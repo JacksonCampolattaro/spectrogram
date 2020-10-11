@@ -18,7 +18,6 @@
 
 namespace Spectrogram::Audio {
 
-
     class MonolithicSystem {
 
     public:

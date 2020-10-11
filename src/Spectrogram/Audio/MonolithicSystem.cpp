@@ -5,9 +5,12 @@
 #include "MonolithicSystem.h"
 
 static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
+
     auto queues = reinterpret_cast<Spectrogram::Audio::MonolithicSystem::ChannelQueues *>(instream->userdata);
     assert(queues);
     int err = 0;
+
+    assert(maxFrameCount < 20000);
 
     int framesToRead = maxFrameCount;
 
@@ -32,7 +35,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
 
                 auto sampleArray = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
 
-                (*queues)[channel].push(sampleArray, framesRead);
+                (*queues)[channel]->push(sampleArray, framesRead);
             }
         }
 
@@ -105,13 +108,38 @@ void Spectrogram::Audio::MonolithicSystem::start(const Spectrogram::Audio::Devic
 
     _channelQueues.clear();
     for (int channel = 0; channel < _inStream->layout.channel_count; ++channel) {
-        _channelQueues.push_back(std::move(ChannelQueue()));
+        _channelQueues.push_back(std::make_unique<ChannelQueue>(1024));
     }
     _inStream->userdata = &_channelQueues;
+
+    int err;
+    if ((err = soundio_instream_open(_inStream))) {
+        std::cerr << "failed to open input stream: " << soundio_strerror(err) << std::endl;
+        exit(1);
+    }
+
+    if ((err = soundio_instream_start(_inStream))) {
+        std::cerr << "failed to start input stream: " << soundio_strerror(err) << std::endl;
+        exit(1);
+    }
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::MonolithicSystem::getBuffer(size_t frames) {
-    return Spectrogram::Audio::Buffer();
+
+    Spectrogram::Audio::Buffer buffer;
+    buffer.resize(_channelQueues.size());
+
+    for (int frame = 0; frame < frames; ++frame) {
+        for (int channel = 0; channel < buffer.size(); ++channel) {
+
+            while (!_channelQueues[channel]->read_available()) {}
+
+            buffer[channel].push_back(_channelQueues[channel]->front());
+            _channelQueues[channel]->pop();
+        }
+    }
+
+    return buffer;
 }
 
 void Spectrogram::Audio::MonolithicSystem::stop() {
