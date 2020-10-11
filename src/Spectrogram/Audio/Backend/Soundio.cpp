@@ -18,6 +18,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
 
     // Make sure we're not falling behind
     assert(maxFrameCount < 20000);
+    if (maxFrameCount > 20000) exit(5);
 
     // The number of frames we need is the gap between the buffer's capacity and its size
     int framesMissing = options->buffer[0].capacity() - options->buffer[0].size();

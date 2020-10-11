@@ -3,6 +3,8 @@
 #include <Spectrogram/Audio/Backend/Soundio.h>
 #include <Spectrogram/Audio/Backend/Dummy.h>
 
+#include <Spectrogram/Audio/MonolithicSystem.h>
+
 #include <iostream>
 #include <memory>
 
@@ -11,8 +13,9 @@ using namespace Spectrogram::Audio;
 int main() {
 
     // Initialize the system
-    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
+//    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
 //    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
+    auto system = MonolithicSystem();
 
     // List the devices
     std::cout << "Devices:" << std::endl;
@@ -22,19 +25,19 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 8000);
+    system.start(system.devices()[device]);
 
     for (int i = 0; i < 10000; ++i) {
 
-        auto buffer = system.getBuffer();
+        auto buffer = system.getBuffer(1000);
 
-        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 50) {
+        for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 2) {
 
-            for (int channel = 0; channel < buffer.size(); ++channel) {
+            for (auto channel : buffer) {
 
-                auto sample = buffer[channel][sampleIndex];
+                auto sample = channel[sampleIndex];
 
-                std::string view = "               |               ";
+                std::string view = "                                   |                                   ";
                 view.replace(view.size() * (sample + 1) / 2, 1, "*");
 
                 std::cout << view;
