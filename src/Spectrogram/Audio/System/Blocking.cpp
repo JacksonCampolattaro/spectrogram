@@ -10,12 +10,13 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 }
 
-void Spectrogram::Audio::System::Blocking::newBufferHandler(Spectrogram::Audio::Buffer buffer) {
+void Spectrogram::Audio::System::Blocking::newBufferHandler(Buffer &buffer) {
 
     // Add a buffer to the queue
-    _bufferQueue.push(buffer);
+    auto success = _bufferQueue.push(buffer);
+    assert(success);
 
-    // Make sure the
+    // Make sure the consuming end is notified
     _bufferAdded.notify_one();
 }
 
