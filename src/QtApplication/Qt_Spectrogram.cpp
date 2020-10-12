@@ -15,9 +15,10 @@
 */
 
 #include "Qt_Spectrogram.h"
-#include "ui_Qt_Spectrogram.h" // Only for Qt Creator IDE
+//#include "ui_Qt_Spectrogram.h" // Only for Qt Creator IDE
 
 #include <QWidget>
+#include <QLayout>
 #include <QtCharts/QChart>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
@@ -33,15 +34,40 @@
 
 QtSpectrogram::QtSpectrogram(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::QtSpectrogram) // Only for Qt Creator IDE
+    //, ui(new Ui::QtSpectrogram) // Only for Qt Creator IDE
 {
-    ui->setupUi(this);
-    updatePlot(0.0);
+	ui = new QtSpectrogram;
+	ui->setupUi(parent);//ui->setupUi(this);
+	updatePlot(0.0);
 }
 
 QtSpectrogram::~QtSpectrogram()
 {
     delete ui;
+}
+
+
+void QtSpectrogram::setupUi(QWidget *parent) {
+	
+	setObjectName("display");
+
+	m_scene = new QGraphicsScene(parent);
+	//m_scene->setObjectName("myScene");
+
+	m_view = new QGraphicsView(m_scene, parent);
+	//m_view->setObjectName("myView");
+
+	m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	m_layout = new QGridLayout;
+
+	m_layout->addWidget(m_view, 0, 0);
+	m_view->centerOn(0, 0);
+	
+
+	this->setLayout(m_layout);
+	this->show();
 }
 
 
@@ -60,6 +86,7 @@ void QtSpectrogram::getFreqData(plotDataType data)
         // Cache data
     }
 }
+
 
 void QtSpectrogram::updatePlot(plotDataType data)
 {
@@ -84,9 +111,12 @@ void QtSpectrogram::updatePlot(plotDataType data)
 
     mChart->legend()->setVisible(true);
     mChart->legend()->setAlignment(Qt::AlignBottom);
-    ui->chartView->setChart(mChart);
-    ui->chartView->setRenderHint(QPainter::Antialiasing);
-    ui->chartView->update();
+    //ui->chartView->setChart(mChart);
+    //ui->chartView->setRenderHint(QPainter::Antialiasing);
+    //ui->chartView->update();
+	chartView->setChart(mChart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->update();
 
     // Clean up memory before returning?
     //delete data;

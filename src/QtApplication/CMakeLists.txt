@@ -11,8 +11,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Configure Qt
-find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
-if(Qt5Widgets_FOUND AND Qt5Test_FOUND)
+find_package(Qt5 COMPONENTS Core Gui Widgets Charts Test REQUIRED)
+if(Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5Charts_FOUND AND Qt5Test_FOUND)
   set(CMAKE_AUTOMOC ON)
   set(CMAKE_AUTORCC ON) # From Jackson
   set(CMAKE_AUTOUIC ON) # From Jackson
@@ -22,6 +22,7 @@ endif()
 # Build the program
 add_executable(Qt_Application
   # Add other module files here as needed
+  #Qt_Application.ui
   Qt_Spectrogram.h Qt_Spectrogram.cpp
   main.cpp
 )
@@ -30,6 +31,6 @@ target_link_libraries(Qt_Application
   #Qt5::Application
   Qt5::Widgets
   Qt5::Gui
-  #Qt5::Charts # Might need this later
+  Qt5::Charts # Might need this later
   Qt5::Test # Ideally for Sprint 1, but not necessary
 )

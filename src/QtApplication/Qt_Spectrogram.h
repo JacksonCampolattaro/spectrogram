@@ -18,12 +18,14 @@
 //#include "Device.h"
 
 #include <QWidget>
+#include <QLayout>
 #include <QtCharts/QChart>
+#include <QtCharts/QChartView>
 
 // Namespace convention for QtCreator IDE Apps
-QT_BEGIN_NAMESPACE
-namespace Ui { class QtSpectrogram; }
-QT_END_NAMESPACE
+//QT_BEGIN_NAMESPACE
+//namespace Ui { class QtSpectrogram; }
+//QT_END_NAMESPACE
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -41,16 +43,26 @@ public:
     // API wrapper function for signal passing
      void sendFreqData(plotDataType data);
 
-private slots:
+public slots:
     void getFreqData(plotDataType data);
     void updatePlot(plotDataType data);
 
 private:
-    Ui::QtSpectrogram *ui; // Specific to QtCreator IDE Apps
+    //Ui::QtSpectrogram *ui; // Specific to QtCreator IDE Apps
+	QtSpectrogram *ui;
     QChart *mChart;
+	QChartView *chartView;
+	
+	// Composite objects
+	QGraphicsScene * m_scene;
+	QGraphicsView * m_view;
+	QGridLayout * m_layout;
+
     //Processor *mProcessor;
     //Device *mDevice;
     bool isPlotReady; // Status flag to check (but would ideally be a semaphore)
+	
+	void setupUi(QWidget *parent);
 
 signals:
     void freqDataPacket(plotDataType data);
