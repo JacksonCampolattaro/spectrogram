@@ -61,13 +61,12 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
                         }
                     }
 
-                    // Add both channels to the newly created buffer
-                    Buffer b;
-                    b.push_back(l);
-                    b.push_back(r);
+                    std::vector<Sample *> arrayList;
+                    arrayList.emplace_back(&l.front());
+                    arrayList.emplace_back(&r.front());
 
                     // Notify the system of the new buffer
-                    //callback(b);
+                    callback(arrayList, frames);
                 }
             }
     );

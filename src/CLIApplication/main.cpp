@@ -11,8 +11,8 @@ using namespace Spectrogram::Audio;
 int main() {
 
     // Initialize the system
-    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
-//    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
+//    auto system = System::Blocking(std::make_unique<Backend::Soundio>());
+    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
 
     // List the devices
     std::cout << "Devices:" << std::endl;
