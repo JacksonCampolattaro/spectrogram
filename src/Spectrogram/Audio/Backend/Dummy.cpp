@@ -12,7 +12,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewSamplesCallback callback) {
 
     _stop = false;
 
@@ -67,7 +67,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
                     b.push_back(r);
 
                     // Notify the system of the new buffer
-                    callback(b);
+                    //callback(b);
                 }
             }
     );

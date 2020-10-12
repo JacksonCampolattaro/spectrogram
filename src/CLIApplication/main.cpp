@@ -29,9 +29,9 @@ int main() {
 
     for (int i = 0; i < 10000; ++i) {
 
-        auto buffer = system.getBuffer(1000);
+        auto buffer = system.getBuffer(50);
 
-        for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 2) {
+        for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 1) {
 
             for (auto channel : buffer) {
 

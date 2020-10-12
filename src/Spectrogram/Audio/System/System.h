@@ -2,6 +2,7 @@
 #define SPECTROGRAM_SYSTEM_H
 
 #include <Spectrogram/Audio/Backend/Backend.h>
+
 #include <memory>
 
 namespace Spectrogram::Audio::System {
@@ -17,7 +18,7 @@ namespace Spectrogram::Audio::System {
 
         void stop();
 
-        virtual void newBufferHandler(Buffer &buffer) = 0;
+        virtual void pushSamples(std::vector<Sample *> arrays, size_t length) = 0;
 
     private:
 
@@ -25,6 +26,5 @@ namespace Spectrogram::Audio::System {
     };
 
 }
-
 
 #endif //SPECTROGRAM_SYSTEM_H

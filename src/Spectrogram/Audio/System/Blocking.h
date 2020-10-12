@@ -13,9 +13,9 @@ namespace Spectrogram::Audio::System {
 
         Blocking(std::unique_ptr<Backend::Backend> backend);
 
-        void newBufferHandler(Buffer &buffer) override;
-
         Buffer getBuffer();
+
+        void pushSamples(std::vector<Sample *> arrays, size_t length) override;
 
     private:
 
@@ -24,6 +24,5 @@ namespace Spectrogram::Audio::System {
 
     };
 }
-
 
 #endif //SPECTROGRAM_BLOCKING_H

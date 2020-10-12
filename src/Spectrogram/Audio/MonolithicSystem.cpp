@@ -35,7 +35,9 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
 
                 auto sampleArray = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
 
-                (*queues)[channel]->push(sampleArray, framesRead);
+                auto samplesWritten = (*queues)[channel]->push(sampleArray, sampleArray + framesRead);
+                assert(samplesWritten == framesRead);
+
             }
         }
 
@@ -108,7 +110,7 @@ void Spectrogram::Audio::MonolithicSystem::start(const Spectrogram::Audio::Devic
 
     _channelQueues.clear();
     for (int channel = 0; channel < _inStream->layout.channel_count; ++channel) {
-        _channelQueues.push_back(std::make_unique<ChannelQueue>(1024));
+        _channelQueues.push_back(std::make_unique<ChannelQueue>(10 * 44100));
     }
     _inStream->userdata = &_channelQueues;
 
@@ -129,10 +131,10 @@ Spectrogram::Audio::Buffer Spectrogram::Audio::MonolithicSystem::getBuffer(size_
     Spectrogram::Audio::Buffer buffer;
     buffer.resize(_channelQueues.size());
 
-    for (int frame = 0; frame < frames; ++frame) {
-        for (int channel = 0; channel < buffer.size(); ++channel) {
+    for (size_t frame = 0; frame < frames; ++frame) {
+        for (size_t channel = 0; channel < buffer.size(); ++channel) {
 
-            while (!_channelQueues[channel]->read_available()) {}
+            while (_channelQueues[channel]->read_available() < frames) {}
 
             buffer[channel].push_back(_channelQueues[channel]->front());
             _channelQueues[channel]->pop();
