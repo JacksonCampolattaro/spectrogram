@@ -14,7 +14,7 @@ namespace Spectrogram::Audio::System {
 
         const DeviceList &devices();
 
-        void start(const Device &device, size_t frames);
+        virtual void start(const Device &device, size_t frames);
 
         void stop();
 

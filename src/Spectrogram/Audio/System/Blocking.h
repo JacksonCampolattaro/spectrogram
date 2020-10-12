@@ -12,9 +12,9 @@ namespace Spectrogram::Audio::System {
     class Blocking : public System {
     public:
 
-        Blocking(std::unique_ptr<Backend::Backend> backend);
+        explicit Blocking(std::unique_ptr<Backend::Backend> backend);
 
-        void start(const Device &device, size_t frames);
+        void start(const Device &device, size_t frames) override;
 
         Buffer getBuffer();
 
@@ -25,6 +25,7 @@ namespace Spectrogram::Audio::System {
     private:
 
         std::deque<ChannelQueue> _channelQueues;
+        std::condition_variable _samplesAdded;
         size_t _frames;
 
     };
