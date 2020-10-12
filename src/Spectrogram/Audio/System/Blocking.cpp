@@ -13,26 +13,13 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device, size_t frames) {
 
     for (int channel = 0; channel < device.channelCount; ++channel) {
-        _channelQueues.emplace_back(2000);
+        _channelQueues.emplace_back(frames * 2);
     }
     _frames = frames;
     System::start(device, frames);
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
-
-//    if (_bufferQueue.empty()) {
-//
-//        std::mutex m;
-//        std::unique_lock<std::mutex> lock(m);
-//        _bufferAdded.wait(lock, [=] { return !_bufferQueue.empty(); });
-//    }
-//
-//    // Consume the next buffer from the queue
-//    auto buffer = _bufferQueue.front();
-//    _bufferQueue.pop();
-//    return buffer;
-
 
     if (_channelQueues[0].read_available() < _frames) {
 
@@ -56,16 +43,9 @@ Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
 
 void Spectrogram::Audio::System::Blocking::pushSamples(const std::vector<Sample *> &arrays, size_t length) {
 
-//
-//    // Add a buffer to the queue
-//    auto success = _bufferQueue.push(buffer);
-//    assert(success);
-//
-//    // Make sure the consuming end is notified
-//    _bufferAdded.notify_one();
-
     for (int channel = 0; channel < _channelQueues.size(); ++channel) {
-        _channelQueues[channel].push(arrays[channel], length);
+        auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
+        assert(samplesPushed == length);
     }
 
     _samplesAdded.notify_one();
