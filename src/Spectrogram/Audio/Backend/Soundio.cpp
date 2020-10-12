@@ -13,7 +13,50 @@ typedef struct {
 } UserData;
 
 static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
+    auto userData = static_cast<UserData *>(instream->userdata);
+    auto &sampleArrays = userData->sampleArrays;
+    auto callback = userData->newSamplesCallback;
+    int err;
 
+    assert(maxFrameCount < 20000);
+
+    int framesToRead = maxFrameCount;
+
+    // Loop until we've consumed all the frames
+    while (framesToRead > 0) {
+
+        // Try to read as many frames as we're allowed to
+        int framesRead = framesToRead;
+        struct SoundIoChannelArea *areas;
+        if ((err = soundio_instream_begin_read(instream, &areas, &framesRead))) {
+            std::cerr << "Error starting read: " << soundio_strerror(err);
+            exit(1);
+        }
+
+        // If we didn't get any frames, stop trying to read (it's also not necessary to close the stream)
+        if (framesRead == 0) return;
+
+        // If the read was successful, push the data
+        if (areas) {
+
+            for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
+
+                sampleArrays[channel] = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
+
+            }
+            callback(sampleArrays, framesRead);
+        }
+
+        // Update the number of remaining frames
+        framesToRead -= framesRead;
+
+        // Stop reading data
+        if ((err = soundio_instream_end_read(instream))) {
+            std::cerr << "Error ending read: " << soundio_strerror(err);
+            exit(1);
+        }
+
+    }
 }
 
 static void overflow_callback(struct SoundIoInStream *instream) {
@@ -28,11 +71,11 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
     soundio_flush_events(_soundio);
 
     // Add devices detected at startup
-    size_t defaultInput = soundio_default_input_device_index(_soundio);
-    for (size_t i = 0; i < soundio_input_device_count(_soundio); ++i) {
+    int defaultInput = soundio_default_input_device_index(_soundio);
+    for (int i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
-        _devices.emplace_back(deviceInfo->name, i, i == defaultInput);
+        _devices.emplace_back(deviceInfo->name, i, i == defaultInput, deviceInfo->current_layout.channel_count);
         soundio_device_unref(deviceInfo);
     }
 }

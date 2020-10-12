@@ -45,9 +45,7 @@ namespace Spectrogram::Audio::Backend {
         SoundIo *_soundio;
         SoundIoInStream *_inStream;
 
-        DeviceList _devices;
-
-        NewSamplesCallback _newSamplesCallback;
+        DeviceList _devices{};
     };
 
 }

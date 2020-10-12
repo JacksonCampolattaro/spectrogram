@@ -18,7 +18,7 @@ namespace Spectrogram::Audio::System {
 
         void stop();
 
-        virtual void pushSamples(std::vector<Sample *> arrays, size_t length) = 0;
+        virtual void pushSamples(const std::vector<Sample *> &arrays, size_t length) = 0;
 
     private:
 
