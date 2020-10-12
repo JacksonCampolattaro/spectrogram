@@ -3,8 +3,6 @@
 #include <Spectrogram/Audio/Backend/Soundio.h>
 #include <Spectrogram/Audio/Backend/Dummy.h>
 
-#include <Spectrogram/Audio/MonolithicSystem.h>
-
 #include <iostream>
 #include <memory>
 
