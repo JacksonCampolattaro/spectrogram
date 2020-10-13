@@ -3,16 +3,16 @@
 #include <math.h>
 
 Spectrogram::Audio::Backend::Dummy::Dummy(float frequency) : _frequency(frequency) {
-    _devices.emplace_back("Sinusoid", 0, true);
-    _devices.emplace_back("Square", 1, false);
-    _devices.emplace_back("Sawtooth", 2, false);
+    _devices.emplace_back("Sinusoid", 0, true, 2);
+    _devices.emplace_back("Square", 1, false, 2);
+    _devices.emplace_back("Sawtooth", 2, false, 2);
 }
 
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewSamplesCallback callback) {
 
     _stop = false;
 
@@ -21,10 +21,10 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
 
                 while (!_stop) {
 
-                    size_t bufferSize = frames;
+                    int bufferSize = frames;
 
                     // Sleep for the amount of time it should take to fill a buffer this size
-                    float bufferTime = bufferSize / _sampleRate;
+                    float bufferTime = (float) bufferSize / _sampleRate;
                     std::this_thread::sleep_for(std::chrono::duration<float>(bufferTime));
 
                     // Fill left and right channels
@@ -61,13 +61,12 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
                         }
                     }
 
-                    // Add both channels to the newly created buffer
-                    Buffer b;
-                    b.push_back(l);
-                    b.push_back(r);
+                    std::vector<Sample *> arrayList;
+                    arrayList.emplace_back(&l.front());
+                    arrayList.emplace_back(&r.front());
 
                     // Notify the system of the new buffer
-                    callback(b);
+                    callback(arrayList, frames);
                 }
             }
     );

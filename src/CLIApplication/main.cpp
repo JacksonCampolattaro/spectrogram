@@ -22,19 +22,19 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 8000);
+    system.start(system.devices()[device], 1000);
 
     for (int i = 0; i < 10000; ++i) {
 
         auto buffer = system.getBuffer();
 
-        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 50) {
+        for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 1) {
 
-            for (int channel = 0; channel < buffer.size(); ++channel) {
+            for (auto channel : buffer) {
 
-                auto sample = buffer[channel][sampleIndex];
+                auto sample = channel[sampleIndex];
 
-                std::string view = "               |               ";
+                std::string view = "                                   |                                   ";
                 view.replace(view.size() * (sample + 1) / 2, 1, "*");
 
                 std::cout << view;

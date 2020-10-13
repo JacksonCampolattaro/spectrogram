@@ -13,8 +13,8 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::System::device
 
 void Spectrogram::Audio::System::System::start(const Device &device, size_t frames) {
     _backend->start(device, frames,
-                    [this](auto buffer) {
-                        newBufferHandler(buffer);
+                    [this](auto arrays, auto length) {
+                        pushSamples(arrays, length);
                     });
 }
 

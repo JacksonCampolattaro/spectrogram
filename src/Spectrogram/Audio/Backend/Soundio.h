@@ -18,7 +18,7 @@ namespace Spectrogram::Audio::Backend {
 
         DeviceList &devices() override;
 
-        void start(const Device &device, size_t frames, NewBufferCallback callback) override;
+        void start(const Device &device, size_t frames, NewSamplesCallback callback) override;
 
         void stop() override;
 
@@ -44,10 +44,8 @@ namespace Spectrogram::Audio::Backend {
 
         SoundIo *_soundio;
         SoundIoInStream *_inStream;
-        NewBufferCallback _callback;
 
-        DeviceList _devices;
-
+        DeviceList _devices{};
     };
 
 }
