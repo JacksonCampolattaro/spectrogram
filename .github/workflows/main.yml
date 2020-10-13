@@ -31,6 +31,9 @@ jobs:
         # Working directory
         working-directory: "./docs" # default is .
 
+    - name: tree
+      run: tree .
+
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
