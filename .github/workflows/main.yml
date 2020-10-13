@@ -8,7 +8,6 @@ name: Doxygen Action
 on:
   push:
     branches: [ documentation ]
-    #branches: [ master ]
 
 
   
@@ -24,13 +23,15 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
         
-    - name: Doxygen
-      uses: mattnotmitt/doxygen-action@v1.1.0
-      with:
-        # Path to Doxyfile
-        doxyfile-path: "./Doxyfile" # default is ./Doxyfile
-        # Working directory
-        working-directory: "." # default is .
+#    - name: Doxygen
+#      uses: mattnotmitt/doxygen-action@v1.1.0
+#      with:
+#        # Path to Doxyfile
+#        doxyfile-path: "./Doxyfile" # default is ./Doxyfile
+#        # Working directory
+#        working-directory: "." # default is .
+
+    - uses: mattnotmitt/doxygen-action@v1.1.0
     
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
