@@ -31,8 +31,6 @@ jobs:
 #        # Working directory
 #        working-directory: "." # default is .
 
-    - uses: mattnotmitt/doxygen-action@v1.1.0
-    
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
