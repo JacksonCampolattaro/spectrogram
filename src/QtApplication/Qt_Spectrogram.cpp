@@ -57,24 +57,29 @@ void QtSpectrogram::setupUi(QWidget *parent) {
 	m_view = new QGraphicsView(m_scene, parent);
 	//m_view->setObjectName("myView");
 
+	/*** Don't forget this step ***/
+	QObject::connect(this, SIGNAL(freqDataPacket(plotDataType)),
+    	this, SLOT(getFreqData(plotDataType)));
+
 	m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	m_layout = new QGridLayout;
+	m_layout = new QGridLayout();
 
 	m_layout->addWidget(m_view, 0, 0);
 	m_view->centerOn(0, 0);
 	
 
 	this->setLayout(m_layout);
+	//resize(500, 500);
 	this->show();
 }
 
-
+/*
 void QtSpectrogram::sendFreqData(plotDataType data){
     emit freqDataPacket(data);
 }
-
+*/
 
 void QtSpectrogram::getFreqData(plotDataType data)
 {

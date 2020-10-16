@@ -13,6 +13,8 @@
 
 #include <QApplication>
 #include <QWidget>
+//#include <QThread>
+#include <QDebug>
 
 int main(int argc, char **argv) {
 

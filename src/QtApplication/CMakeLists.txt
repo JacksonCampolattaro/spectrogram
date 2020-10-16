@@ -33,4 +33,12 @@ target_link_libraries(Qt_Application
   Qt5::Gui
   Qt5::Charts # Might need this later
   Qt5::Test # Ideally for Sprint 1, but not necessary
+  
+  # Other Modules' Libraries
+  Audio
+  Graphics
+  Fourier
 )
+
+target_include_directories(Qt_Application PUBLIC
+        ${PROJECT_SOURCE_DIR}/src)

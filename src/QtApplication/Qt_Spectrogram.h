@@ -14,13 +14,15 @@
 #define QT_SPECTROGRAM_H
 
 // TODO: Connect these modules
-//#include "processor.h"
-//#include "Device.h"
+#include <Spectrogram/Fourier/processor.h>//"processor.h"
+#include <Spectrogram/Audio/Device.h>
 
 #include <QWidget>
 #include <QLayout>
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
+//#include <QThread>
+#include <QDebug>
 
 // Namespace convention for QtCreator IDE Apps
 //QT_BEGIN_NAMESPACE
@@ -42,10 +44,11 @@ public:
 
     // API wrapper function for signal passing
      void sendFreqData(plotDataType data);
+	 void updatePlot(plotDataType data);
 
 public slots:
     void getFreqData(plotDataType data);
-    void updatePlot(plotDataType data);
+    //void updatePlot(plotDataType data);
 
 private:
     //Ui::QtSpectrogram *ui; // Specific to QtCreator IDE Apps
