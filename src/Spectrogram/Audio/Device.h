@@ -7,6 +7,9 @@
 
 namespace Spectrogram::Audio {
 
+    /**
+     * @brief a reification of the system's audio sources, designed to be compatible with different backends.
+     */
     struct Device {
 
         Device(std::string name, int id, bool isDefault, size_t channelCount) :
