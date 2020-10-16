@@ -24,9 +24,15 @@ jobs:
         shell: bash
         run: cmake -S . -B build -DBUILD_TESTS=OFF -DBUILD_APPLICATIONS=OFF
 
-      - name: Build with CMake
+      - name: Build documentation with CMake
         shell: bash
         run: cmake --build build --target documentation-pretty
+
+      - name: Deploy generated html to github-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
 
 #  documentation:
 #    runs-on: ubuntu-latest
