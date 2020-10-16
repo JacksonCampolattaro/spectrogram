@@ -8,7 +8,8 @@ add_executable(test main.cpp
 target_link_libraries(test LINK_PUBLIC
         Audio
         Graphics
-        Fourier)
+        Fourier
+        Catch2::Catch2)
 
 target_include_directories(test PUBLIC
         ${PROJECT_BINARY_DIR}
