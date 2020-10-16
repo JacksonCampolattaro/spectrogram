@@ -49,8 +49,6 @@ namespace Spectrogram::Audio::Backend {
          */
         virtual void stop() = 0;
 
-    private:
-
     };
 }
 

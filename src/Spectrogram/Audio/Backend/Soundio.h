@@ -10,10 +10,16 @@
 
 namespace Spectrogram::Audio::Backend {
 
+    /**
+     * @brief A backend implementation based on the cross-platform audio library [Soundio](http://libsound.io/).
+     */
     class Soundio : public Backend {
 
     public:
 
+        /**
+         * @brief Simple constructor which initializes the underlying library
+         */
         Soundio();
 
         DeviceList &devices() override;
