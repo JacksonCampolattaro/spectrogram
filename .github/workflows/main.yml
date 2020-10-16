@@ -3,35 +3,39 @@
 
 name: Doxygen Action
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ documentation ]
 
 
-  
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+
+  documentation:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-        
-    - name: Doxygen
-      uses: mattnotmitt/doxygen-action@v1.1.0
-      with:
+
+      - uses: actions/checkout@v2
+
+      - name: Doxygen
+        uses: mattnotmitt/doxygen-action@v1.1.0
+        with:
           working-directory: docs
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # Default Doxyfile build documentation to html directory. 
-        # Change the directory if changes in Doxyfile
-        publish_dir: ./docs/html
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
+
+  build-cmake:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Create a build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure cmake
+        shell: bash
+        run: cmake .. -DCMAKE_BUILD_TYPE=Release
