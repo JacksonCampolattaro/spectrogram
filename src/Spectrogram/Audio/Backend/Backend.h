@@ -6,8 +6,16 @@
 
 #include <functional>
 
+/**
+ * @brief Contains all audio backend implementations
+ */
 namespace Spectrogram::Audio::Backend {
 
+    /**
+     * @brief An abstract class that defines the functionality a backend should provide
+     *
+     * @todo
+     */
     class Backend {
     public:
 
