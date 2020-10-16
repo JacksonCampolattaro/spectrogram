@@ -39,5 +39,6 @@ jobs:
         run: cmake -E make_directory ${{runner.workspace}}/build
 
       - name: Configure cmake
+        working-directory: ${{runner.workspace}}/build
         shell: bash
         run: cmake .. -DCMAKE_BUILD_TYPE=Release
