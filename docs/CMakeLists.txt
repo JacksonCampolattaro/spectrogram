@@ -13,13 +13,11 @@ if (DOXYGEN_FOUND)
     find_package(mcss REQUIRED)
     add_custom_target(documentation-pretty
             SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-            COMMAND ${MCSS_EXECUTABLE} --debug ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss
+            COMMAND ${MCSS_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             COMMENT "Generating pretty documentation in ${CMAKE_CURRENT_BINARY_DIR}"
             VERBATIM
             )
-
-    add_dependencies(documentation-pretty
-            mcss)
+    add_dependencies(documentation-pretty mcss)
 
 endif (DOXYGEN_FOUND)
