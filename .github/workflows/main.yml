@@ -37,8 +37,11 @@ jobs:
 
       - run: sudo apt-cache search fftw
 
-      - name: Install dependencies
+      - name: Install soundio
         run: sudo apt-get install libsoundio-dev
+
+      - name: Install FFTW
+        run: sudo apt-get install fftw-dev
 
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
