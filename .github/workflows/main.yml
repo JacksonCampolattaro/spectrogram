@@ -35,10 +35,6 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Enable universe repositories on Ubuntu
-        shell: bash
-        run: sudo add-apt-repository universe
-
       - run: sudo apt-cache search catch2
 
       - name: Install soundio
@@ -51,7 +47,12 @@ jobs:
         run: sudo apt-get install libglfw3-dev
 
       - name: Install Catch2
-        run: sudo apt-get install catch2
+        shell: bash
+        run: |
+          git clone https://github.com/catchorg/Catch2.git
+          cd Catch2
+          cmake -Bbuild -H. -DBUILD_TESTING=OFF
+          sudo cmake --build build/ --target install
 
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
