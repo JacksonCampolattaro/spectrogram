@@ -54,6 +54,7 @@
               Reference
               <ul>
                 <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
@@ -67,6 +68,16 @@
               class <a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend</a>
             </dt>
             <dd>An abstract class that defines the functionality a backend should provide.</dd>
+          </dl>
+        </section>
+        <section id="pub-static-methods">
+          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <div class="m-doc-template">template&lt;typename DataType&gt;</div>
+              <span class="m-doc-wrap-bumper">static auto <a href="#af054b13b50127a167f5a58a1447db53c" class="m-doc">sampleTypeToFormat</a>(</span><span class="m-doc-wrap">) -&gt; SoundIoFormat</span>
+            </dt>
+            <dd>converts the sample datatype to a <a href="classSpectrogram_1_1Audio_1_1Backend_1_1Soundio.html" class="m-doc">Soundio</a> format enum using constexpr</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -99,6 +110,33 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="af054b13b50127a167f5a58a1447db53c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename DataType&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static SoundIoFormat Spectrogram::<wbr />Audio::<wbr />Backend::<wbr />Soundio::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af054b13b50127a167f5a58a1447db53c" class="m-doc-self">sampleTypeToFormat</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>converts the sample datatype to a <a href="classSpectrogram_1_1Audio_1_1Backend_1_1Soundio.html" class="m-doc">Soundio</a> format enum using constexpr</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">DataType</td>
+                  <td>the type being used to hold samples (e.g. float, int16_t ...)</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>the enum which corresponds the the chosen sample type</td>
+                </tr>
+              </tfoot>
+            </table>
+<aside class="m-note m-dim"><h4><a href="todo.html#_todo000005" class="m-doc">Todo</a></h4></aside>
+          </div></section>
           <section class="m-doc-details" id="ad2ac84e34339848f68b6008acab73083"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classSpectrogram_1_1Audio_1_1DeviceList.html" class="m-doc">DeviceList</a>&amp; Spectrogram::<wbr />Audio::<wbr />Backend::<wbr />Soundio::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad2ac84e34339848f68b6008acab73083" class="m-doc-self">devices</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">override</span></span></span>
