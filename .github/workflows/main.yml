@@ -40,6 +40,9 @@ jobs:
       - name: Install soundio
         run: sudo apt-get install libsoundio-dev
 
+      - name: Install Boost
+        run: sudo apt-get install libboost-all-dev
+
       - name: Install FFTW
         run: sudo apt-get install libfftw3-dev
 
