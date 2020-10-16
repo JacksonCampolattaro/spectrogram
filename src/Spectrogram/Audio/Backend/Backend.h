@@ -22,8 +22,31 @@ namespace Spectrogram::Audio::Backend {
         typedef std::function<void(const std::vector<Device> &)> DevicesChangedCallback;
         typedef std::function<void(const std::vector<Sample *> &arrays, size_t length)> NewSamplesCallback;
 
+        /**
+         * @brief a method to find out which devices are available as inputs
+         *
+         * @todo
+         *
+         * @return a DeviceList containing the available input devices
+         */
         virtual DeviceList &devices() = 0;
+
+        /**
+         * @brief Starts the requested device, information read will be sent the provided callback
+         *
+         * @todo
+         *
+         * @param device the source to read from
+         * @param frames the number of frames to include in a buffer
+         * @param callback the callback used for processing new data
+         */
         virtual void start(const Device &device, size_t frames, NewSamplesCallback callback) = 0;
+
+        /**
+         * @brief Stops the currently running device, safely closing the input stream
+         *
+         * @todo
+         */
         virtual void stop() = 0;
 
     private:
