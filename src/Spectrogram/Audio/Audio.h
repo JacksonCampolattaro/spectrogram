@@ -2,10 +2,8 @@
 #define SPECTROGRAM_AUDIO_H
 
 /**
- * \brief This namespace ...
+ * \brief Contains all library functionality related to the audio subsystem.
  */
-namespace Spectrogram::Audio {
-
-}
+namespace Spectrogram::Audio {}
 
 #endif //SPECTROGRAM_AUDIO_H
