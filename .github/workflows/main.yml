@@ -68,5 +68,5 @@ jobs:
       - name: Build with CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake --build . --config Release
+        run: cmake --build . --config Release --target documentation
 
