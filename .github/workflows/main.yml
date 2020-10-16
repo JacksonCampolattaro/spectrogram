@@ -44,7 +44,7 @@ jobs:
         run: sudo apt-get install libfftw3-dev
 
       - name: Install GLFW
-        run: sudo apt-get install glfw-dev
+        run: sudo apt-get install libglfw3-dev
 
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
