@@ -23,13 +23,11 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release --target documentation-pretty
+        run: cmake -S . -B build
 
       - name: Build with CMake
         shell: bash
-        working-directory: ${{runner.workspace}}/build
-        run: cmake --build . --config Release --target documentation-pretty
+        run: cmake --build build --target documentation-pretty
 
 #  documentation:
 #    runs-on: ubuntu-latest
