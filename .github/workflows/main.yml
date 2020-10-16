@@ -57,6 +57,9 @@ jobs:
           cmake -Bbuild -S. -DBUILD_TESTING=OFF
           sudo cmake --build build/ --target install
 
+      - name: Install Doxygen
+        run: sudo apt-get install doxygen
+
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
 
