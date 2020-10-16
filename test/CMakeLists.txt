@@ -1,5 +1,5 @@
 
-find_package(Catch2 REQUIRED)
+find_package(Catch2)
 
 add_executable(test main.cpp
         test_Fourier_Process.cpp
