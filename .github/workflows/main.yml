@@ -41,7 +41,7 @@ jobs:
         run: sudo apt-get install libsoundio-dev
 
       - name: Install FFTW
-        run: sudo apt-get install fftw-dev
+        run: sudo apt-get install libfftw3-dev
 
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
