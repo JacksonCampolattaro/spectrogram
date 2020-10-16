@@ -35,6 +35,8 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - run: sudo apt-cache search fftw
+
       - name: Install dependencies
         run: sudo apt-get install libsoundio-dev
 
