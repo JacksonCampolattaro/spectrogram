@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Spectrogram</title>
+  <title>Spectrogram::Audio::Backend namespace | Spectrogram</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -25,7 +25,7 @@
         <div class="m-row">
           <ol class="m-col-t-6 m-col-m-none">
             <li><a href="pages.html">Pages</a></li>
-            <li><a href="namespaces.html" id="m-navbar-current">Namespaces</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="3">
             <li><a href="annotated.html">Classes</a></li>
@@ -43,36 +43,30 @@
   <div class="m-container m-container-inflatable">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <h1>Namespaces</h1>
-        <ul class="m-doc">
-          <li class="m-doc-collapsible">
-            <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceSpectrogram.html" class="m-doc">Spectrogram</a> <span class="m-doc">Contains the internal libraries that we use in our application code.</span>
-            <ul class="m-doc">
-              <li class="m-doc-collapsible">
-                <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespaceSpectrogram_1_1Audio.html" class="m-doc">Audio</a> <span class="m-doc">Contains all library functionality related to the audio subsystem.</span>
-                <ul class="m-doc">
-                  <li>namespace <a href="namespaceSpectrogram_1_1Audio_1_1Backend.html" class="m-doc">Backend</a> <span class="m-doc">Contains all audio backend implementations.</span></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <script>
-        function toggle(e) {
-            e.parentElement.className = e.parentElement.className == 'm-doc-collapsible' ?
-                'm-doc-expansible' : 'm-doc-collapsible';
-            return false;
-        }
-        /* Collapse all nodes marked as such. Doing it via JS instead of
-           directly in markup so disabling it doesn't harm usability. The list
-           is somehow regenerated on every iteration and shrinks as I change
-           the classes. It's not documented anywhere and I'm not sure if this
-           is the same across browsers, so I am going backwards in that list to
-           be sure. */
-        var collapsed = document.getElementsByClassName("collapsed");
-        for(var i = collapsed.length - 1; i >= 0; --i)
-            collapsed[i].className = 'm-doc-expansible';
-        </script>
+        <h1>
+          <span class="m-breadcrumb"><a href="namespaceSpectrogram.html">Spectrogram</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceSpectrogram_1_1Audio.html">Audio</a>::<wbr/></span>Backend <span class="m-thin">namespace</span>
+        </h1>
+        <p>Contains all audio backend implementations.</p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#nested-classes">Classes</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <section id="nested-classes">
+          <h2><a href="#nested-classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend</a>
+            </dt>
+            <dd>An abstract class that defines the functionality a backend should provide.</dd>
+          </dl>
+        </section>
       </div>
     </div>
   </div>
