@@ -8,6 +8,8 @@
 
 /**
  * @brief Contains all audio backend implementations
+ *
+ * This is meant to be subclassed for various backend libraries.
  */
 namespace Spectrogram::Audio::Backend {
 

@@ -28,8 +28,16 @@ namespace Spectrogram::Audio::Backend {
 
         void stop() override;
 
+        /**
+         * @brief converts the sample datatype to a Soundio format enum using constexpr
+         *
+         * @todo
+         *
+         * @tparam DataType the type being used to hold samples (e.g. float, int16_t ...)
+         * @return the enum which corresponds the the chosen sample type
+         */
         template <typename DataType>
-        static const SoundIoFormat sampleTypeToFormat() {
+        static SoundIoFormat sampleTypeToFormat() {
 
             if constexpr (std::is_same<DataType, float>::value)
                 return SoundIoFormatFloat32NE;
