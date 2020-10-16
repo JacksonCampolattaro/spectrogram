@@ -12,3 +12,7 @@ ExternalProject_Add(
         INSTALL_COMMAND   ""
         BUILD_COMMAND     ""
 )
+
+set(MCSS_EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/mcss/src/mcss/documentation/doxygen.py)
+
+message(${MCSS_EXECUTABLE})
