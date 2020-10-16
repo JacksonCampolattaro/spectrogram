@@ -2,7 +2,9 @@
 #define SPECTROGRAM_SPECTROGRAM_H
 
 /**
- * \brief Contains the internal libraries that we use in our application code.
+ * @brief Contains the internal libraries that we use in our application code.
+ *
+ * @todo
  */
 namespace Spectrogram {}
 
