@@ -47,7 +47,7 @@ jobs:
         run: sudo apt-get install libglfw3-dev
 
       - name: Install Catch2
-        run: sudo apt-get install libcatch2-dev
+        run: sudo apt-get install catch
 
       - name: Create a build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
