@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Spectrogram::Audio::System::System class | Spectrogram</title>
+  <title>Spectrogram::Audio::System::Blocking class | Spectrogram</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -44,36 +44,37 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="namespaceSpectrogram.html">Spectrogram</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceSpectrogram_1_1Audio.html">Audio</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceSpectrogram_1_1Audio_1_1System.html">System</a>::<wbr/></span>System <span class="m-thin">class</span>
+          <span class="m-breadcrumb"><a href="namespaceSpectrogram.html">Spectrogram</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceSpectrogram_1_1Audio.html">Audio</a>::<wbr/></span><span class="m-breadcrumb"><a href="namespaceSpectrogram_1_1Audio_1_1System.html">System</a>::<wbr/></span>Blocking <span class="m-thin">class</span>
         </h1>
-        <p>abstract wrapper class that provides simpler syntax when connecting to a backend</p>
+        <p>A system providing an simpler way of interacting with the backend (no callbacks necessary)</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#derived-classes">Derived classes</a></li>
+                <li><a href="#base-classes">Base classes</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-        <section id="derived-classes">
-          <h2><a href="#derived-classes">Derived classes</a></h2>
+<p>Simpler interaction may be at the expense of performance. This is useful for a minimum viable product, (for example, the CLI application), but a full application should use a more event-oriented subclass of <a href="classSpectrogram_1_1Audio_1_1System_1_1System.html" class="m-doc">System</a>.</p>
+        <section id="base-classes">
+          <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classSpectrogram_1_1Audio_1_1System_1_1Blocking.html" class="m-doc">Blocking</a>
+              class <a href="classSpectrogram_1_1Audio_1_1System_1_1System.html" class="m-doc">System</a>
             </dt>
-            <dd>A system providing an simpler way of interacting with the backend (no callbacks necessary)</dd>
+            <dd>abstract wrapper class that provides simpler syntax when connecting to a backend</dd>
           </dl>
         </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#ab6c1ae809ba8d2f26e046fb01af18ffa" class="m-doc">System</a>(</span><span class="m-doc-wrap">std::unique_ptr&lt;<a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend::<wbr />Backend</a>&gt; backend) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#ab78cd6715426d7dda911f936a8bc229f" class="m-doc">Blocking</a>(</span><span class="m-doc-wrap">std::unique_ptr&lt;<a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend::<wbr />Backend</a>&gt; backend) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>A system object is constructed from the backend it will use.</dd>
           </dl>
@@ -82,30 +83,26 @@
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#acf1e0373a3da3a5368e7a8ec7050da16" class="m-doc">devices</a>(</span><span class="m-doc-wrap">) -&gt; const <a href="classSpectrogram_1_1Audio_1_1DeviceList.html" class="m-doc">DeviceList</a>&amp;</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4aeb963cf7f526865060272116b71718" class="m-doc">getBuffer</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespaceSpectrogram_1_1Audio.html#afe9b618b1a4116382c7ab1c66e3a2afb" class="m-doc">Buffer</a></span>
             </dt>
-            <dd>Forwards the device list from the backend.</dd>
+            <dd>Returns a buffer full of samples as soon as they become available.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a97cc4061c764527154e7326a7e959a56" class="m-doc">start</a>(</span><span class="m-doc-wrap">const <a href="structSpectrogram_1_1Audio_1_1Device.html" class="m-doc">Device</a>&amp; device,
-              size_t frames) <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#a6f2018acfa3faa74f93f9c1ad215cd51" class="m-doc">start</a>(</span><span class="m-doc-wrap">const <a href="structSpectrogram_1_1Audio_1_1Device.html" class="m-doc">Device</a>&amp; device,
+              size_t frames) <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Starts the backend.</dd>
-            <dt id="a644e5747cd0ed0ab8838093626034dc2">
-              <span class="m-doc-wrap-bumper">void <a href="#a644e5747cd0ed0ab8838093626034dc2" class="m-doc-self">stop</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>Stops the backend.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#ac1b580ab4b05c6a5f4e8da3e7a4378d4" class="m-doc">pushSamples</a>(</span><span class="m-doc-wrap">const std::vector&lt;<a href="namespaceSpectrogram_1_1Audio.html#abccb9ac41f25f5747cc0e1efcb4c3871" class="m-doc">Sample</a>*&gt;&amp; arrays,
-              size_t length) <span class="m-label m-flat m-warning">pure virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#a74497b6bd30a967830085041f6130d11" class="m-doc">pushSamples</a>(</span><span class="m-doc-wrap">const std::vector&lt;<a href="namespaceSpectrogram_1_1Audio.html#abccb9ac41f25f5747cc0e1efcb4c3871" class="m-doc">Sample</a>*&gt;&amp; arrays,
+              size_t length) <span class="m-label m-flat m-warning">override</span></span>
             </dt>
             <dd>Callback for processing new samples.</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="ab6c1ae809ba8d2f26e046fb01af18ffa"><div>
+          <section class="m-doc-details" id="ab78cd6715426d7dda911f936a8bc229f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> Spectrogram::<wbr />Audio::<wbr />System::<wbr />System::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab6c1ae809ba8d2f26e046fb01af18ffa" class="m-doc-self">System</a>(</span><span class="m-doc-wrap">std::unique_ptr&lt;<a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend::<wbr />Backend</a>&gt; backend) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> Spectrogram::<wbr />Audio::<wbr />System::<wbr />Blocking::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab78cd6715426d7dda911f936a8bc229f" class="m-doc-self">Blocking</a>(</span><span class="m-doc-wrap">std::unique_ptr&lt;<a href="classSpectrogram_1_1Audio_1_1Backend_1_1Backend.html" class="m-doc">Backend::<wbr />Backend</a>&gt; backend) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>A system object is constructed from the backend it will use.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -121,24 +118,25 @@
             </table>
 <p>The backend is passed using a unique_ptr so that it can be chosen at runtime. A reference isn&#x27;t used because the system takes ownership over the backend.</p>
           </div></section>
-          <section class="m-doc-details" id="acf1e0373a3da3a5368e7a8ec7050da16"><div>
+          <section class="m-doc-details" id="a4aeb963cf7f526865060272116b71718"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">const <a href="classSpectrogram_1_1Audio_1_1DeviceList.html" class="m-doc">DeviceList</a>&amp; Spectrogram::<wbr />Audio::<wbr />System::<wbr />System::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acf1e0373a3da3a5368e7a8ec7050da16" class="m-doc-self">devices</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="namespaceSpectrogram_1_1Audio.html#afe9b618b1a4116382c7ab1c66e3a2afb" class="m-doc">Buffer</a> Spectrogram::<wbr />Audio::<wbr />System::<wbr />Blocking::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4aeb963cf7f526865060272116b71718" class="m-doc-self">getBuffer</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
-            <p>Forwards the device list from the backend.</p>
+            <p>Returns a buffer full of samples as soon as they become available.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td>the collection of available audio input devices</td>
+                  <td>the new buffer</td>
                 </tr>
               </tfoot>
             </table>
+<p>Blocks until one buffer&#x27;s length worth of samples is available. The approach to blocking may be a source of latency.</p>
           </div></section>
-          <section class="m-doc-details" id="a97cc4061c764527154e7326a7e959a56"><div>
+          <section class="m-doc-details" id="a6f2018acfa3faa74f93f9c1ad215cd51"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void Spectrogram::<wbr />Audio::<wbr />System::<wbr />System::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97cc4061c764527154e7326a7e959a56" class="m-doc-self">start</a>(</span><span class="m-doc-wrap">const <a href="structSpectrogram_1_1Audio_1_1Device.html" class="m-doc">Device</a>&amp; device,
-              size_t frames) <span class="m-label m-warning">virtual</span></span></span>
+              <span class="m-doc-wrap-bumper">void Spectrogram::<wbr />Audio::<wbr />System::<wbr />Blocking::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6f2018acfa3faa74f93f9c1ad215cd51" class="m-doc-self">start</a>(</span><span class="m-doc-wrap">const <a href="structSpectrogram_1_1Audio_1_1Device.html" class="m-doc">Device</a>&amp; device,
+              size_t frames) <span class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Starts the backend.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -158,10 +156,10 @@
             </table>
 <p>After this is called the pushSamples method will be invoked by the backend whenever new audio data becomes available</p>
           </div></section>
-          <section class="m-doc-details" id="ac1b580ab4b05c6a5f4e8da3e7a4378d4"><div>
+          <section class="m-doc-details" id="a74497b6bd30a967830085041f6130d11"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void Spectrogram::<wbr />Audio::<wbr />System::<wbr />System::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac1b580ab4b05c6a5f4e8da3e7a4378d4" class="m-doc-self">pushSamples</a>(</span><span class="m-doc-wrap">const std::vector&lt;<a href="namespaceSpectrogram_1_1Audio.html#abccb9ac41f25f5747cc0e1efcb4c3871" class="m-doc">Sample</a>*&gt;&amp; arrays,
-              size_t length) <span class="m-label m-warning">pure virtual</span></span></span>
+              <span class="m-doc-wrap-bumper">void Spectrogram::<wbr />Audio::<wbr />System::<wbr />Blocking::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a74497b6bd30a967830085041f6130d11" class="m-doc-self">pushSamples</a>(</span><span class="m-doc-wrap">const std::vector&lt;<a href="namespaceSpectrogram_1_1Audio.html#abccb9ac41f25f5747cc0e1efcb4c3871" class="m-doc">Sample</a>*&gt;&amp; arrays,
+              size_t length) <span class="m-label m-warning">override</span></span></span>
             </h3>
             <p>Callback for processing new samples.</p>
             <table class="m-table m-fullwidth m-flat">
