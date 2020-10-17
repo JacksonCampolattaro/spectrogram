@@ -1,5 +1,5 @@
 
-find_package(Libsoundio)
+include(libsoundio.cmake)
 find_package(Threads)
 find_package(Boost)
 
