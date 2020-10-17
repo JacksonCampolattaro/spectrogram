@@ -9,10 +9,8 @@ namespace Spectrogram::Fourier {
 
 class Processor {
     public:
-        // Default
-        Processor();
         // Parameterized
-        Processor(int wSize);
+        Processor(int wSize = 2048);
         // Copy Constructor
         Processor(const Processor &rhs);
         // Destructor

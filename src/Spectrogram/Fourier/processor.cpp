@@ -13,15 +13,13 @@
 
 namespace Spectrogram::Fourier {
 
-Processor::Processor(int wSize=2048) : windowSize(wSize)
+Processor::Processor(int wSize) : windowSize(wSize)
 {
     validateWindowSize(wSize);
     setMembers(wSize);
 }
 
-Processor::Processor() : Processor(2048) {}
-
-Processor::Processor(const Processor &rhs) 
+Processor::Processor(const Processor &rhs)
 {
     copyProcessor(rhs);
 }
@@ -42,7 +40,7 @@ Processor::~Processor()
 void Processor::cleanUp()
 {
     fftw_destroy_plan(plan);
-    fftw_free(in); 
+    fftw_free(in);
     fftw_free(out);
 }
 
@@ -107,7 +105,7 @@ Audio::Channel Processor::compute(const Audio::Channel& samples)
     return processedOutput;
 }
 
-fftw_complex* Processor::executeFFT() 
+fftw_complex* Processor::executeFFT()
 {
     fftw_execute(plan);
 
@@ -123,7 +121,7 @@ double* Processor::applyHanningWindow(const Audio::Channel& samples)
 {
     // The following for loop is a modification of the two for loops provided in URL
     //https://stackoverflow.com/questions/25061441/correct-way-to-implement-windowing/25061729#25061729?newreg=2a07fefa30ba41e1a286e025123513f8
-    for (int i = 0; i < windowSize; i++) 
+    for (int i = 0; i < windowSize; i++)
     {
         in[i] = samples[i] * hann(i,windowSize);
     }
@@ -143,7 +141,7 @@ Audio::Channel Processor::calcMagnitudeInDB()
         // Power spectral density is |real|^2 + |imag|^2
         magnitudeDB[i] = pow(out[i][REAL] * scale, 2) + pow(out[i][IMAG] * scale, 2);
 
-        // Convert from power to decibel for color intensity display 
+        // Convert from power to decibel for color intensity display
         magnitudeDB[i] = convertToDb(magnitudeDB[i]);
     }
 
@@ -153,7 +151,7 @@ Audio::Channel Processor::calcMagnitudeInDB()
 Audio::Sample Processor::convertToDb(const Audio::Sample &val)
 {
     // Epsilon is to make sure we don't do log(0)
-    Audio::Sample dBVal = POWER_TO_DB_MULT * std::log10(val + EPSILON); 
+    Audio::Sample dBVal = POWER_TO_DB_MULT * std::log10(val + EPSILON);
 
     return dBVal;
 }
