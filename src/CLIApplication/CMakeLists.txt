@@ -5,7 +5,6 @@ add_executable(CLIApplication
 
 target_link_libraries(CLIApplication
         Audio
-        Graphics
         Fourier)
 
 target_include_directories(CLIApplication PUBLIC
