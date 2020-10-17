@@ -1,5 +1,5 @@
 
-find_package(glfw3)
+include(${PROJECT_SOURCE_DIR}/cmake/glfw3.cmake)
 
 add_executable(GLFWApplication
         main.cpp)
