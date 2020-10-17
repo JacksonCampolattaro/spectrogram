@@ -10,7 +10,7 @@ if (DOXYGEN_FOUND)
             VERBATIM
             )
 
-    find_package(mcss REQUIRED)
+    include(${PROJECT_SOURCE_DIR}/cmake/mcss.cmake)
     add_custom_target(documentation-pretty
             SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
             COMMAND ${MCSS_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss
@@ -18,6 +18,5 @@ if (DOXYGEN_FOUND)
             COMMENT "Generating pretty documentation in ${CMAKE_CURRENT_BINARY_DIR}"
             VERBATIM
             )
-    add_dependencies(documentation-pretty mcss)
 
 endif (DOXYGEN_FOUND)
