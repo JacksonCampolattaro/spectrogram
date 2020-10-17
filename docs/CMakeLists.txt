@@ -10,7 +10,7 @@ if (DOXYGEN_FOUND)
             VERBATIM
             )
 
-    include(${PROJECT_SOURCE_DIR}/cmake/mcss.cmake)
+    include(mcss.cmake)
     add_custom_target(documentation-pretty
             SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
             COMMAND ${MCSS_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss
