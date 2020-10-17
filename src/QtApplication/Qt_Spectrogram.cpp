@@ -36,43 +36,72 @@ QtSpectrogram::QtSpectrogram(QWidget *parent)
     : QWidget(parent)
     //, ui(new Ui::QtSpectrogram) // Only for Qt Creator IDE
 {
-	ui = new QtSpectrogram;
-	ui->setupUi(parent);//ui->setupUi(this);
+	//ui = new QtSpectrogram;
+	//ui->setupUi(this);//ui->setupUi(parent);
+    setupUi();
 	updatePlot(0.0);
 }
 
-QtSpectrogram::~QtSpectrogram()
-{
-    delete ui;
-}
+// QtSpectrogram::~QtSpectrogram()
+// {
+//     delete ui;
+// }
 
 
-void QtSpectrogram::setupUi(QWidget *parent) {
+void QtSpectrogram::setupUi() {
 	
 	setObjectName("display");
 
-	m_scene = new QGraphicsScene(parent);
+	m_scene = new QGraphicsScene(this);
 	//m_scene->setObjectName("myScene");
 
-	m_view = new QGraphicsView(m_scene, parent);
+	m_view = new QGraphicsView(m_scene);
 	//m_view->setObjectName("myView");
 
 	/*** Don't forget this step ***/
-	QObject::connect(this, SIGNAL(freqDataPacket(plotDataType)),
-    	this, SLOT(getFreqData(plotDataType)));
+	// QObject::connect(this, SIGNAL(freqDataPacket(plotDataType)),
+    // 	this, SLOT(getFreqData(plotDataType)));
 
 	m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	m_layout = new QGridLayout();
 
-	m_layout->addWidget(m_view, 0, 0);
 	m_view->centerOn(0, 0);
 	
+    mChart = new QChart();
+    //int nbins = 20;
+    //int npts = 10000;
+
+    mChart->setTitle("Sampled Audio Frequency Data Visualizer");
+    mChart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    mChart->addAxis(axisX, Qt::AlignBottom);
+
+    int max = 1;
+    QValueAxis *axisY = new QValueAxis();
+
+    axisY->setRange(0,max);
+    mChart->addAxis(axisY, Qt::AlignLeft);
+
+    mChart->legend()->setVisible(true);
+    mChart->legend()->setAlignment(Qt::AlignBottom);
+    //ui->chartView->setChart(mChart);
+    //ui->chartView->setRenderHint(QPainter::Antialiasing);
+    //ui->chartView->update();
+
+    // This was missing so before chartView = 0 becuase never made a new chartView
+    chartView = new QChartView(mChart);
+	chartView->setChart(mChart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    m_layout->addWidget(chartView, 0, 0);
+    m_layout->addWidget(m_view, 0, 0);
 
 	this->setLayout(m_layout);
 	//resize(500, 500);
-	this->show();
+	//this->show();
 }
 
 /*
@@ -97,30 +126,35 @@ void QtSpectrogram::updatePlot(plotDataType data)
 {
     // TODO: Add ability to draw bars from data
 
-    mChart = new QChart();
-    //int nbins = 20;
-    //int npts = 10000;
+    // *********************************************************************************
+    //TODO: This is waht broke it, you cannot make a "new QChart" or "new" anything
+    //      everytime you want to update the plot, moved all non-update stuff to constructor
 
-    qDebug() << data; // Just satisfying the compiler for now
-    mChart->setTitle("Sampled Audio Frequency Data Visualizer");
-    mChart->setAnimationOptions(QChart::SeriesAnimations);
 
-    QBarCategoryAxis *axisX = new QBarCategoryAxis();
-    mChart->addAxis(axisX, Qt::AlignBottom);
+    // mChart = new QChart();
+    // //int nbins = 20;
+    // //int npts = 10000;
 
-    int max = 1;
-    QValueAxis *axisY = new QValueAxis();
+    // qDebug() << data; // Just satisfying the compiler for now
+    // mChart->setTitle("Sampled Audio Frequency Data Visualizer");
+    // mChart->setAnimationOptions(QChart::SeriesAnimations);
 
-    axisY->setRange(0,max);
-    mChart->addAxis(axisY, Qt::AlignLeft);
+    // QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    // mChart->addAxis(axisX, Qt::AlignBottom);
 
-    mChart->legend()->setVisible(true);
-    mChart->legend()->setAlignment(Qt::AlignBottom);
-    //ui->chartView->setChart(mChart);
-    //ui->chartView->setRenderHint(QPainter::Antialiasing);
-    //ui->chartView->update();
-	chartView->setChart(mChart);
-    chartView->setRenderHint(QPainter::Antialiasing);
+    // int max = 1;
+    // QValueAxis *axisY = new QValueAxis();
+
+    // axisY->setRange(0,max);
+    // mChart->addAxis(axisY, Qt::AlignLeft);
+
+    // mChart->legend()->setVisible(true);
+    // mChart->legend()->setAlignment(Qt::AlignBottom);
+    // //ui->chartView->setChart(mChart);
+    // //ui->chartView->setRenderHint(QPainter::Antialiasing);
+    // //ui->chartView->update();
+	// chartView->setChart(mChart);
+    // chartView->setRenderHint(QPainter::Antialiasing);
     chartView->update();
 
     // Clean up memory before returning?

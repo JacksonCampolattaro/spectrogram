@@ -40,7 +40,7 @@ class QtSpectrogram : public QWidget
 
 public:
     QtSpectrogram(QWidget *parent = nullptr);
-    ~QtSpectrogram();
+    //~QtSpectrogram();
 
     // API wrapper function for signal passing
      void sendFreqData(plotDataType data);
@@ -52,7 +52,7 @@ public slots:
 
 private:
     //Ui::QtSpectrogram *ui; // Specific to QtCreator IDE Apps
-	QtSpectrogram *ui;
+	//QtSpectrogram *ui;
     QChart *mChart;
 	QChartView *chartView;
 	
@@ -65,7 +65,7 @@ private:
     //Device *mDevice;
     bool isPlotReady; // Status flag to check (but would ideally be a semaphore)
 	
-	void setupUi(QWidget *parent);
+	void setupUi();
 
 signals:
     void freqDataPacket(plotDataType data);
