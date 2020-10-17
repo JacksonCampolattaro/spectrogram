@@ -4,7 +4,7 @@ if (DOXYGEN_FOUND)
 
     add_custom_target(documentation
             SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+            COMMAND Doxygen::doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             COMMENT "Generating documentation"
             VERBATIM
