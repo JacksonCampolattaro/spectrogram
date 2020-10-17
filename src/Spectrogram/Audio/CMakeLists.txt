@@ -1,32 +1,5 @@
 
-# This shouldn't be necessary
-#find_package(PulseAudio QUIET)
-#if (NOT PulseAudio_FOUND)
-#
-#    include(FetchContent)
-#    FetchContent_Declare(
-#            PulseAudio
-#            GIT_REPOSITORY https://github.com/pulseaudio/pulseaudio.git
-#            GIT_SHALLOW ON
-#    )
-#    FetchContent_MakeAvailable(PulseAudio)
-#
-#endif ()
-
-find_package(Libsoundio QUIET)
-if (NOT Libsoundio_FOUND)
-
-    include(FetchContent)
-    FetchContent_Declare(
-            soundio
-            GIT_REPOSITORY https://github.com/andrewrk/libsoundio.git
-            GIT_SHALLOW ON
-    )
-    FetchContent_MakeAvailable(soundio)
-    find_package(Libsoundio REQUIRED)
-
-endif ()
-
+find_package(Libsoundio REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 

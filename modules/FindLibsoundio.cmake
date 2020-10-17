@@ -39,6 +39,6 @@ if(NOT LIBSOUNDIO_LIBRARIES)
     message(STATUS "Could NOT find the Libsoundio library, install it or set LIBSOUNDIO_ROOT")
 endif()
 
-# Determines whether or not FFTW3 was found
+# Determines whether or not the library was found
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Libsoundio DEFAULT_MSG LIBSOUNDIO_INCLUDE_DIRS LIBSOUNDIO_LIBRARIES)
