@@ -170,11 +170,13 @@ Audio::Channel& Processor::normalize(Audio::Channel& v)
         throw std::domain_error("ERROR: " + std::to_string(max) + ", all the values are the same in this Channel.");
     }
 
+    Audio::Sample maxMinusMin = max - min;
+
     // Normalization adapted from user Alex I from stackoverflow
     // https://stackoverflow.com/questions/21283144/generating-correct-spectrogram-using-fftw-and-window-function
     for(auto it = v.begin(); it != v.end(); ++it)
     {
-        *it = (*it - min) / (max - min);
+        *it = (*it - min) / maxMinusMin;
     }
     return v;
 }
