@@ -9,8 +9,12 @@ add_library(Audio
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
-message(${LIBSOUNDIO_LIBRARIES})
 target_link_libraries(Audio
         ${LIBSOUNDIO_LIBRARIES}
         Threads::Threads
         Boost::boost)
+
+target_compile_options(Audio PRIVATE
+        -Werror
+        -Wall
+        -Wextra)

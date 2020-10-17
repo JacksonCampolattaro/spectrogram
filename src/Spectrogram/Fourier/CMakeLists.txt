@@ -8,3 +8,8 @@ target_include_directories(Fourier PUBLIC
 
 target_link_libraries(Fourier
                 ${FFTW_LIBRARIES})
+
+target_compile_options(Fourier PRIVATE
+        -Werror
+        -Wall
+        -Wextra)

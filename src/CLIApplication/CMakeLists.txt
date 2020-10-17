@@ -9,3 +9,8 @@ target_link_libraries(CLIApplication
 
 target_include_directories(CLIApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
+
+target_compile_options(CLIApplication PRIVATE
+        -Werror
+        -Wall
+        -Wextra)

@@ -25,3 +25,7 @@ target_include_directories(test PUBLIC
         ${PROJECT_BINARY_DIR}
         ${PROJECT_SOURCE_DIR}/src)
 
+target_compile_options(test PRIVATE
+        -Werror
+        -Wall
+        -Wextra)
