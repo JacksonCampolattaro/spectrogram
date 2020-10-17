@@ -22,7 +22,7 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 1000);
+    system.start(system.devices()[device], 10000);
 
     for (int i = 0; i < 10000; ++i) {
 

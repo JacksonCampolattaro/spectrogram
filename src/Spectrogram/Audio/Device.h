@@ -7,6 +7,9 @@
 
 namespace Spectrogram::Audio {
 
+    /**
+     * @brief a reification of the system's audio sources, designed to be compatible with different backends.
+     */
     struct Device {
 
         Device(std::string name, int id, bool isDefault, size_t channelCount) :
@@ -17,6 +20,12 @@ namespace Spectrogram::Audio {
         bool isDefault;
         size_t channelCount;
 
+        /**
+         * @brief This allows directly writing the device's info to an output stream, useful for debugging
+         * @param os The output stream to write to
+         * @param device The device to write
+         * @return the output stream (for chained invocations)
+         */
         friend std::ostream &operator<<(std::ostream &os, const Device &device) {
 
             os << device.id << ": ";

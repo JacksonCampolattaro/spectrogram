@@ -1,4 +1,4 @@
-find_package(FFTW REQUIRED)
+find_package(FFTW)
 add_library(Fourier
         processor.h processor.cpp)
 

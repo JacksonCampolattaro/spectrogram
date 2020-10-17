@@ -1,5 +1,5 @@
 
-find_package(glfw3 REQUIRED)
+find_package(glfw3)
 
 add_executable(GLFWApplication
         main.cpp)

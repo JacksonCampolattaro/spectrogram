@@ -7,6 +7,11 @@
 
 namespace Spectrogram::Audio {
 
+    /**
+     * @brief A collection of all the input devices available for reading from
+     *
+     * @todo Eventually this should update itself using callbacks
+     */
     class DeviceList : private std::vector<Device> {
     public:
 
