@@ -1,14 +1,4 @@
-find_package(FFTW QUIET)
-if (NOT FFTW_FOUND)
-
-    include(FetchContent)
-    FetchContent_Declare(
-            fftw
-            URL http://fftw.org/fftw-3.3.8.tar.gz
-    )
-    FetchContent_MakeAvailable(fftw)
-
-endif ()
+find_package(FFTW REQUIRED)
 
 add_library(Fourier
         processor.h processor.cpp)
