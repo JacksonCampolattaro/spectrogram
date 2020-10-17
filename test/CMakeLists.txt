@@ -1,5 +1,5 @@
 
-find_package(Catch2)
+include(${PROJECT_SOURCE_DIR}/cmake/catch2.cmake)
 
 add_executable(test main.cpp
         test_Fourier_Process.cpp
