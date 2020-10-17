@@ -5,38 +5,73 @@
 #include <fftw3.h>
 #include <Spectrogram/Audio/Buffer.h>
 
+/**
+ * @brief Contains all functionality related to performing fourier calculations
+ */
 namespace Spectrogram::Fourier {
 
+    /**
+     * @brief Fast fourier transform utility built on top of the library FFTW3
+     *
+     * @todo
+     */
     class Processor {
     public:
-        // Parameterized
+
+        /**
+         * @brief Constructor for a new Fourier processor with a fixed window size
+         * @param wSize Hanning window size, set permanently
+         */
         explicit Processor(int wSize = 2048);
 
-        // Copy Constructor
+        /**
+         * @brief Copy constructor which duplicates the FFTW3 setup of the other Processor
+         * @param rhs
+         */
         Processor(const Processor &rhs);
 
-        // Destructor
+        /**
+         * @brief Destructor which safely frees all resources used by FFTW3
+         */
         ~Processor();
 
-        // Assignment operator
+        /**
+         * @brief Copy constructor which re-initializes FFTW3
+         * @param rhs
+         * @return
+         */
         Processor &operator=(const Processor &rhs);
 
-        // Compute the spectrogram output vector from input data
-        // Input: Vector of floats from audio stream, size of windowSize
-        // Output: Vector of floats half the size of the input in decibels that 
-        //         have been normalized to be between 0 and 1
+        /**
+         * @brief Compute the spectrogram output vector from input data
+         * @param samples Vector of floats from audio stream, size of windowSize
+         * @return Vector of floats half the size of the input in decibels, with normalized values between 0 and 1
+         */
         Audio::Channel compute(const Audio::Channel &samples);
 
-        // Returns the windowSize, which is the input array length
+        /**
+         * @brief Getter for the Hanning window size
+         * @return the windowSize, which is the input array length
+         */
         int getSampleSize() const;
 
-        // Returns the output array size that is produced after processing the input
+        /**
+         * @brief Getter for the size of the output array
+         * @return the output array size that is produced after processing the input
+         */
         int getOutputSize() const;
 
-        // Sets the windowSize to something else
+        /**
+         * @brief Change the window size
+         *
+         * @todo Is this used?
+         *
+         * @param newSampleSize
+         */
         void setSampleSize(int newSampleSize);
 
     private:
+
         // Returns the output array size
         int calcComplexSize() const;
 
