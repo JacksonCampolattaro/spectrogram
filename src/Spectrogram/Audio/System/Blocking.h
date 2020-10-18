@@ -16,7 +16,7 @@ namespace Spectrogram::Audio::System {
      * This is useful for a minimum viable product, (for example, the CLI application),
      * but a full application should use a more event-oriented subclass of System.
      */
-    class Blocking : public System {
+    class Blocking : protected System {
     public:
 
         /**
@@ -40,7 +40,11 @@ namespace Spectrogram::Audio::System {
          */
         void fillBuffer(Buffer &buffer);
 
+        using System::devices;
+
         void start(const Device &device) override;
+
+        using System::stop;
 
         void pushSamples(const std::vector<Sample *> &arrays, size_t length) override;
 
