@@ -8,71 +8,58 @@
 #include "Soundio.h"
 
 typedef struct {
-    Spectrogram::Audio::Buffer buffer;
-    Spectrogram::Audio::Backend::Backend::NewBufferCallback handler;
+    Spectrogram::Audio::Backend::Backend::NewSamplesCallback newSamplesCallback;
+    std::vector<Spectrogram::Audio::Sample *> sampleArrays;
 } UserData;
 
-static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
-    auto options = static_cast<UserData *>(instream->userdata);
+static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int minFrameCount, int maxFrameCount) {
+    auto userData = static_cast<UserData *>(instream->userdata);
+    auto &sampleArrays = userData->sampleArrays;
+    auto callback = userData->newSamplesCallback;
     int err;
 
-    // Make sure we're not falling behind
     assert(maxFrameCount < 20000);
 
-    // The number of frames we need is the gap between the buffer's capacity and its size
-    int framesMissing = options->buffer[0].capacity() - options->buffer[0].size();
+    int framesToRead = maxFrameCount;
 
-    // The number of frames we'll request is limited by the maxFrameCount
-    auto framesToRequest = std::min(framesMissing, maxFrameCount);
+    // Loop until we've consumed all the frames
+    while (framesToRead > 0) {
 
-    while (framesToRequest > 0)
-    {
-
-        auto frameCount = framesToRequest;
-
-        // Request those frames
+        // Try to read as many frames as we're allowed to
+        int framesRead = framesToRead;
         struct SoundIoChannelArea *areas;
-        if ((err = soundio_instream_begin_read(instream, &areas, &frameCount))) {
+        if ((err = soundio_instream_begin_read(instream, &areas, &framesRead))) {
             std::cerr << "Error starting read: " << soundio_strerror(err);
             exit(1);
         }
-        framesToRequest -= frameCount;
 
-        // If we didn't get any frames, stop trying to read
-        if (!frameCount) return;
+        // If we didn't get any frames, stop trying to read (it's also not necessary to close the stream)
+        if (framesRead == 0) return;
 
-        // If we successfully got frames
+        // If the read was successful, push the data
         if (areas) {
 
-            // Add the new frames to the buffer
-            for (int channel = 0; channel < options->buffer.size(); ++channel) {
-                auto sampleArray = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
+            for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
 
-                options->buffer[channel].insert(options->buffer[channel].end(), sampleArray, sampleArray + frameCount);
+                sampleArrays[channel] = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
+
             }
+            callback(sampleArrays, framesRead);
         }
+
+        // Update the number of remaining frames
+        framesToRead -= framesRead;
 
         // Stop reading data
         if ((err = soundio_instream_end_read(instream))) {
             std::cerr << "Error ending read: " << soundio_strerror(err);
             exit(1);
         }
+
     }
-
-    // If the buffer is full now, we can push it and wipe it
-    if (options->buffer[0].size() == options->buffer[0].capacity()) {
-
-        // Send the buffer to the system
-        (options->handler)(options->buffer);
-
-        // Remove all the elements of the buffer, but change its capacity
-        for (auto &channel : options->buffer)
-            channel.resize(0);
-    }
-
 }
 
-static void overflow_callback(struct SoundIoInStream *instream) {
+static void overflow_callback([[maybe_unused]] struct SoundIoInStream *instream) {
 
     std::cerr << "overflow" << std::endl;
 }
@@ -84,11 +71,11 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
     soundio_flush_events(_soundio);
 
     // Add devices detected at startup
-    size_t defaultInput = soundio_default_input_device_index(_soundio);
-    for (size_t i = 0; i < soundio_input_device_count(_soundio); ++i) {
+    int defaultInput = soundio_default_input_device_index(_soundio);
+    for (int i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
-        _devices.emplace_back(deviceInfo->name, i, i == defaultInput);
+        _devices.emplace_back(deviceInfo->name, i, i == defaultInput, deviceInfo->current_layout.channel_count);
         soundio_device_unref(deviceInfo);
     }
 }
@@ -99,12 +86,10 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Device &device, size_t frames, NewBufferCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, [[maybe_unused]] size_t frames, NewSamplesCallback callback) {
 
-    stop();
-
+    // Retrieve the relevant device
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
-
     assert(soundioDevice);
     assert(!soundioDevice->probe_error);
 
@@ -115,8 +100,7 @@ void Spectrogram::Audio::Backend::Soundio::start(const Device &device, size_t fr
     std::cout << "sample rate = " << sampleRate << "\n";
 
     // Select a format
-    enum SoundIoFormat format = SoundIoFormatInvalid;
-    format = sampleTypeToFormat<Sample>();
+    auto format = sampleTypeToFormat<Sample>();
     assert(soundio_device_supports_format(soundioDevice, format));
     std::cout << "format = " << soundio_format_string(format) << "\n";
 
@@ -129,12 +113,11 @@ void Spectrogram::Audio::Backend::Soundio::start(const Device &device, size_t fr
     _inStream->read_callback = read_callback;
     _inStream->overflow_callback = overflow_callback;
 
-    // Set the user data
-    auto userData = new UserData{Buffer{}, callback};
-    userData->buffer.resize(_inStream->layout.channel_count);
-    for (auto &channel : userData->buffer)
-        channel.reserve(frames);
+    auto userData = new UserData;
+    userData->newSamplesCallback = callback;
+    userData->sampleArrays.resize(_inStream->layout.channel_count);
     _inStream->userdata = userData;
+
 
     int err;
     if ((err = soundio_instream_open(_inStream))) {
