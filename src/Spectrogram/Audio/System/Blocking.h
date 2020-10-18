@@ -42,6 +42,12 @@ namespace Spectrogram::Audio::System {
 
         using System::devices;
 
+        /**
+         * @brief Starts the backend and prepares the data structures underlying the blocking system
+         *
+         * @param device The input device to connect to
+         * @param maxLatency The maximum allowable latency before samples should start being dropped
+         */
         void start(const Device &device, std::chrono::milliseconds maxLatency);
 
         using System::stop;
