@@ -18,8 +18,9 @@ void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Devic
     System::start(device);
 }
 
-void Spectrogram::Audio::System::Blocking::getBuffer(Spectrogram::Audio::Buffer &buffer) {
+void Spectrogram::Audio::System::Blocking::fillBuffer(Spectrogram::Audio::Buffer &buffer) {
 
+    // Wait for enough elements to be available
     if (_channelQueues[0].read_available() < buffer[0].size()) {
 
         std::mutex m;
@@ -27,6 +28,7 @@ void Spectrogram::Audio::System::Blocking::getBuffer(Spectrogram::Audio::Buffer 
         _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer[0].size(); });
     }
 
+    // Fill up the buffer
     for (size_t frame = 0; frame < buffer[0].size(); ++frame) {
         for (size_t channel = 0; channel < buffer.size(); ++channel) {
 

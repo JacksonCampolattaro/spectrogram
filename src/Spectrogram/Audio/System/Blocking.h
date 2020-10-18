@@ -30,14 +30,15 @@ namespace Spectrogram::Audio::System {
         explicit Blocking(std::unique_ptr<Backend::Backend> backend);
 
         /**
-         * @brief Returns a buffer full of samples as soon as they become available.
+         * @brief Fills a buffer with samples
          *
+         * The number of samples to read is determined by the size of the buffer passed in.
          * Blocks until one buffer's length worth of samples is available.
          * The approach to blocking may be a source of latency.
          *
-         * @return the new buffer
+         * @param buffer the buffer to fill
          */
-        void getBuffer(Buffer &buffer);
+        void fillBuffer(Buffer &buffer);
 
         void start(const Device &device) override;
 

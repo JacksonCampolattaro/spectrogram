@@ -17,7 +17,7 @@ TEST_CASE("Dummy devices", "[Dummy]") {
 
     system.start(system.devices()[0], 512);
 
-    for (auto channel : system.getBuffer()) {
+    for (auto channel : system.fillBuffer()) {
         for (auto sample : channel) {
             std::cout << sample << "\t";
         }

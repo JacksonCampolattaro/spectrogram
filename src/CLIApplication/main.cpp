@@ -12,7 +12,7 @@ int main() {
 
     // Initialize the system
     auto system = System::Blocking(std::make_unique<Backend::Soundio>());
-//    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
+    //auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
 
     // List the devices
     std::cout << "Devices:" << std::endl;
@@ -26,14 +26,12 @@ int main() {
 
     Buffer buffer;
     buffer.resize(system.devices()[device].channelCount);
-    for (auto &channel : buffer) {
+    for (auto &channel : buffer)
         channel.resize(200);
-    }
 
     for (int i = 0; i < 10000; ++i) {
 
-        system.getBuffer(buffer);
-        std::cout << buffer[0].size();
+        system.fillBuffer(buffer);
 
         for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 1) {
 
