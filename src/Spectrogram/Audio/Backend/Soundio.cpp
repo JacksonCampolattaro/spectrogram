@@ -75,7 +75,12 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
     for (int i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
-        _devices.push_back({deviceInfo->name, i, i == defaultInput, (size_t) deviceInfo->current_layout.channel_count});
+        _devices.push_back(
+                {deviceInfo->name, i, i == defaultInput,
+                 (size_t) deviceInfo->current_layout.channel_count,
+                 (size_t) deviceInfo->sample_rate_current
+                }
+        );
         soundio_device_unref(deviceInfo);
     }
 }

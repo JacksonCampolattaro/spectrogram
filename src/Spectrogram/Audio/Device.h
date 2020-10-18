@@ -16,6 +16,7 @@ namespace Spectrogram::Audio {
         int id;
         bool isDefault;
         size_t channelCount;
+        size_t sampleRate;
 
         /**
          * @brief This allows directly writing the device's info to an output stream, useful for debugging
