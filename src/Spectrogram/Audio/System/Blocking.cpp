@@ -10,13 +10,13 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 }
 
-void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device, size_t frames) {
+void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device) {
 
     for (size_t channel = 0; channel < device.channelCount; ++channel) {
-        _channelQueues.emplace_back(frames * 2);
+        _channelQueues.emplace_back(20000);
     }
-    _frames = frames;
-    System::start(device, frames);
+    _frames = 20000;
+    System::start(device);
 }
 
 Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
@@ -44,7 +44,7 @@ Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
 void Spectrogram::Audio::System::Blocking::pushSamples(const std::vector<Sample *> &arrays, size_t length) {
 
     for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
-        auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
+        [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
         assert(samplesPushed == length);
     }
 

@@ -39,7 +39,7 @@ namespace Spectrogram::Audio::System {
          */
         Buffer getBuffer();
 
-        void start(const Device &device, size_t frames) override;
+        void start(const Device &device) override;
 
         void pushSamples(const std::vector<Sample *> &arrays, size_t length) override;
 

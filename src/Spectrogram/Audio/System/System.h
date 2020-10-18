@@ -40,9 +40,8 @@ namespace Spectrogram::Audio::System {
          * whenever new audio data becomes available
          *
          * @param device the device to connect to
-         * @param frames the number of frames in a buffer
          */
-        virtual void start(const Device &device, size_t frames);
+        virtual void start(const Device &device);
 
         /**
          * @brief Stops the backend
