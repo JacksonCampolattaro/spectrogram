@@ -10,10 +10,11 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 
 }
 
-void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device) {
+void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device,
+                                            std::chrono::milliseconds maxLatency) {
 
     for (size_t channel = 0; channel < device.channelCount; ++channel) {
-        _channelQueues.emplace_back(20000);
+        _channelQueues.emplace_back(device.sampleRate * maxLatency.count() / 1000);
     }
     System::start(device);
 }

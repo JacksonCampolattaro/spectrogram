@@ -16,7 +16,7 @@ namespace Spectrogram::Audio::System {
      * This is useful for a minimum viable product, (for example, the CLI application),
      * but a full application should use a more event-oriented subclass of System.
      */
-    class Blocking : protected System {
+    class Blocking : private System {
     public:
 
         /**
@@ -42,7 +42,7 @@ namespace Spectrogram::Audio::System {
 
         using System::devices;
 
-        void start(const Device &device) override;
+        void start(const Device &device, std::chrono::milliseconds maxLatency);
 
         using System::stop;
 
@@ -51,6 +51,8 @@ namespace Spectrogram::Audio::System {
         typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
 
     private:
+
+        using System::start;
 
         std::deque<ChannelQueue> _channelQueues;
         std::condition_variable _samplesAdded;

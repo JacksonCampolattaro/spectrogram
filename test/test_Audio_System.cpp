@@ -15,7 +15,7 @@ TEST_CASE("Dummy devices", "[Dummy]") {
 
     auto system = System::Blocking(std::make_unique<Backend::Dummy>(440));
 
-    system.start(system.devices()[0]);
+    system.start(system.devices()[0], std::chrono::seconds(2));
 
     Buffer buffer;
     buffer.resize(system.devices()[0].channelCount);
