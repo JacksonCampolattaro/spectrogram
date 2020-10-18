@@ -1,10 +1,14 @@
 
+find_package(Gtkmm)
+
 add_executable(GtkmmApplication
         main.cpp)
 
 target_link_libraries(GtkmmApplication
         Audio
-        Fourier)
+        Fourier
+        ${GTKMM_LIBRARIES}
+        )
 
 target_include_directories(GtkmmApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
