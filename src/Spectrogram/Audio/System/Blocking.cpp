@@ -15,7 +15,6 @@ void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Devic
     for (size_t channel = 0; channel < device.channelCount; ++channel) {
         _channelQueues.emplace_back(20000);
     }
-    _frames = 20000;
     System::start(device);
 }
 

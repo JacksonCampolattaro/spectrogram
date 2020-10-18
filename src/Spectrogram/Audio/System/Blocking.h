@@ -49,7 +49,6 @@ namespace Spectrogram::Audio::System {
 
         std::deque<ChannelQueue> _channelQueues;
         std::condition_variable _samplesAdded;
-        size_t _frames;
 
     };
 }
