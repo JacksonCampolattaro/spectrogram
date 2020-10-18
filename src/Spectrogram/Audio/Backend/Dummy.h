@@ -11,7 +11,6 @@ namespace Spectrogram::Audio::Backend {
      * @brief A backend implementation designed for testing of code built on top of the backend
      */
     class Dummy : public Backend {
-
     public:
 
         /**
