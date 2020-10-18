@@ -19,6 +19,7 @@ namespace Spectrogram::Audio {
 
         using vector::vector;
         using vector::emplace_back;
+        using vector::push_back;
         using vector::begin;
         using vector::end;
         using vector::operator[];
