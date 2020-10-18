@@ -38,10 +38,9 @@ namespace Spectrogram::Audio::Backend {
          * @todo
          *
          * @param device the source to read from
-         * @param frames the number of frames to include in a buffer
          * @param callback the callback used for processing new data
          */
-        virtual void start(const Device &device, size_t frames, NewSamplesCallback callback) = 0;
+        virtual void start(const Device &device, NewSamplesCallback callback) = 0;
 
         /**
          * @brief Stops the currently running device, safely closing the input stream

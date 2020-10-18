@@ -86,7 +86,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Device &device, [[maybe_unused]] size_t frames, NewSamplesCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, NewSamplesCallback callback) {
 
     // Retrieve the relevant device
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
