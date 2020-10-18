@@ -1,4 +1,5 @@
-find_package(FFTW)
+find_package(FFTW REQUIRED)
+
 add_library(Fourier
         processor.h processor.cpp)
 
@@ -7,3 +8,8 @@ target_include_directories(Fourier PUBLIC
 
 target_link_libraries(Fourier
                 ${FFTW_LIBRARIES})
+
+target_compile_options(Fourier PRIVATE
+        -Werror
+        -Wall
+        -Wextra)

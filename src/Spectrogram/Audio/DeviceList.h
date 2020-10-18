@@ -25,8 +25,7 @@ namespace Spectrogram::Audio {
 
         // TODO: Accessor methods and iterators will be made available here
 
-        // This will be called and
-        void onDevicesChanged(const std::vector<Device> &devices);
+//        void onDevicesChanged(const std::vector<Device> &devices);
 
 
     };

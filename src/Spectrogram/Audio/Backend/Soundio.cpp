@@ -12,7 +12,7 @@ typedef struct {
     std::vector<Spectrogram::Audio::Sample *> sampleArrays;
 } UserData;
 
-static void read_callback(struct SoundIoInStream *instream, int minFrameCount, int maxFrameCount) {
+static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int minFrameCount, int maxFrameCount) {
     auto userData = static_cast<UserData *>(instream->userdata);
     auto &sampleArrays = userData->sampleArrays;
     auto callback = userData->newSamplesCallback;
@@ -59,7 +59,7 @@ static void read_callback(struct SoundIoInStream *instream, int minFrameCount, i
     }
 }
 
-static void overflow_callback(struct SoundIoInStream *instream) {
+static void overflow_callback([[maybe_unused]] struct SoundIoInStream *instream) {
 
     std::cerr << "overflow" << std::endl;
 }
@@ -86,7 +86,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Device &device, size_t frames, NewSamplesCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, [[maybe_unused]] size_t frames, NewSamplesCallback callback) {
 
     // Retrieve the relevant device
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
