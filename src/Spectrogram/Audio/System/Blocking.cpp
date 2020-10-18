@@ -19,26 +19,22 @@ void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Devic
     System::start(device);
 }
 
-Spectrogram::Audio::Buffer Spectrogram::Audio::System::Blocking::getBuffer() {
+void Spectrogram::Audio::System::Blocking::getBuffer(Spectrogram::Audio::Buffer &buffer) {
 
-    if (_channelQueues[0].read_available() < _frames) {
+    if (_channelQueues[0].read_available() < buffer[0].size()) {
 
         std::mutex m;
         std::unique_lock<std::mutex> lock(m);
-        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= _frames; });
+        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer[0].size(); });
     }
 
-    Spectrogram::Audio::Buffer buffer;
-    buffer.resize(_channelQueues.size());
-
-    for (size_t frame = 0; frame < _frames; ++frame) {
+    for (size_t frame = 0; frame < buffer[0].size(); ++frame) {
         for (size_t channel = 0; channel < buffer.size(); ++channel) {
 
-            buffer[channel].push_back(_channelQueues[channel].front());
+            buffer[channel][frame] = _channelQueues[channel].front();
             _channelQueues[channel].pop();
         }
     }
-    return buffer;
 }
 
 void Spectrogram::Audio::System::Blocking::pushSamples(const std::vector<Sample *> &arrays, size_t length) {

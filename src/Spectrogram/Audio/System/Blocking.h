@@ -37,7 +37,7 @@ namespace Spectrogram::Audio::System {
          *
          * @return the new buffer
          */
-        Buffer getBuffer();
+        void getBuffer(Buffer &buffer);
 
         void start(const Device &device) override;
 

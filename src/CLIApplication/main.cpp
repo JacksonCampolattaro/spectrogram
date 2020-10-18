@@ -24,9 +24,16 @@ int main() {
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device]);
 
+    Buffer buffer;
+    buffer.resize(system.devices()[device].channelCount);
+    for (auto &channel : buffer) {
+        channel.resize(200);
+    }
+
     for (int i = 0; i < 10000; ++i) {
 
-        auto buffer = system.getBuffer();
+        system.getBuffer(buffer);
+        std::cout << buffer[0].size();
 
         for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 1) {
 
