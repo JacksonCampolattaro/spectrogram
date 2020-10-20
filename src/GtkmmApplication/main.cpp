@@ -1,5 +1,6 @@
 
 #include "TextSpectrumView.h"
+#include "AudioSystem.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -23,26 +24,10 @@ int main(int argc, char *argv[]) {
     window.add(textSpectrumView);
     textSpectrumView.show();
 
-
-//    auto system = Audio::System::Blocking(std::make_unique<Audio::Backend::Soundio>());
-    auto system = Audio::System::Blocking(std::make_unique<Audio::Backend::Dummy>(100));
-
-    // Choose a device
+    AudioSystem system(std::make_unique<Backend::Soundio>());
+    system.newBuffer.connect(textSpectrumView.on_newBuffer);
     auto device = system.devices()[2];
-
-    // Create a buffer to hold data from that device
-    Audio::Buffer buffer;
-    buffer.resize(device.channelCount);
-    for (auto &channel : buffer)
-        // Make room for exactly one second of audio
-        channel.resize(device.sampleRate);
-
-    // Read data from the device
-    system.start(device, std::chrono::seconds(2));
-    system.fillBuffer(buffer);
-    system.stop();
-
-    textSpectrumView.drawBuffer(buffer);
+    system.start(device, std::chrono::seconds(2), device.sampleRate);
 
     // Run the app
     return app->run(window);

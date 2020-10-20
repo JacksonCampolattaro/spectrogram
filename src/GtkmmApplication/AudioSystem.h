@@ -1,13 +1,16 @@
 #ifndef SPECTROGRAM_AUDIOSYSTEM_H
 #define SPECTROGRAM_AUDIOSYSTEM_H
 
+// TODO: THIS IS TEMPORARY
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #include <Spectrogram/Audio/System/Event.h>
 
 #include <gtkmm.h>
 
 using namespace Spectrogram::Audio;
 
-class AudioSystem : private System::Event {
+class AudioSystem : protected System::Event {
 public:
 
     explicit AudioSystem(std::unique_ptr<Backend::Backend> backend) :
@@ -19,7 +22,10 @@ public:
 
     void onNewDataAdded() {
 
-        if (_channelQueues[0].read_available() > _bufferLength) {
+
+        if (_channelQueues[0].read_available() > _buffer[0].size()) {
+
+            std::cout << "buffer ready" << std::endl;
 
             // Fill the buffer with new data
             for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
@@ -35,7 +41,7 @@ public:
         }
     }
 
-    void newDataAdded() {
+    void newDataNotification() override {
         _dispatcher.emit();
     }
 
@@ -45,10 +51,7 @@ public:
 
 private:
 
-    Buffer _buffer;
-
     Glib::Dispatcher _dispatcher;
-    size_t _bufferLength;
 
 };
 
