@@ -4,10 +4,6 @@
 // TODO: THIS IS TEMPORARY
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Spectrogram/Audio/System/Blocking.h>
-#include <Spectrogram/Audio/Backend/Soundio.h>
-#include <Spectrogram/Audio/Backend/Dummy.h>
-
 #include <Spectrogram/Fourier/processor.h>
 
 #include <gtkmm/widget.h>
@@ -21,8 +17,7 @@ class TextSpectrumView : public Gtk::ScrolledWindow {
 public:
 
     TextSpectrumView() :
-            Gtk::ScrolledWindow(),
-            _system(std::make_unique<Audio::Backend::Soundio>()) {
+            Gtk::ScrolledWindow() {
 
         // Add the text view to the widget
         this->add(_textView);
@@ -31,25 +26,6 @@ public:
 
         on_newBuffer = sigc::mem_fun(*this, &TextSpectrumView::drawBuffer);
 
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        // Choose a device
-        auto device = _system.devices()[2];
-
-        // Create a buffer to hold data from that device
-        Audio::Buffer buffer;
-        buffer.resize(device.channelCount);
-        for (auto &channel : buffer)
-            // Make room for exactly one second of audio
-            channel.resize(device.sampleRate);
-
-        // Read data from the device
-        _system.start(device, std::chrono::seconds(2));
-        _system.fillBuffer(buffer);
-        _system.stop();
-
-        // Draw the data
-        drawBuffer(buffer);
     }
 
     sigc::slot<void(const Audio::Buffer &)> on_newBuffer;
@@ -65,7 +41,7 @@ public:
         // Add the data to the text buffer
         std::stringstream stream;
         for (size_t frequency = 0; frequency < timeDomainData[0].size(); ++frequency) {
-            stream << frequency + 1 << ":\t";
+            stream << frequency << ":\t";
             for (auto &channel : timeDomainData) {
 
                 const int width = 10;
@@ -83,7 +59,6 @@ public:
 
 private:
 
-    Audio::System::Blocking _system;
     Fourier::Processor _processor;
 
     Gtk::TextView _textView;
