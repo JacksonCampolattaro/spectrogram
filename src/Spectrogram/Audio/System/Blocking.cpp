@@ -7,7 +7,7 @@ Spectrogram::Audio::System::Blocking::Blocking(std::unique_ptr<Backend::Backend>
 }
 
 void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Device &device,
-                                            std::chrono::milliseconds maxLatency) {
+                                                 std::chrono::milliseconds maxLatency) {
 
     for (size_t channel = 0; channel < device.channelCount; ++channel) {
         _channelQueues.emplace_back(device.sampleRate * maxLatency.count() / 1000);
@@ -18,12 +18,14 @@ void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Devic
 void Spectrogram::Audio::System::Blocking::fillBuffer(Spectrogram::Audio::Buffer &buffer) {
 
     // Wait for enough elements to be available
-    if (_channelQueues[0].read_available() < buffer[0].size()) {
+//    if (_channelQueues[0].read_available() < buffer[0].size()) {
+//
+//        std::mutex m;
+//        std::unique_lock<std::mutex> lock(m);
+//        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer[0].size(); });
+//    }
 
-        std::mutex m;
-        std::unique_lock<std::mutex> lock(m);
-        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer[0].size(); });
-    }
+    while (_channelQueues[0].read_available() < buffer[0].size()) {}
 
     // Fill up the buffer
     for (size_t frame = 0; frame < buffer[0].size(); ++frame) {
@@ -39,18 +41,14 @@ void Spectrogram::Audio::System::Blocking::pushSamples(const std::vector<Sample 
 
     for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
 
-        if (arrays[channel]) {
-
-            [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
-            assert(samplesPushed == length);
-        }
-        else {
-
-            for (size_t i = 0; i < length; ++i) {
-                _channelQueues[channel].push(0);
-            }
-        }
+        [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
+        assert(samplesPushed == length);
     }
 
-    _samplesAdded.notify_one();
+    for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
+
+        _channelQueues[channel].push(-1);
+    }
+
+//    _samplesAdded.notify_one();
 }

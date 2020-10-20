@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
     AudioSystem system(std::make_unique<Backend::Soundio>());
     system.newBuffer.connect(textSpectrumView.on_newBuffer);
     auto device = system.devices()[2];
+    std::cout << "device = " << device << "\n";
     system.start(device, std::chrono::seconds(2), device.sampleRate);
 
     // Run the app

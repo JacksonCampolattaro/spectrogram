@@ -23,7 +23,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
     int framesToRead = maxFrameCount;
 
     // Loop until we've consumed all the frames
-    while (framesToRead > 0) {
+    while (framesToRead > 100) {
 
         // Try to read as many frames as we're allowed to
         int framesRead = framesToRead;
@@ -34,7 +34,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
         }
 
         // If we didn't get any frames, stop trying to read (it's also not necessary to close the stream)
-        if (framesRead == 0) return;
+        if (framesRead == 0) exit(5); //return;
 
         // If the read was successful, push the data
         if (areas) {
@@ -46,14 +46,6 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
             }
             callback(sampleArrays, framesRead);
 
-        } else {
-
-            for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
-
-                sampleArrays[channel] = nullptr;
-
-            }
-            callback(sampleArrays, framesRead);
         }
 
         // Update the number of remaining frames
@@ -85,9 +77,10 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
         _devices.push_back(
-                {deviceInfo->name, i, i == defaultInput,
-                 (size_t) deviceInfo->current_layout.channel_count,
-                 (size_t) deviceInfo->sample_rate_current
+                {
+                        deviceInfo->name, i, i == defaultInput,
+                        (size_t) deviceInfo->current_layout.channel_count,
+                        (size_t) deviceInfo->sample_rates[0].min
                 }
         );
         soundio_device_unref(deviceInfo);
@@ -110,7 +103,7 @@ void Spectrogram::Audio::Backend::Soundio::start(const Device &device, NewSample
     soundio_device_sort_channel_layouts(soundioDevice);
 
     // Select a sample rate
-    int sampleRate = soundioDevice->sample_rate_current;
+    int sampleRate = device.sampleRate;
     std::cout << "sample rate = " << sampleRate << "\n";
 
     // Select a format
