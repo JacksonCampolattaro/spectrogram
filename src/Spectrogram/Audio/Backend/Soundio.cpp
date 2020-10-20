@@ -45,6 +45,15 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
 
             }
             callback(sampleArrays, framesRead);
+
+        } else {
+
+            for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
+
+                sampleArrays[channel] = nullptr;
+
+            }
+            callback(sampleArrays, framesRead);
         }
 
         // Update the number of remaining frames

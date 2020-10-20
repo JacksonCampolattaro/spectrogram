@@ -38,8 +38,18 @@ void Spectrogram::Audio::System::Blocking::fillBuffer(Spectrogram::Audio::Buffer
 void Spectrogram::Audio::System::Blocking::pushSamples(const std::vector<Sample *> &arrays, size_t length) {
 
     for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
-        [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
-        assert(samplesPushed == length);
+
+        if (arrays[channel]) {
+
+            [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
+            assert(samplesPushed == length);
+        }
+        else {
+
+            for (size_t i = 0; i < length; ++i) {
+                _channelQueues[channel].push(0);
+            }
+        }
     }
 
     _samplesAdded.notify_one();

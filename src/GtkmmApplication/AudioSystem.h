@@ -25,8 +25,6 @@ public:
 
         if (_channelQueues[0].read_available() > _buffer[0].size()) {
 
-            std::cout << "buffer ready" << std::endl;
-
             // Fill the buffer with new data
             for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
                 for (size_t channelNumber = 0; channelNumber < _buffer.size(); ++channelNumber) {

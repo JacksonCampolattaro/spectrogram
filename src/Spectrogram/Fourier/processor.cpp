@@ -84,7 +84,7 @@ namespace Spectrogram::Fourier {
         out = executeFFT();
 
         Audio::Channel processedOutput = calcMagnitudeInDB();
-        processedOutput = normalize(processedOutput);
+//        processedOutput = normalize(processedOutput);
 
         return processedOutput;
     }

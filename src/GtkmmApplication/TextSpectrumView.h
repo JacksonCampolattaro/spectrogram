@@ -44,12 +44,17 @@ public:
             stream << frequency << ":\t";
             for (auto &channel : timeDomainData) {
 
-                const int width = 10;
+                float normalizedAmplitude = (90.0f + channel[frequency]) / 90.0f;
 
                 stream << "[";
+
+                const int width = 10;
                 for (int i = 0; i < width; ++i) {
-                    stream << ((int) (channel[frequency] * width) > i ? '|' : ' ');
+                    stream << ((int) (normalizedAmplitude * width) > i ? '|' : ' ');
                 }
+
+//                stream << normalizedAmplitude;
+
                 stream << "] ";
             }
             stream << "\n";
