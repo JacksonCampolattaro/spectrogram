@@ -1,7 +1,3 @@
-//
-// Created by jackcamp on 10/6/20.
-//
-
 #include "Blocking.h"
 
 
