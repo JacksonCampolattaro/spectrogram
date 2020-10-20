@@ -2,7 +2,7 @@
 find_package(Gtkmm)
 
 add_executable(GtkmmApplication
-        main.cpp)
+        main.cpp TextSpectrumView.h)
 
 target_link_libraries(GtkmmApplication
         Audio
