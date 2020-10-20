@@ -53,9 +53,16 @@ public:
         // Add the data to the text buffer
         std::stringstream stream;
         for (size_t frequency = 0; frequency < timeDomainData[0].size(); ++frequency) {
-            stream << frequency << ": ";
+            stream << frequency << ":\t";
             for (auto &channel : timeDomainData) {
-                stream << channel[frequency] << ", ";
+
+                const int width = 10;
+
+                stream << "[";
+                for (int i = 0; i < width; ++i) {
+                    stream << ((channel[frequency] * (float) width) > (float) i ? '=' : ' ');
+                }
+                stream << "] ";
             }
             stream << "\n";
         }
