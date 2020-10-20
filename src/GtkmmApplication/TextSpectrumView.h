@@ -22,7 +22,7 @@ public:
 
     TextSpectrumView() :
             Gtk::ScrolledWindow(),
-            _system(std::make_unique<Audio::Backend::Dummy>(2000)) {
+            _system(std::make_unique<Audio::Backend::Soundio>()) {
 
         // Add the text view to the widget
         this->add(_textView);
@@ -30,7 +30,7 @@ public:
         _textView.show();
 
         // Choose a device
-        auto device = _system.devices()[0];
+        auto device = _system.devices()[2];
 
         // Create a buffer to hold data from that device
         Audio::Buffer buffer;
@@ -53,14 +53,14 @@ public:
         // Add the data to the text buffer
         std::stringstream stream;
         for (size_t frequency = 0; frequency < timeDomainData[0].size(); ++frequency) {
-            stream << frequency << ":\t";
+            stream << frequency + 1 << ":\t";
             for (auto &channel : timeDomainData) {
 
                 const int width = 10;
 
                 stream << "[";
                 for (int i = 0; i < width; ++i) {
-                    stream << ((channel[frequency] * (float) width) > (float) i ? '=' : ' ');
+                    stream << ((int)(channel[frequency] * width) > i ? '|' : ' ');
                 }
                 stream << "] ";
             }
