@@ -29,6 +29,10 @@ public:
         _textView.set_monospace();
         _textView.show();
 
+        on_newBuffer = sigc::mem_fun(*this, &TextSpectrumView::drawBuffer);
+
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         // Choose a device
         auto device = _system.devices()[2];
 
@@ -45,10 +49,12 @@ public:
         _system.stop();
 
         // Draw the data
-        on_newBuffer(buffer);
+        drawBuffer(buffer);
     }
 
-    void on_newBuffer(const Audio::Buffer &buffer) {
+    sigc::slot<void(const Audio::Buffer &)> on_newBuffer;
+
+    void drawBuffer(const Audio::Buffer &buffer) {
 
         // Convert data to time domain
         _processor = Fourier::Processor(buffer[0].size());
