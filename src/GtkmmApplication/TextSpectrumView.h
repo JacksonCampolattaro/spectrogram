@@ -44,8 +44,14 @@ public:
         _system.fillBuffer(buffer);
         _system.stop();
 
-        // Convert that data to time domain
-        _processor = Fourier::Processor(device.sampleRate);
+        // Draw the data
+        on_newBuffer(buffer);
+    }
+
+    void on_newBuffer(const Audio::Buffer &buffer) {
+
+        // Convert data to time domain
+        _processor = Fourier::Processor(buffer[0].size());
         std::vector<Audio::Channel> timeDomainData;
         for (auto &channel : buffer)
             timeDomainData.push_back(_processor.compute(channel));
@@ -60,7 +66,7 @@ public:
 
                 stream << "[";
                 for (int i = 0; i < width; ++i) {
-                    stream << ((int)(channel[frequency] * width) > i ? '|' : ' ');
+                    stream << ((int) (channel[frequency] * width) > i ? '|' : ' ');
                 }
                 stream << "] ";
             }
