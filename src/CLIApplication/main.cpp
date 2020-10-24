@@ -22,12 +22,12 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], std::chrono::seconds(20));
+    system.start(system.devices()[device], std::chrono::seconds(30));
 
     Buffer buffer;
     buffer.resize(system.devices()[device].channelCount);
     for (auto &channel : buffer)
-        channel.resize(100);
+        channel.resize(200);
 
     for (int i = 0; i < 10000; ++i) {
 
