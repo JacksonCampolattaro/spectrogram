@@ -1,0 +1,99 @@
+# This is a basic workflow to help you get started with Actions
+# see https://github.com/satu0king/Github-Documentation-With-Doxygen
+
+name: Doxygen website generation
+
+on:
+  push:
+    branches: [ master ]
+
+
+jobs:
+
+  documentation-pretty:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Install Doxygen
+        run: sudo apt-get install doxygen
+
+      - name: Configure CMake
+        shell: bash
+        run: cmake -S . -B build -DBUILD_TESTS=OFF -DBUILD_APPLICATIONS=OFF
+
+      - name: Build documentation with CMake
+        shell: bash
+        run: cmake --build build --target documentation-pretty
+
+      - name: Deploy generated html to github-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/html
+
+#  documentation:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#
+#      - uses: actions/checkout@v2
+#
+#      - name: Doxygen
+#        uses: mattnotmitt/doxygen-action@v1.1.0
+#        with:
+#          working-directory: docs
+#
+#      - name: Deploy
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./docs/html
+
+#  build-cmake:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#
+#      - uses: actions/checkout@v2
+#
+#      - run: sudo apt-cache search catch2
+#
+#      - name: Install soundio
+#        run: sudo apt-get install libsoundio-dev
+#
+#      - name: Install Boost
+#        run: sudo apt-get install libboost-all-dev
+#
+#      - name: Install FFTW
+#        run: sudo apt-get install libfftw3-dev
+#
+#      - name: Install GLFW
+#        run: sudo apt-get install libglfw3-dev
+#
+#      - name: Install Catch2
+#        shell: bash
+#        run: |
+#          git clone https://github.com/catchorg/Catch2.git
+#          cd Catch2
+#          cmake -Bbuild -S. -DBUILD_TESTING=OFF
+#          sudo cmake --build build/ --target install
+#
+#      - name: Install Doxygen
+#        run: sudo apt-get install doxygen
+#
+#      - name: Create a build directory
+#        run: cmake -E make_directory ${{runner.workspace}}/build
+#
+#      - name: Configure CMake
+#        shell: bash
+#        working-directory: ${{runner.workspace}}/build
+#        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release
+#
+#      - name: Build with CMake
+#        shell: bash
+#        working-directory: ${{runner.workspace}}/build
+#        run: cmake --build . --config Release --target documentation-pretty
+

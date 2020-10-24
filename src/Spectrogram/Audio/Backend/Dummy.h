@@ -7,15 +7,22 @@
 
 namespace Spectrogram::Audio::Backend {
 
+    /**
+     * @brief A backend implementation designed for testing of code built on top of the backend
+     */
     class Dummy : public Backend {
 
     public:
 
+        /**
+         * @brief Constructor which can be used to configure the generator
+         * @param frequency the frequency (in Hz) of the output signal
+         */
         Dummy(float frequency);
 
         DeviceList &devices() override;
 
-        void start(const Device &device, size_t frames, NewBufferCallback callback) override;
+        void start(const Device &device, size_t frames, NewSamplesCallback callback) override;
 
         void stop() override;
 

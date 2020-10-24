@@ -14,7 +14,6 @@ int main() {
     auto system = System::Blocking(std::make_unique<Backend::Soundio>());
 //    auto system = System::Blocking(std::make_unique<Backend::Dummy>(1200));
 
-
     // List the devices
     std::cout << "Devices:" << std::endl;
     for (const auto &device : system.devices())
@@ -23,18 +22,19 @@ int main() {
     int device = 2;
     std::cout << "\nInput device" << std::endl;
     std::cout << system.devices()[device] << std::endl;
-    system.start(system.devices()[device], 2560);
+    system.start(system.devices()[device], 10000);
 
     for (int i = 0; i < 10000; ++i) {
 
         auto buffer = system.getBuffer();
-        for (int sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex++) {
 
-            for (int channel = 0; channel < buffer.size(); ++channel) {
+        for (size_t sampleIndex = 0; sampleIndex < buffer[0].size(); sampleIndex += 1) {
 
-                auto sample = buffer[channel][sampleIndex];
+            for (auto channel : buffer) {
 
-                std::string view = "               |               ";
+                auto sample = channel[sampleIndex];
+
+                std::string view = "                                   |                                   ";
                 view.replace(view.size() * (sample + 1) / 2, 1, "*");
 
                 std::cout << view;
