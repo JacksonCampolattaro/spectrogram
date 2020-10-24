@@ -84,7 +84,6 @@ namespace Spectrogram::Fourier {
         out = executeFFT();
 
         Audio::Channel processedOutput = calcMagnitudeInDB();
-//        processedOutput = normalize(processedOutput);
 
         return processedOutput;
     }
@@ -131,24 +130,6 @@ namespace Spectrogram::Fourier {
         Audio::Sample dBVal = POWER_TO_DB_MULT * std::log10(val + EPSILON);
 
         return dBVal;
-    }
-
-// TODO: if this is slowing down the processing too much, there is
-// a rougher way to normalize without having to find the min and max
-    Audio::Channel &Processor::normalize(Audio::Channel &v) {
-        Audio::Sample max = *std::max_element(v.begin(), v.end());
-        Audio::Sample min = *std::min_element(v.begin(), v.end());
-
-        if (max == min) {
-            throw std::domain_error("ERROR: " + std::to_string(max) + ", all the values are the same in this Channel.");
-        }
-
-        // Normalization adapted from user Alex I from stackoverflow
-        // https://stackoverflow.com/questions/21283144/generating-correct-spectrogram-using-fftw-and-window-function
-        for (auto it = v.begin(); it != v.end(); ++it) {
-            *it = (*it - min) / (max - min);
-        }
-        return v;
     }
 
 }

@@ -87,9 +87,6 @@ namespace Spectrogram::Fourier {
         // Converts magnitude to decibels
         Audio::Sample convertToDb(const Audio::Sample &val);
 
-        // Normalizes the data to be between 0 and 1
-        Audio::Channel &normalize(Audio::Channel &v);
-
         // Calculate Hann
         float hann(const int &, const int &);
 
