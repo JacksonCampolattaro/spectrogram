@@ -9,7 +9,7 @@
 
 namespace Spectrogram::Audio::System {
 
-    class Event : protected System {
+    class Event : public System {
     public:
 
         explicit Event(std::unique_ptr<Backend::Backend> backend);
@@ -27,11 +27,13 @@ namespace Spectrogram::Audio::System {
 
     protected:
 
-        using System::start;
-
         std::deque<ChannelQueue> _channelQueues;
 
         Buffer _buffer;
+
+    private:
+
+        using System::start;
 
     };
 

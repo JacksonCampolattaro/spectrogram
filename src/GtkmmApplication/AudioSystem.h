@@ -10,12 +10,18 @@
 
 using namespace Spectrogram::Audio;
 
-class AudioSystem : protected System::Event {
+class AudioSystem : public System::Event {
 public:
 
     explicit AudioSystem(std::unique_ptr<Backend::Backend> backend) :
             Event(std::move(backend)) {
+
         _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::onNewDataAdded));
+
+        getDevices = sigc::mem_fun(*this, &Event::devices);
+
+        start = sigc::mem_fun<const Device &, std::chrono::milliseconds, size_t>(*this, &Event::start);
+
     }
 
     void onNewDataAdded() {
@@ -44,12 +50,12 @@ public:
     sigc::signal<void(const Buffer &)> newBuffer;
 
     sigc::slot<const DeviceList &(void)> getDevices;
-    sigc::slot<void(const Device &, std::chrono::milliseconds maxLatency, size_t bufferLength)> start;
+    sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
     sigc::slot<void(void)> stop;
 
-private:
-
     using Event::devices;
+
+private:
 
     Glib::Dispatcher _dispatcher;
 
