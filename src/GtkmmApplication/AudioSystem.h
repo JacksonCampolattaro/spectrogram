@@ -18,8 +18,6 @@ public:
         _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::onNewDataAdded));
     }
 
-    sigc::signal<void(const Buffer &)> newBuffer;
-
     void onNewDataAdded() {
 
 
@@ -43,11 +41,15 @@ public:
         _dispatcher.emit();
     }
 
-    using Event::devices;
-    using Event::start;
-    using Event::stop;
+    sigc::signal<void(const Buffer &)> newBuffer;
+
+    sigc::slot<const DeviceList &(void)> getDevices;
+    sigc::slot<void(const Device &, std::chrono::milliseconds maxLatency, size_t bufferLength)> start;
+    sigc::slot<void(void)> stop;
 
 private:
+
+    using Event::devices;
 
     Glib::Dispatcher _dispatcher;
 

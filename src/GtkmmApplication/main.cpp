@@ -20,15 +20,22 @@ int main(int argc, char *argv[]) {
 
     // Create a window with a TextSpectrumView
     Gtk::Window window;
+    window.set_default_size(200, 500);
+    window.set_title("Spectrogram");
     TextSpectrumView textSpectrumView;
     window.add(textSpectrumView);
     textSpectrumView.show();
 
+    // Create an audio system to get data from
     AudioSystem system(std::make_unique<Backend::Soundio>());
+
+    // Link the audio system with the window, so it knows when to draw data
     system.newBuffer.connect(textSpectrumView.on_newBuffer);
-    auto device = system.devices()[2];
-    std::cout << "device = " << device << "\n";
-    system.start(device, std::chrono::seconds(2), device.sampleRate);
+
+    // Start the audio system
+//    auto device = system.devices()[2];
+//    std::cout << "device = " << device << "\n";
+//    system.start(device, std::chrono::seconds(2), device.sampleRate/60);
 
     // Run the app
     return app->run(window);
