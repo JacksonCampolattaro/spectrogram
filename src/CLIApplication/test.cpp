@@ -14,9 +14,10 @@
 #include <iostream>
 
 #include <boost/lockfree/spsc_queue.hpp>
+#include <deque>
 
 struct RecordContext {
-    boost::lockfree::spsc_queue<float> *queue;
+    std::deque<boost::lockfree::spsc_queue<float>> queues;
 };
 static enum SoundIoFormat prioritized_formats[] = {
         SoundIoFormatFloat32NE,
@@ -55,9 +56,9 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
     struct RecordContext *rc = static_cast<RecordContext *>(instream->userdata);
     struct SoundIoChannelArea *areas;
     int err;
-    int free_count = rc->queue->write_available();
+    int free_count = rc->queues[0].write_available();
     if (free_count < frame_count_min) {
-        fprintf(stderr, "ring buffer overflow\n");
+        fprintf(stderr, "output buffer overflow\n");
         exit(1);
     }
     int write_frames = min_int(free_count, frame_count_max);
@@ -78,7 +79,7 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
             for (int frame = 0; frame < frame_count; frame += 1) {
                 for (int ch = 0; ch < instream->layout.channel_count; ch += 1) {
 
-                    rc->queue->push(*(float*)areas[ch].ptr);
+                    rc->queues[ch].push(*(float*)areas[ch].ptr);
                     areas[ch].ptr += areas[ch].step;
                 }
             }
@@ -228,7 +229,9 @@ int main(int argc, char **argv) {
     fprintf(stderr, "%s %dHz %s interleaved\n",
             instream->layout.name, sample_rate, soundio_format_string(fmt));
     const int ring_buffer_duration_seconds = 30;
-    rc.queue = new boost::lockfree::spsc_queue<float>(ring_buffer_duration_seconds * instream->sample_rate);
+    for (int i = 0; i < selected_device->layouts->channel_count; ++i) {
+        rc.queues.emplace_back(ring_buffer_duration_seconds * instream->sample_rate);
+    }
     if ((err = soundio_instream_start(instream))) {
         fprintf(stderr, "unable to start input device: %s", soundio_strerror(err));
         return 1;
@@ -239,17 +242,21 @@ int main(int argc, char **argv) {
     for (;;) {
         soundio_flush_events(soundio);
         sleep(1);
-        int fill_bytes = rc.queue->read_available(); //soundio_ring_buffer_fill_count(rc.ring_buffer);
+        int fill_bytes = rc.queues[0].read_available(); //soundio_ring_buffer_fill_count(rc.ring_buffer);
 
         int bytes_per_sample = 4;
         for (int i = 0; i < fill_bytes / bytes_per_sample; ++i) {
 
-            float sample = rc.queue->front();//*(float *) read_buf;
-            rc.queue->pop();
-            std::string view = "                                   |                                   ";
-            view.replace(view.size() * (sample + 1) / 2, 1, "*");
-            std::cout << view << std::endl;
+            for (int ch = 0; ch < 2; ++ch) {
 
+                float sample = rc.queues[ch].front();//*(float *) read_buf;
+                rc.queues[ch].pop();
+                std::string view = "                                   |                                   ";
+                view.replace(view.size() * (sample + 1) / 2, 1, "*");
+                std::cout << view;
+            }
+
+            std::cout << std::endl;
 //            std::string view = "                                   |                                   ";
 //            view.replace(view.size() * (sample + 1) / 2, 1, "*");
         }
