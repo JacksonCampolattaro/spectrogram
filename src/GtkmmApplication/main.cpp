@@ -32,6 +32,9 @@ int main(int argc, char *argv[]) {
     // Link the audio system with the window, so it knows when to draw data
     system.newBuffer.connect(textSpectrumView.on_newBuffer);
 
+    // Tell the UI what devices are available
+    textSpectrumView.setDevices(system.devices());
+
     // Start the audio system
 //    auto device = system.devices()[2];
 //    std::cout << "device = " << device << "\n";

@@ -5,24 +5,40 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Spectrogram/Fourier/processor.h>
+#include <Spectrogram/Audio/DeviceList.h>
 
 #include <gtkmm/widget.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/comboboxtext.h>
 
 using namespace Spectrogram;
 
-class TextSpectrumView : public Gtk::ScrolledWindow {
+class TextSpectrumView : public Gtk::Box {
 
 public:
 
     TextSpectrumView() :
-            Gtk::ScrolledWindow() {
+            Gtk::Box(Gtk::ORIENTATION_VERTICAL) {
 
-        // Add the text view to the widget
-        this->add(_textView);
+        // Add the scrolled window containing the text
+        this->pack_start(_scrolledWindow);
+        _scrolledWindow.show();
+
+        // Add the text view
+        _scrolledWindow.add(_textView);
         _textView.set_monospace();
         _textView.show();
+
+        // Add the device dropdown
+        this->pack_start(_comboBoxDevices, false, false);
+        _comboBoxDevices.show();
+
+        // Add the start button
+        this->pack_start(_buttonStart, false, false);
+        _buttonStart.show();
 
         on_newBuffer = sigc::mem_fun(*this, &TextSpectrumView::drawBuffer);
 
@@ -62,11 +78,27 @@ public:
         _textView.get_buffer()->set_text(stream.str());
     }
 
+    void setDevices(const Audio::DeviceList &devices) {
+
+        _devices = &devices;
+
+        for (auto device : devices) {
+            _comboBoxDevices.append(device.name);
+            if (device.isDefault)
+                _comboBoxDevices.set_active(device.id);
+        }
+    }
+
 private:
 
     Fourier::Processor _processor;
 
+    Gtk::ScrolledWindow _scrolledWindow;
     Gtk::TextView _textView;
+    Gtk::Button _buttonStart{"start"};
+
+    const Audio::DeviceList *_devices;
+    Gtk::ComboBoxText _comboBoxDevices;
 };
 
 #endif //SPECTROGRAM_TEXTSPECTRUMVIEW_H
