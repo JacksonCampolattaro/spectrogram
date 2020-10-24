@@ -37,12 +37,11 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
     System::start(device);
 }
 
-void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample *> &arrays, size_t length) {
+void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> &array) {
 
 
     for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
-        [[maybe_unused]] auto samplesPushed = _channelQueues[channel].push(arrays[channel], length);
-        assert(samplesPushed == length);
+        _channelQueues[channel].push(array[channel]);
     }
 
     _samplesAdded.notify_one();

@@ -17,7 +17,7 @@ namespace Spectrogram::Audio::System {
         void fillBuffer(Buffer &buffer);
 
         void start(const Device &device, std::chrono::milliseconds maxLatency);
-        void pushSamples(const std::vector<Sample *> &arrays, size_t length) override;
+        void pushSamples(const std::vector<Sample> &array) override;
         using System::devices;
         using System::stop;
 

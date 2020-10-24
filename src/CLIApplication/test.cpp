@@ -76,12 +76,10 @@ static void read_callback(struct SoundIoInStream *instream, int frame_count_min,
             // silence for the size of the hole.
             //memset(write_ptr, 0, frame_count * instream->bytes_per_frame);
         } else {
-            for (int frame = 0; frame < frame_count; frame += 1) {
-                for (int ch = 0; ch < instream->layout.channel_count; ch += 1) {
+            for (int ch = 0; ch < instream->layout.channel_count; ch += 1) {
 
-                    rc->queues[ch].push(*(float*)areas[ch].ptr);
-                    areas[ch].ptr += areas[ch].step;
-                }
+                rc->queues[ch].push((float*)areas[ch].ptr, frame_count);
+                areas[ch].ptr += areas[ch].step;
             }
         }
         if ((err = soundio_instream_end_read(instream))) {

@@ -66,7 +66,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
                     arrayList.emplace_back(&r.front());
 
                     // Notify the system of the new buffer
-                    callback(arrayList, bufferSize);
+                    callback({0, 0});
                 }
             }
     );
