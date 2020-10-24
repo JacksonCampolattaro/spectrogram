@@ -21,11 +21,24 @@ public:
         getDevices = sigc::mem_fun(*this, &Event::devices);
 
         start = sigc::mem_fun<const Device &, std::chrono::milliseconds, size_t>(*this, &Event::start);
+        stop = sigc::mem_fun(*this, &Event::stop);
 
     }
 
-    void onNewDataAdded() {
+    sigc::signal<void(const Buffer &)> newBuffer;
+    sigc::slot<const DeviceList &(void)> getDevices;
+    sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
+    sigc::slot<void(void)> stop;
 
+    using Event::devices;
+
+private:
+
+    void newDataNotification() override {
+        _dispatcher.emit();
+    }
+
+    void onNewDataAdded() {
 
         if (_channelQueues[0].read_available() > _buffer[0].size()) {
 
@@ -42,20 +55,6 @@ public:
             newBuffer.emit(_buffer);
         }
     }
-
-    void newDataNotification() override {
-        _dispatcher.emit();
-    }
-
-    sigc::signal<void(const Buffer &)> newBuffer;
-
-    sigc::slot<const DeviceList &(void)> getDevices;
-    sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
-    sigc::slot<void(void)> stop;
-
-    using Event::devices;
-
-private:
 
     Glib::Dispatcher _dispatcher;
 

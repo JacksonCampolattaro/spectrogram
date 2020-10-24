@@ -56,6 +56,7 @@ public:
     }
 
     sigc::signal<void(const Audio::Device &, std::chrono::milliseconds, size_t)> start;
+    sigc::signal<void(void)> stop;
 
     sigc::slot<void(const Audio::Buffer &)> on_newBuffer;
 
