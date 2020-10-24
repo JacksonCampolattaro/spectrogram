@@ -36,7 +36,7 @@ target_link_libraries(Qt_Application
   
   # Other Modules' Libraries
   Audio
-  Graphics
+  #Graphics
   Fourier
 )
 
