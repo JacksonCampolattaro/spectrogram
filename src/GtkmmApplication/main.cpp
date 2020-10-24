@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 
     // Link the audio system with the window, so it knows when to draw data
     system.newBuffer.connect(textSpectrumView.on_newBuffer);
+    textSpectrumView.start.connect(system.start);
 
     // Tell the UI what devices are available
     textSpectrumView.setDevices(system.devices());

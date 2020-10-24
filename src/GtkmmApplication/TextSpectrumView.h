@@ -39,10 +39,23 @@ public:
         // Add the start button
         this->pack_start(_buttonStart, false, false);
         _buttonStart.show();
+        _buttonStart.signal_clicked().connect(
+                [this] {
+
+                    const Audio::Device &device = (*_devices)[_comboBoxDevices.get_active_row_number()];
+                    start.emit(
+                            device,
+                            std::chrono::seconds(2),
+                            device.sampleRate
+                    );
+                }
+        );
 
         on_newBuffer = sigc::mem_fun(*this, &TextSpectrumView::drawBuffer);
 
     }
+
+    sigc::signal<void(const Audio::Device &, std::chrono::milliseconds, size_t)> start;
 
     sigc::slot<void(const Audio::Buffer &)> on_newBuffer;
 
@@ -82,7 +95,7 @@ public:
 
         _devices = &devices;
 
-        for (auto device : devices) {
+        for (auto &device : devices) {
             _comboBoxDevices.append(device.name);
             if (device.isDefault)
                 _comboBoxDevices.set_active(device.id);
@@ -97,7 +110,7 @@ private:
     Gtk::TextView _textView;
     Gtk::Button _buttonStart{"start"};
 
-    const Audio::DeviceList *_devices;
+    const Audio::DeviceList *_devices{};
     Gtk::ComboBoxText _comboBoxDevices;
 };
 
