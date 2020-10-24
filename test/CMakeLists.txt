@@ -4,10 +4,9 @@ if (NOT Catch2_FOUND)
 
     include(FetchContent)
     FetchContent_Declare(
-            catch
+            Catch2
             GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-            GIT_SHALLOW ON
-    )
+            GIT_TAG        v2.13.1)
     FetchContent_MakeAvailable(catch)
 
 endif ()
