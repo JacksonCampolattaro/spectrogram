@@ -9,12 +9,12 @@
 
 typedef struct {
     Spectrogram::Audio::Backend::Backend::NewSamplesCallback newSamplesCallback;
-    std::vector<Spectrogram::Audio::Sample *> sampleArrays;
+    std::vector<Spectrogram::Audio::Sample> sampleArray;
 } UserData;
 
 static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int minFrameCount, int maxFrameCount) {
     auto userData = static_cast<UserData *>(instream->userdata);
-    auto &sampleArrays = userData->sampleArrays;
+    auto &sampleArrays = userData->sampleArray;
     auto callback = userData->newSamplesCallback;
     int err;
 
@@ -39,12 +39,16 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
         // If the read was successful, push the data
         if (areas) {
 
-            for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
+            for (int frame = 0; frame < framesRead; ++frame) {
 
-                sampleArrays[channel] = reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
+                for (size_t channel = 0; channel < sampleArrays.size(); ++channel) {
 
+                    sampleArrays[channel] = *reinterpret_cast<Spectrogram::Audio::Sample *>(areas[channel].ptr);
+                    areas[channel].ptr += areas[channel].step;
+
+                }
+                callback(sampleArrays);
             }
-            callback(sampleArrays, framesRead);
         }
 
         // Update the number of remaining frames
@@ -75,7 +79,12 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
     for (int i = 0; i < soundio_input_device_count(_soundio); ++i) {
 
         auto deviceInfo = soundio_get_input_device(_soundio, i);
-        _devices.emplace_back(deviceInfo->name, i, i == defaultInput, deviceInfo->current_layout.channel_count);
+        _devices.push_back(
+                {deviceInfo->name, i, i == defaultInput,
+                 (size_t) deviceInfo->current_layout.channel_count,
+                 (size_t) deviceInfo->sample_rate_current
+                }
+        );
         soundio_device_unref(deviceInfo);
     }
 }
@@ -86,7 +95,7 @@ Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() 
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Soundio::start(const Device &device, [[maybe_unused]] size_t frames, NewSamplesCallback callback) {
+void Spectrogram::Audio::Backend::Soundio::start(const Device &device, NewSamplesCallback callback) {
 
     // Retrieve the relevant device
     SoundIoDevice *soundioDevice = soundio_get_input_device(_soundio, device.id);
@@ -115,7 +124,7 @@ void Spectrogram::Audio::Backend::Soundio::start(const Device &device, [[maybe_u
 
     auto userData = new UserData;
     userData->newSamplesCallback = callback;
-    userData->sampleArrays.resize(_inStream->layout.channel_count);
+    userData->sampleArray.resize(_inStream->layout.channel_count);
     _inStream->userdata = userData;
 
 

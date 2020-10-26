@@ -11,10 +11,10 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::System::device
     return _backend->devices();
 }
 
-void Spectrogram::Audio::System::System::start(const Device &device, size_t frames) {
-    _backend->start(device, frames,
-                    [this](auto arrays, auto length) {
-                        pushSamples(arrays, length);
+void Spectrogram::Audio::System::System::start(const Device &device) {
+    _backend->start(device,
+                    [this](auto array) {
+                        pushSamples(array);
                     });
 }
 

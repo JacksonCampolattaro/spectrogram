@@ -11,7 +11,6 @@ namespace Spectrogram::Audio::Backend {
      * @brief A backend implementation designed for testing of code built on top of the backend
      */
     class Dummy : public Backend {
-
     public:
 
         /**
@@ -22,7 +21,7 @@ namespace Spectrogram::Audio::Backend {
 
         DeviceList &devices() override;
 
-        void start(const Device &device, size_t frames, NewSamplesCallback callback) override;
+        void start(const Device &device, NewSamplesCallback callback) override;
 
         void stop() override;
 
@@ -33,7 +32,7 @@ namespace Spectrogram::Audio::Backend {
         std::atomic<bool> _stop;
 
         float _frequency;
-        float _sampleRate = 48000;
+        size_t _sampleRate = 48000;
         int _sampleNumber = 0;
     };
 

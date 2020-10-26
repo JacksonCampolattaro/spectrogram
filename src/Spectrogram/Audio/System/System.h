@@ -40,9 +40,8 @@ namespace Spectrogram::Audio::System {
          * whenever new audio data becomes available
          *
          * @param device the device to connect to
-         * @param frames the number of frames in a buffer
          */
-        virtual void start(const Device &device, size_t frames);
+        virtual void start(const Device &device);
 
         /**
          * @brief Stops the backend
@@ -58,7 +57,7 @@ namespace Spectrogram::Audio::System {
          * @param arrays N pointers to c-style arrays of samples, where N is the number of channels
          * @param length the length of the arrays (length is nondeterministic, but common between the arrays)
          */
-        virtual void pushSamples(const std::vector<Sample *> &arrays, size_t length) = 0;
+        virtual void pushSamples(const std::vector<Sample> &array) = 0;
 
     private:
 

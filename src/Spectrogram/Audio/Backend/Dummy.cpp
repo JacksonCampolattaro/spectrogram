@@ -3,16 +3,16 @@
 #include <math.h>
 
 Spectrogram::Audio::Backend::Dummy::Dummy(float frequency) : _frequency(frequency) {
-    _devices.emplace_back("Sinusoid", 0, true, 2);
-    _devices.emplace_back("Square", 1, false, 2);
-    _devices.emplace_back("Sawtooth", 2, false, 2);
+    _devices.push_back({"Sinusoid", 0, true, 2, _sampleRate});
+    _devices.push_back({"Square", 1, false, 2, _sampleRate});
+    _devices.push_back({"Sawtooth", 2, false, 2, _sampleRate});
 }
 
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Dummy::devices() {
     return _devices;
 }
 
-void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t frames, NewSamplesCallback callback) {
+void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesCallback callback) {
 
     _stop = false;
 
@@ -21,7 +21,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
 
                 while (!_stop) {
 
-                    int bufferSize = frames;
+                    int bufferSize = 100;
 
                     // Sleep for the amount of time it should take to fill a buffer this size
                     float bufferTime = (float) bufferSize / _sampleRate;
@@ -66,7 +66,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, size_t fram
                     arrayList.emplace_back(&r.front());
 
                     // Notify the system of the new buffer
-                    callback(arrayList, frames);
+                    callback({0, 0});
                 }
             }
     );

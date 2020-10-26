@@ -12,13 +12,11 @@ namespace Spectrogram::Audio {
      */
     struct Device {
 
-        Device(std::string name, int id, bool isDefault, size_t channelCount) :
-                name(std::move(name)), id(id), isDefault(isDefault), channelCount(channelCount) {}
-
         std::string name;
         int id;
         bool isDefault;
         size_t channelCount;
+        size_t sampleRate;
 
         /**
          * @brief This allows directly writing the device's info to an output stream, useful for debugging

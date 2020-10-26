@@ -16,7 +16,7 @@ namespace Spectrogram::Audio::System {
      * This is useful for a minimum viable product, (for example, the CLI application),
      * but a full application should use a more event-oriented subclass of System.
      */
-    class Blocking : public System {
+    class Blocking : protected System {
     public:
 
         /**
@@ -30,26 +30,38 @@ namespace Spectrogram::Audio::System {
         explicit Blocking(std::unique_ptr<Backend::Backend> backend);
 
         /**
-         * @brief Returns a buffer full of samples as soon as they become available.
+         * @brief Fills a buffer with samples
          *
+         * The number of samples to read is determined by the size of the buffer passed in.
          * Blocks until one buffer's length worth of samples is available.
          * The approach to blocking may be a source of latency.
          *
-         * @return the new buffer
+         * @param buffer the buffer to fill
          */
-        Buffer getBuffer();
+        void fillBuffer(Buffer &buffer);
 
-        void start(const Device &device, size_t frames) override;
+        using System::devices;
 
-        void pushSamples(const std::vector<Sample *> &arrays, size_t length) override;
+        /**
+         * @brief Starts the backend and prepares the data structures underlying the blocking system
+         *
+         * @param device The input device to connect to
+         * @param maxLatency The maximum allowable latency before samples should start being dropped
+         */
+        void start(const Device &device, std::chrono::milliseconds maxLatency);
+
+        using System::stop;
+
+        void pushSamples(const std::vector<Sample> &array) override;
 
         typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
 
-    private:
+    protected:
+
+        using System::start;
 
         std::deque<ChannelQueue> _channelQueues;
         std::condition_variable _samplesAdded;
-        size_t _frames;
 
     };
 }
