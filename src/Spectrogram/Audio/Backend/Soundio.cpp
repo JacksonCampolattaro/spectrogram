@@ -61,6 +61,8 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
         }
 
     }
+
+    callback(nullptr);
 }
 
 static void overflow_callback([[maybe_unused]] struct SoundIoInStream *instream) {

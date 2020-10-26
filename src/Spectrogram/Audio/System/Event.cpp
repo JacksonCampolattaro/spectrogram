@@ -24,10 +24,15 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
 
 void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *array) {
 
+    if (array) {
 
-    for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
-        _channelQueues[channel].push((*array)[channel]);
+        for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
+            _channelQueues[channel].push((*array)[channel]);
+        }
+
+    } else {
+
+        newDataNotification();
     }
 
-    newDataNotification();
 }

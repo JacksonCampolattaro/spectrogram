@@ -67,6 +67,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
 
                     // Notify the system of the new buffer
                     callback(&sampleArray);
+                    callback(nullptr);
                 }
             }
     );
