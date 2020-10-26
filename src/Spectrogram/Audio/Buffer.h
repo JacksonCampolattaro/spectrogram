@@ -25,6 +25,7 @@ namespace Spectrogram::Audio {
      * @todo
      */
     typedef std::vector<Channel> Buffer;
+
 }
 
 

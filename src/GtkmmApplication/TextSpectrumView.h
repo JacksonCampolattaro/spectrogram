@@ -51,6 +51,16 @@ public:
                 }
         );
 
+        // Add the stop button
+        this->pack_start(_buttonStop, false, false);
+        _buttonStop.show();
+        _buttonStop.signal_clicked().connect(
+                [this] {
+
+                    stop.emit();
+                }
+        );
+
         on_newBuffer = sigc::mem_fun(*this, &TextSpectrumView::drawBuffer);
 
     }
@@ -110,6 +120,7 @@ private:
     Gtk::ScrolledWindow _scrolledWindow;
     Gtk::TextView _textView;
     Gtk::Button _buttonStart{"start"};
+    Gtk::Button _buttonStop{"stop"};
 
     const Audio::DeviceList *_devices{};
     Gtk::ComboBoxText _comboBoxDevices;
