@@ -47,7 +47,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
                     areas[channel].ptr += areas[channel].step;
 
                 }
-                callback(sampleArrays);
+                callback(&sampleArrays);
             }
         }
 

@@ -26,6 +26,7 @@ public:
     }
 
     sigc::signal<void(const Buffer &)> newBuffer;
+
     sigc::slot<const DeviceList &(void)> getDevices;
     sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
     sigc::slot<void(void)> stop;

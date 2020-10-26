@@ -61,12 +61,12 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
                         }
                     }
 
-                    std::vector<Sample *> arrayList;
-                    arrayList.emplace_back(&l.front());
-                    arrayList.emplace_back(&r.front());
+                    std::vector<Sample> sampleArray;
+                    sampleArray.emplace_back(l.front());
+                    sampleArray.emplace_back(r.front());
 
                     // Notify the system of the new buffer
-                    callback({0, 0});
+                    callback(&sampleArray);
                 }
             }
     );

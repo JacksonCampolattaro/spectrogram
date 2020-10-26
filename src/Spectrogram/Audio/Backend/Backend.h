@@ -21,7 +21,7 @@ namespace Spectrogram::Audio::Backend {
     public:
 
         typedef std::function<void(const std::vector<Device> &)> DevicesChangedCallback;
-        typedef std::function<void(const std::vector<Sample> &array)> NewSamplesCallback;
+        typedef std::function<void(const std::vector<Sample> *array)> NewSamplesCallback;
 
         /**
          * @brief a method to find out which devices are available as inputs

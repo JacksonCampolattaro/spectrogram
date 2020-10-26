@@ -19,7 +19,7 @@ namespace Spectrogram::Audio::System {
         using System::devices;
         using System::stop;
 
-        void pushSamples(const std::vector<Sample> &array) override;
+        void pushSamples(const std::vector<Sample> *array) override;
 
         virtual void newDataNotification() = 0;
 
@@ -38,6 +38,5 @@ namespace Spectrogram::Audio::System {
     };
 
 }
-
 
 #endif //SPECTROGRAM_EVENT_H

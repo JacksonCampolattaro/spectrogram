@@ -22,11 +22,11 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
     System::start(device);
 }
 
-void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> &array) {
+void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *array) {
 
 
     for (size_t channel = 0; channel < _channelQueues.size(); ++channel) {
-        _channelQueues[channel].push(array[channel]);
+        _channelQueues[channel].push((*array)[channel]);
     }
 
     newDataNotification();
