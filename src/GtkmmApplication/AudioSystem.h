@@ -18,8 +18,6 @@ public:
 
         _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::onNewDataAdded));
 
-        getDevices = sigc::mem_fun(*this, &Event::devices);
-
         start = sigc::mem_fun<const Device &, std::chrono::milliseconds, size_t>(*this, &Event::start);
         stop = sigc::mem_fun(*this, &Event::stop);
 
@@ -27,7 +25,6 @@ public:
 
     sigc::signal<void(const Buffer &)> newBuffer;
 
-    sigc::slot<const DeviceList &(void)> getDevices;
     sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
     sigc::slot<void(void)> stop;
 

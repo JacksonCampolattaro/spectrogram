@@ -89,6 +89,8 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
         );
         soundio_device_unref(deviceInfo);
     }
+
+    _inStream = nullptr;
 }
 
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() {
