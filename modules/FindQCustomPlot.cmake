@@ -23,7 +23,7 @@ mark_as_advanced(QCustomPlot_INCLUDE_DIRS)
 # Finds the library
 unset(QCustomPlot_LIBRARIES CACHE)
 find_library(QCustomPlot_LIBRARIES
-        NAMES libqcustomplot-qt5.so
+        NAMES libqcustomplot-qt5.so libqcustomplot.so qcustomplot.so
         HINTS ${QCustomPlot_HINTS}
         PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32
         PATHS ${QCustomPlot_PATHS}
