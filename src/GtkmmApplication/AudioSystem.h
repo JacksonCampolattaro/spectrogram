@@ -38,19 +38,10 @@ private:
 
     void processNewData() override {
 
-        if (_channelQueues[0].read_available() > _buffer[0].size()) {
-
-            // Fill the buffer with new data
-            for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
-                for (size_t channelNumber = 0; channelNumber < _buffer.size(); ++channelNumber) {
-
-                    _buffer[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
-                    _channelQueues[channelNumber].pop();
-                }
-            }
+        if (newDataAvailable()) {
 
             // Allow the buffer to be processed
-            newBuffer.emit(_buffer);
+            newBuffer.emit(retrieveNewData());
         }
     }
 
