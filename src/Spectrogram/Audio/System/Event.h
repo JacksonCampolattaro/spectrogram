@@ -14,14 +14,15 @@ namespace Spectrogram::Audio::System {
 
         explicit Event(std::unique_ptr<Backend::Backend> backend);
 
-        void start(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
-
         using System::devices;
+
+        void start(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
         using System::stop;
 
         void pushSamples(const std::vector<Sample> *array) override;
 
-        virtual void newDataNotification() = 0;
+        virtual void notifyNewData() = 0;
+        virtual void processNewData() = 0;
 
         typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
 

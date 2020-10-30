@@ -32,7 +32,7 @@ void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *a
 
     } else {
 
-        newDataNotification();
+        notifyNewData();
     }
 
 }

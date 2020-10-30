@@ -18,6 +18,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
     auto callback = userData->newSamplesCallback;
     int err;
 
+    // This prevents the latency from building up too much
     assert(maxFrameCount < 20000);
 
     int framesToRead = maxFrameCount;

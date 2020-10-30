@@ -16,27 +16,27 @@ public:
     explicit AudioSystem(std::unique_ptr<Backend::Backend> backend) :
             Event(std::move(backend)) {
 
-        _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::onNewDataAdded));
+        _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::processNewData));
 
         start = sigc::mem_fun<const Device &, std::chrono::milliseconds, size_t>(*this, &Event::start);
         stop = sigc::mem_fun(*this, &Event::stop);
 
     }
 
-    sigc::signal<void(const Buffer &)> newBuffer;
+    using Event::devices;
 
     sigc::slot<void(const Device &, std::chrono::milliseconds, size_t)> start;
     sigc::slot<void(void)> stop;
 
-    using Event::devices;
+    sigc::signal<void(const Buffer &)> newBuffer;
 
 private:
 
-    void newDataNotification() override {
+    void notifyNewData() override {
         _dispatcher.emit();
     }
 
-    void onNewDataAdded() {
+    void processNewData() override {
 
         if (_channelQueues[0].read_available() > _buffer[0].size()) {
 
