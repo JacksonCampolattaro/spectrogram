@@ -21,21 +21,19 @@ namespace Spectrogram::Audio::System {
 
         void pushSamples(const std::vector<Sample> *array) override;
 
-        typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
-
     protected:
 
+        virtual void checkForNewData();
+
         virtual void notifyNewData() = 0;
-        virtual void processNewData() = 0;
+        virtual void processNewData(const Buffer &buffer) = 0;
 
-        virtual bool newDataAvailable();
-        virtual const Buffer &retrieveNewData();
+    private:
 
+        typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
         std::deque<ChannelQueue> _channelQueues;
 
         Buffer _buffer;
-
-    private:
 
         using System::start;
 

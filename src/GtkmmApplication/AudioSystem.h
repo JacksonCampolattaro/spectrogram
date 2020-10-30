@@ -16,7 +16,7 @@ public:
     explicit AudioSystem(std::unique_ptr<Backend::Backend> backend) :
             Event(std::move(backend)) {
 
-        _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::processNewData));
+        _dispatcher.connect(sigc::mem_fun(*this, &AudioSystem::checkForNewData));
 
         start = sigc::mem_fun<const Device &, std::chrono::milliseconds, size_t>(*this, &Event::start);
         stop = sigc::mem_fun(*this, &Event::stop);
@@ -36,13 +36,10 @@ private:
         _dispatcher.emit();
     }
 
-    void processNewData() override {
+    void processNewData(const Buffer &buffer) override {
 
-        if (newDataAvailable()) {
-
-            // Allow the buffer to be processed
-            newBuffer.emit(retrieveNewData());
-        }
+        // Allow the buffer to be processed
+        newBuffer.emit(buffer);
     }
 
     Glib::Dispatcher _dispatcher;

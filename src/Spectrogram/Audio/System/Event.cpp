@@ -37,23 +37,21 @@ void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *a
 
 }
 
-bool Spectrogram::Audio::System::Event::newDataAvailable() {
+void Spectrogram::Audio::System::Event::checkForNewData() {
 
     // Data is available when the queues contain enough samples to fill the buffer
-    return _channelQueues[0].read_available() > _buffer[0].size();
-}
+    if (_channelQueues[0].read_available() > _buffer[0].size()) {
 
-const Spectrogram::Audio::Buffer &Spectrogram::Audio::System::Event::retrieveNewData() {
+        // Fill the buffer with new data
+        for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
+            for (size_t channelNumber = 0; channelNumber < _buffer.size(); ++channelNumber) {
 
-    // Fill the buffer with new data
-    for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
-        for (size_t channelNumber = 0; channelNumber < _buffer.size(); ++channelNumber) {
-
-            _buffer[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
-            _channelQueues[channelNumber].pop();
+                _buffer[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
+                _channelQueues[channelNumber].pop();
+            }
         }
-    }
 
-    // Return a reference to it
-    return _buffer;
+        // Process the data
+        processNewData(_buffer);
+    }
 }
