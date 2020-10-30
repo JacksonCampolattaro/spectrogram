@@ -13,7 +13,7 @@ class GraphGui : public QMainWindow
 public:
 	explicit GraphGui(QWidget *parent = 0);
 
-	void setYAxisLog();
+	//void setYAxisLog();
 	void setupRealTimeColorMap();
 
 public slots:

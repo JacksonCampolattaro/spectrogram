@@ -35,19 +35,19 @@ void GraphGui::createColorScale()
 }
 
 // TODO: Maybe this works right??? Not sure how to test
-void GraphGui::setYAxisLog()
-{
-  /* To change the axis scale type from a linear scale to a logarithmic scale, 
-   *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
-  */
-  QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-  customPlot->yAxis->setTicker(logTicker);
-  customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+// void GraphGui::setYAxisLog()
+// {
+//   /* To change the axis scale type from a linear scale to a logarithmic scale, 
+//    *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
+//   */
+//   QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+//   customPlot->yAxis->setTicker(logTicker);
+//   customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
-  colorMap->setDataScaleType(QCPAxis::stLogarithmic);
-  colorMap->colorScale()->axis()->setTicker(logTicker);
-  colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
-}
+//   colorMap->setDataScaleType(QCPAxis::stLogarithmic);
+//   colorMap->colorScale()->axis()->setTicker(logTicker);
+//   colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
+// }
 
 void GraphGui::setupRealTimeColorMap()
 {
