@@ -52,7 +52,7 @@ namespace Spectrogram::Audio::System {
 
         using System::stop;
 
-        void pushSamples(const std::vector<Sample> &array) override;
+        void pushSamples(const std::vector<Sample> *array) override;
 
         typedef boost::lockfree::spsc_queue<Sample> ChannelQueue;
 
