@@ -4,32 +4,46 @@
 #include <QMainWindow>
 #include "qcustomplot.h"
 #include <QTimer>
-#include <Spectrogram/Audio/Buffer.h>
 
-class GraphGui : public QMainWindow
-{
-	Q_OBJECT
+#include <Spectrogram/Audio/Buffer.h>
+#include <Spectrogram/Audio/System/Blocking.h>
+#include <Spectrogram/Audio/Backend/Soundio.h>
+
+#include <Spectrogram/Fourier/processor.h>
+
+using namespace Spectrogram;
+using namespace Spectrogram::Audio;
+
+class GraphGui : public QMainWindow {
+Q_OBJECT
 
 public:
-	explicit GraphGui(QWidget *parent = 0);
+    explicit GraphGui(QWidget *parent = 0);
 
-	//void setYAxisLog();
-	void setupRealTimeColorMap();
+    //void setYAxisLog();
+    void setupRealTimeColorMap();
 
 public slots:
-	void realtimeColorSlot();
+
+    void realtimeColorSlot();
 
 private:
-	void createColorScale();
-	Spectrogram::Audio::Channel getFakeChannel();
+    void createColorScale();
+
+    Spectrogram::Audio::Channel getFakeChannel();
 
 
-	QCustomPlot *customPlot;
-	QCPColorMap *colorMap;
+    QCustomPlot *customPlot;
+    QCPColorMap *colorMap;
 
-	int yAxisSize;
-	int xAxisSize;
-	QTimer *dataTimer;
+    int yAxisSize;
+    int xAxisSize;
+    QTimer *dataTimer;
+
+    Buffer buffer;
+    System::Blocking audioSystem;
+    Fourier::Processor audioProcessor{};
+
 
 };
 
