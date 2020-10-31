@@ -74,7 +74,7 @@ namespace Spectrogram::Audio::System {
          *
          * You should hook a cross-thread signal up to this.
          */
-        virtual void checkForNewData();
+        void checkForNewData();
 
     private:
 
