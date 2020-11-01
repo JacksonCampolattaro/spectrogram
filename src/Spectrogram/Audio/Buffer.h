@@ -42,10 +42,11 @@ namespace Spectrogram::Audio {
 
         [[nodiscard]] size_t numChannels() const;
 
-        FrameRange frames();
+        [[nodiscard]] FrameRange frames();
 
-        ChannelRange &channels();
-        ChannelRange const &channels() const;
+        [[nodiscard]] ChannelRange &channels();
+
+        [[nodiscard]] ChannelRange const &channels() const;
 
     private:
 
