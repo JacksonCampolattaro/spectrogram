@@ -13,10 +13,7 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
     }
 
     // Prepare the buffer
-    _buffer.channels().resize(device.channelCount);
-    for (auto &channel : _buffer.channels()) {
-        channel.resize(bufferLength);
-    }
+    _buffer = std::make_unique<Buffer>(device, bufferLength);
 
     // Start the backend
     System::start(device);
@@ -40,18 +37,18 @@ void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *a
 void Spectrogram::Audio::System::Event::checkForNewData() {
 
     // Data is available when the queues contain enough samples to fill the buffer
-    if (_channelQueues[0].read_available() > _buffer.numFrames()) {
+    if (_channelQueues[0].read_available() > _buffer->numFrames()) {
 
         // Fill the buffer with new data
-        for (size_t sampleNumber = 0; sampleNumber < _buffer.numFrames(); ++sampleNumber) {
-            for (size_t channelNumber = 0; channelNumber < _buffer.numChannels(); ++channelNumber) {
+        for (size_t sampleNumber = 0; sampleNumber < _buffer->numFrames(); ++sampleNumber) {
+            for (size_t channelNumber = 0; channelNumber < _buffer->numChannels(); ++channelNumber) {
 
-                _buffer.channels()[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
+                _buffer->channels()[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
                 _channelQueues[channelNumber].pop();
             }
         }
 
         // Process the data
-        processNewData(_buffer);
+        processNewData(*_buffer);
     }
 }

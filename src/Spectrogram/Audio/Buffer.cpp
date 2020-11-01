@@ -5,6 +5,13 @@
 #include <assert.h>
 #include "Buffer.h"
 
+Spectrogram::Audio::Buffer::Buffer(const Spectrogram::Audio::Device &device, size_t numFrames) {
+
+    _channels.resize(device.channelCount);
+    for (auto &channel : _channels)
+        channel.resize(numFrames);
+}
+
 size_t Spectrogram::Audio::Buffer::numFrames() const {
     assert(numChannels() > 0);
     return _channels[0].size();

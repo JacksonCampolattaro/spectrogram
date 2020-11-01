@@ -24,10 +24,7 @@ int main() {
     std::cout << system.devices()[device] << std::endl;
     system.start(system.devices()[device], std::chrono::seconds(30));
 
-    Buffer buffer;
-    buffer.channels().resize(system.devices()[device].channelCount);
-    for (auto &channel : buffer.channels())
-        channel.resize(200);
+    Buffer buffer(system.devices()[device], 200);
 
     for (int i = 0; i < 10000; ++i) {
 

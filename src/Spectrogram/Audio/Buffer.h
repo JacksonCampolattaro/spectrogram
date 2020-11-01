@@ -1,6 +1,8 @@
 #ifndef SPECTROGRAM_BUFFER_H
 #define SPECTROGRAM_BUFFER_H
 
+#include <Spectrogram/Audio/Device.h>
+
 #include <utility>
 #include <vector>
 
@@ -38,6 +40,8 @@ namespace Spectrogram::Audio {
          */
         typedef std::vector<Channel> ChannelRange;
 
+        Buffer(const Device &device, size_t numFrames);
+
         [[nodiscard]] size_t numFrames() const;
 
         [[nodiscard]] size_t numChannels() const;
@@ -65,6 +69,7 @@ namespace Spectrogram::Audio {
         FrameIter() : _sampleIterators({}) {};
 
         friend class boost::iterator_core_access;
+
         friend class FrameRange;
 
         explicit FrameIter(std::vector<Channel::const_iterator> sampleIterators) :
