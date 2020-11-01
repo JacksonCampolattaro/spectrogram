@@ -22,18 +22,18 @@ void Spectrogram::Audio::System::Blocking::start(const Spectrogram::Audio::Devic
 void Spectrogram::Audio::System::Blocking::fillBuffer(Spectrogram::Audio::Buffer &buffer) {
 
     // Wait for enough elements to be available
-    if (_channelQueues[0].read_available() < buffer[0].size()) {
+    if (_channelQueues[0].read_available() < buffer.channels[0].size()) {
 
         std::mutex m;
         std::unique_lock<std::mutex> lock(m);
-        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer[0].size(); });
+        _samplesAdded.wait(lock, [=] { return _channelQueues[0].read_available() >= buffer.channels[0].size(); });
     }
 
     // Fill up the buffer
-    for (size_t frame = 0; frame < buffer[0].size(); ++frame) {
-        for (size_t channel = 0; channel < buffer.size(); ++channel) {
+    for (size_t frame = 0; frame < buffer.channels[0].size(); ++frame) {
+        for (size_t channel = 0; channel < buffer.channels.size(); ++channel) {
 
-            buffer[channel][frame] = _channelQueues[channel].front();
+            buffer.channels[channel][frame] = _channelQueues[channel].front();
             _channelQueues[channel].pop();
         }
     }

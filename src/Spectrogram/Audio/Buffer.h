@@ -19,12 +19,19 @@ namespace Spectrogram::Audio {
      */
     typedef std::vector<Sample> Channel;
 
-    /**
-     * @brief A buffer is a collection of channels, representing the sound produced by the system in a fixed time.
-     *
-     * @todo
-     */
-    typedef std::vector<Channel> Buffer;
+    class Buffer {
+    public:
+
+        /**
+         * @brief
+         *
+         * @todo
+         */
+        typedef std::vector<Channel> ChannelRange;
+
+        ChannelRange channels;
+
+    };
 
 }
 

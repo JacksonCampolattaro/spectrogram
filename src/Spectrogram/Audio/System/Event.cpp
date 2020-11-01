@@ -13,8 +13,8 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
     }
 
     // Prepare the buffer
-    _buffer.resize(device.channelCount);
-    for (auto &channel : _buffer) {
+    _buffer.channels.resize(device.channelCount);
+    for (auto &channel : _buffer.channels) {
         channel.resize(bufferLength);
     }
 
@@ -40,13 +40,13 @@ void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *a
 void Spectrogram::Audio::System::Event::checkForNewData() {
 
     // Data is available when the queues contain enough samples to fill the buffer
-    if (_channelQueues[0].read_available() > _buffer[0].size()) {
+    if (_channelQueues[0].read_available() > _buffer.channels[0].size()) {
 
         // Fill the buffer with new data
-        for (size_t sampleNumber = 0; sampleNumber < _buffer[0].size(); ++sampleNumber) {
-            for (size_t channelNumber = 0; channelNumber < _buffer.size(); ++channelNumber) {
+        for (size_t sampleNumber = 0; sampleNumber < _buffer.channels[0].size(); ++sampleNumber) {
+            for (size_t channelNumber = 0; channelNumber < _buffer.channels.size(); ++channelNumber) {
 
-                _buffer[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
+                _buffer.channels[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
                 _channelQueues[channelNumber].pop();
             }
         }

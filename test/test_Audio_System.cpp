@@ -18,12 +18,12 @@ TEST_CASE("Dummy devices", "[Dummy]") {
     system.start(system.devices()[0], std::chrono::seconds(2));
 
     Buffer buffer;
-    buffer.resize(system.devices()[0].channelCount);
-    for (auto &channel : buffer)
+    buffer.channels.resize(system.devices()[0].channelCount);
+    for (auto &channel : buffer.channels)
         channel.resize(200);
 
     system.fillBuffer(buffer);
-    for (auto channel : buffer) {
+    for (auto channel : buffer.channels) {
         for (auto sample : channel) {
             std::cout << sample << "\t";
         }
