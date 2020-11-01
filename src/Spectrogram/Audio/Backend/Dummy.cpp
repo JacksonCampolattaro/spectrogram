@@ -70,6 +70,7 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
 
                     callback(nullptr);
                 }
+
             }
     );
 }
@@ -77,5 +78,6 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
 void Spectrogram::Audio::Backend::Dummy::stop() {
 
     _stop = true;
-    _t.join();
+    if (_t.joinable())
+        _t.join();
 }
