@@ -13,3 +13,8 @@ size_t Spectrogram::Audio::Buffer::numFrames() const {
 size_t Spectrogram::Audio::Buffer::numChannels() const {
     return channels.size();
 }
+
+Spectrogram::Audio::FrameRange Spectrogram::Audio::Buffer::frames() {
+    return FrameRange(*this);
+}
+
