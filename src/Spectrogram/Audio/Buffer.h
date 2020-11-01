@@ -29,6 +29,8 @@ namespace Spectrogram::Audio {
          */
         typedef std::vector<Channel> ChannelRange;
 
+        size_t numFrames() const;
+
         ChannelRange channels;
 
     };

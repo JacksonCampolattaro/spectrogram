@@ -40,10 +40,10 @@ void Spectrogram::Audio::System::Event::pushSamples(const std::vector<Sample> *a
 void Spectrogram::Audio::System::Event::checkForNewData() {
 
     // Data is available when the queues contain enough samples to fill the buffer
-    if (_channelQueues[0].read_available() > _buffer.channels[0].size()) {
+    if (_channelQueues[0].read_available() > _buffer.numFrames()) {
 
         // Fill the buffer with new data
-        for (size_t sampleNumber = 0; sampleNumber < _buffer.channels[0].size(); ++sampleNumber) {
+        for (size_t sampleNumber = 0; sampleNumber < _buffer.numFrames(); ++sampleNumber) {
             for (size_t channelNumber = 0; channelNumber < _buffer.channels.size(); ++channelNumber) {
 
                 _buffer.channels[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();

@@ -3,3 +3,7 @@
 //
 
 #include "Buffer.h"
+
+size_t Spectrogram::Audio::Buffer::numFrames() const {
+    return channels[0].size();
+}
