@@ -31,7 +31,7 @@ void Spectrogram::Audio::System::Blocking::fillBuffer(Spectrogram::Audio::Buffer
 
     // Fill up the buffer
     for (size_t frame = 0; frame < buffer.numFrames(); ++frame) {
-        for (size_t channel = 0; channel < buffer.channels.size(); ++channel) {
+        for (size_t channel = 0; channel < buffer.numChannels(); ++channel) {
 
             buffer.channels[channel][frame] = _channelQueues[channel].front();
             _channelQueues[channel].pop();

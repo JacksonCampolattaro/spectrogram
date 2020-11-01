@@ -44,7 +44,7 @@ void Spectrogram::Audio::System::Event::checkForNewData() {
 
         // Fill the buffer with new data
         for (size_t sampleNumber = 0; sampleNumber < _buffer.numFrames(); ++sampleNumber) {
-            for (size_t channelNumber = 0; channelNumber < _buffer.channels.size(); ++channelNumber) {
+            for (size_t channelNumber = 0; channelNumber < _buffer.numChannels(); ++channelNumber) {
 
                 _buffer.channels[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
                 _channelQueues[channelNumber].pop();
