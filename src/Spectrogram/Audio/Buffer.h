@@ -42,10 +42,14 @@ namespace Spectrogram::Audio {
 
         [[nodiscard]] size_t numChannels() const;
 
-        ChannelRange channels;
-
         FrameRange frames();
 
+        ChannelRange &channels();
+        ChannelRange const &channels() const;
+
+    private:
+
+        ChannelRange _channels;
     };
 
     class FrameIter :
@@ -85,14 +89,14 @@ namespace Spectrogram::Audio {
 
         FrameIter begin() {
             std::vector<Channel::const_iterator> sampleIterators;
-            for (auto channel : _buffer.channels)
+            for (auto channel : _buffer.channels())
                 sampleIterators.emplace_back(channel.begin());
             return FrameIter(sampleIterators);
         }
 
         FrameIter end() {
             std::vector<Channel::const_iterator> sampleIterators;
-            for (auto channel : _buffer.channels)
+            for (auto channel : _buffer.channels())
                 sampleIterators.emplace_back(channel.end());
             return FrameIter(sampleIterators);
         }

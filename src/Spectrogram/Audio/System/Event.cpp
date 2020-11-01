@@ -13,8 +13,8 @@ void Spectrogram::Audio::System::Event::start(const Spectrogram::Audio::Device &
     }
 
     // Prepare the buffer
-    _buffer.channels.resize(device.channelCount);
-    for (auto &channel : _buffer.channels) {
+    _buffer.channels().resize(device.channelCount);
+    for (auto &channel : _buffer.channels()) {
         channel.resize(bufferLength);
     }
 
@@ -46,7 +46,7 @@ void Spectrogram::Audio::System::Event::checkForNewData() {
         for (size_t sampleNumber = 0; sampleNumber < _buffer.numFrames(); ++sampleNumber) {
             for (size_t channelNumber = 0; channelNumber < _buffer.numChannels(); ++channelNumber) {
 
-                _buffer.channels[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
+                _buffer.channels()[channelNumber][sampleNumber] = _channelQueues[channelNumber].front();
                 _channelQueues[channelNumber].pop();
             }
         }

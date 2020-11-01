@@ -73,9 +73,9 @@ public:
     void drawBuffer(const Audio::Buffer &buffer) {
 
         // Convert data to time domain
-        _processor = Fourier::Processor(buffer.channels[0].size());
+        _processor = Fourier::Processor(buffer.channels()[0].size());
         std::vector<Audio::Channel> timeDomainData;
-        for (auto &channel : buffer.channels)
+        for (auto &channel : buffer.channels())
             timeDomainData.push_back(_processor.compute(channel));
 
         // Add the data to the text buffer
