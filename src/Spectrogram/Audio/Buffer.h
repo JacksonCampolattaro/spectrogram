@@ -5,6 +5,7 @@
 
 #include <utility>
 #include <vector>
+#include <chrono>
 
 #include <boost/iterator/iterator_facade.hpp>
 
@@ -55,6 +56,7 @@ namespace Spectrogram::Audio {
     private:
 
         ChannelRange _channels;
+        std::chrono::milliseconds _timeLength;
     };
 
     class FrameIter :
