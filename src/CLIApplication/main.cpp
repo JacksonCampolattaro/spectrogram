@@ -33,20 +33,33 @@ int main() {
 
         system.fillBuffer(buffer);
 
-        for (size_t sampleIndex = 0; sampleIndex < buffer.channels()[0].size(); sampleIndex += 1) {
+        auto frameRange = buffer.frames();
+        for (auto frame : frameRange) {
 
-            for (auto channel : buffer.channels()) {
-
-                auto sample = channel[sampleIndex];
+            for (auto sample : frame) {
 
                 std::string view = "                                   |                                   ";
                 view.replace(view.size() * (sample + 1) / 2, 1, "*");
-
                 std::cout << view;
             }
             std::cout << "\n";
         }
         std::cout << std::endl;
+
+//        for (size_t sampleIndex = 0; sampleIndex < buffer.channels()[0].size(); sampleIndex += 1) {
+//
+//            for (auto channel : buffer.channels()) {
+//
+//                auto sample = channel[sampleIndex];
+//
+//                std::string view = "                                   |                                   ";
+//                view.replace(view.size() * (sample + 1) / 2, 1, "*");
+//
+//                std::cout << view;
+//            }
+//            std::cout << "\n";
+//        }
+//        std::cout << std::endl;
 
     }
 

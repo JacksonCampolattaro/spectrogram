@@ -54,13 +54,17 @@ namespace Spectrogram::Audio {
     };
 
     class FrameIter :
-            boost::iterator_facade<FrameIter, Frame, boost::forward_traversal_tag> {
-    public:
+            public boost::iterator_facade<
+                    FrameIter,
+                    Frame,
+                    boost::forward_traversal_tag,
+                    Frame> {
 
     private:
 
-        friend class boost::iterator_core_access;
+        FrameIter() : _sampleIterators({}) {};
 
+        friend class boost::iterator_core_access;
         friend class FrameRange;
 
         explicit FrameIter(std::vector<Channel::const_iterator> sampleIterators) :
@@ -71,18 +75,19 @@ namespace Spectrogram::Audio {
                 iter++;
         }
 
-        bool equal(FrameIter const &other) {
+        [[nodiscard]] bool equal(FrameIter const &other) const {
             return _sampleIterators[0] == other._sampleIterators[0];
         }
 
         [[nodiscard]] Frame dereference() const {
             Frame frame;
             for (auto &iter : _sampleIterators)
-                frame.push_back(*iter);
+                frame.emplace_back(*iter);
             return frame;
         }
 
         std::vector<Channel::const_iterator> _sampleIterators;
+
     };
 
     class FrameRange {
