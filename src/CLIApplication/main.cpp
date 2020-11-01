@@ -25,17 +25,17 @@ int main() {
     system.start(system.devices()[device], std::chrono::seconds(30));
 
     Buffer buffer;
-    buffer.channels.resize(system.devices()[device].channelCount);
-    for (auto &channel : buffer.channels)
+    buffer.channels().resize(system.devices()[device].channelCount);
+    for (auto &channel : buffer.channels())
         channel.resize(200);
 
     for (int i = 0; i < 10000; ++i) {
 
         system.fillBuffer(buffer);
 
-        for (size_t sampleIndex = 0; sampleIndex < buffer.channels[0].size(); sampleIndex += 1) {
+        for (size_t sampleIndex = 0; sampleIndex < buffer.channels()[0].size(); sampleIndex += 1) {
 
-            for (auto channel : buffer.channels) {
+            for (auto channel : buffer.channels()) {
 
                 auto sample = channel[sampleIndex];
 
