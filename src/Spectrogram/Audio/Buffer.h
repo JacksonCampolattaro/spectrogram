@@ -48,10 +48,12 @@ namespace Spectrogram::Audio {
 
         [[nodiscard]] ChannelRange const &channels() const;
 
+        [[nodiscard]] float time() const;
+
     private:
 
         ChannelRange _channels;
-        std::chrono::milliseconds _timeLength;
+        float _timeLength;
     };
 
     class FrameIter :

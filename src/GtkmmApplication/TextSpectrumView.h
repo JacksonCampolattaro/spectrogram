@@ -47,7 +47,7 @@ public:
                     start.emit(
                             device,
                             std::chrono::seconds(2),
-                            device.sampleRate
+                            device.sampleRate / 10
                     );
                 }
         );
@@ -97,34 +97,6 @@ public:
         }
         _textView.get_buffer()->set_text(stream.str());
 
-        // Convert data to time domain
-//        _processor = Fourier::Processor(buffer.channels()[0].size());
-//        std::vector<Audio::Channel> timeDomainData;
-//        for (auto &channel : buffer.channels())
-//            timeDomainData.push_back(_processor.compute(channel));
-//
-//        // Add the data to the text buffer
-//        std::stringstream stream;
-//        for (size_t frequency = 0; frequency < timeDomainData[0].size(); frequency += 1) {
-//            stream << frequency << ":\t";
-//            for (auto &channel : timeDomainData) {
-//
-//                float normalizedAmplitude = (90.0f + channel[frequency]) / 90.0f;
-//
-//                stream << "[";
-//
-//                const int width = 10;
-//                for (int i = 0; i < width; ++i) {
-//                    stream << ((int) (normalizedAmplitude * width) > i ? '|' : ' ');
-//                }
-//
-////                stream << normalizedAmplitude;
-//
-//                stream << "] ";
-//            }
-//            stream << "\n";
-//        }
-//        _textView.get_buffer()->set_text(stream.str());
     }
 
     void setDevices(const Audio::DeviceList &devices) {

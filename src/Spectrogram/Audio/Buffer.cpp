@@ -11,9 +11,7 @@ Spectrogram::Audio::Buffer::Buffer(const Spectrogram::Audio::Device &device, siz
     for (auto &channel : _channels)
         channel.resize(numFrames);
 
-    _timeLength = std::chrono::milliseconds(
-            1000 * numFrames / device.sampleRate
-    );
+    _timeLength = (float) numFrames / (float) device.sampleRate;
 }
 
 size_t Spectrogram::Audio::Buffer::numFrames() const {
@@ -35,5 +33,9 @@ Spectrogram::Audio::Buffer::ChannelRange &Spectrogram::Audio::Buffer::channels()
 
 const Spectrogram::Audio::Buffer::ChannelRange &Spectrogram::Audio::Buffer::channels() const {
     return _channels;
+}
+
+float Spectrogram::Audio::Buffer::time() const {
+    return _timeLength;
 }
 

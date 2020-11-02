@@ -18,8 +18,7 @@ namespace Spectrogram::Fourier {
         FrequencyDomainBuffer frequencyDomainBuffer;
         for (size_t index = 0; index < intensities[0].size(); ++index) {
 
-            // FIXME: This is temporary
-            Frequency frequency = index;
+            Frequency frequency = index / buffer.time();
 
             std::vector<Intensity> frame;
             for (auto channel : intensities)
