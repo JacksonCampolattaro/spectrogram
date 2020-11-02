@@ -34,11 +34,6 @@ namespace Spectrogram::Audio {
     class Buffer {
     public:
 
-        /**
-         * @brief
-         *
-         * @todo
-         */
         typedef std::vector<Channel> ChannelRange;
 
         Buffer(const Device &device, size_t numFrames);

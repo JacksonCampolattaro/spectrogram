@@ -1,7 +1,7 @@
 find_package(FFTW REQUIRED)
 
 add_library(Fourier
-        processor.h processor.cpp)
+        processor.h processor.cpp FrequencyDomainBuffer.cpp FrequencyDomainBuffer.h)
 
 target_include_directories(Fourier PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
