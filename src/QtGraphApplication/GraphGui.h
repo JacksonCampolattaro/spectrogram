@@ -20,7 +20,7 @@ Q_OBJECT
 public:
     explicit GraphGui(QWidget *parent = 0);
 
-    //void setYAxisLog();
+    void setYAxisLog();
     void setupRealTimeColorMap();
 
 public slots:
@@ -30,7 +30,7 @@ public slots:
 private:
     void createColorScale();
 
-    Spectrogram::Audio::Channel getFakeChannel();
+    Channel getNewChannel();
 
 
     QCustomPlot *customPlot;
