@@ -1,11 +1,11 @@
 #include <QApplication>
-#include "GraphGui.h"
+#include "QtMainApplication.h"
 
 
 int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
-	GraphGui gui;
+	QtMainApplication gui;
 	gui.show();
 	return app.exec();
 }
