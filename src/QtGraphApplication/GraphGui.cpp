@@ -41,6 +41,10 @@ GraphGui::GraphGui(QWidget *parent) :
     setGeometry(100, 100, 500, 400);
 }
 
+GraphGui::~GraphGui() {
+    audioSystem.stop();
+}
+
 void GraphGui::createColorScale() {
     QCPColorScale *colorScale = new QCPColorScale(customPlot);
     customPlot->plotLayout()->addElement(0, 1, colorScale);

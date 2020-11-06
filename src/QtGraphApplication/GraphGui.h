@@ -19,6 +19,7 @@ Q_OBJECT
 
 public:
     explicit GraphGui(QWidget *parent = 0);
+    ~GraphGui();
 
     void setYAxisLog();
     void setupRealTimeColorMap();

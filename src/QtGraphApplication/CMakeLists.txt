@@ -18,7 +18,8 @@ target_link_libraries(QtGraphApplication
 target_include_directories(QtGraphApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
 
-# target_compile_options(QtGraphApplication PRIVATE
+target_compile_options(QtGraphApplication PRIVATE
+          -g)
 #         -Werror
 #         -Wall
 #         -Wextra)
