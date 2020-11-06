@@ -2,6 +2,7 @@
 #define QT_MAIN_APP_H
 
 #include <QMainWindow>
+#include "SpectrogramGraph.h"
 
 class QtMainApplication : public QMainWindow {
 Q_OBJECT
@@ -13,7 +14,7 @@ public slots:
 
 
 private:
-
+    SpectrogramGraph *spectrogram;
 
 };
 
