@@ -12,8 +12,6 @@
 #include <Spectrogram/Fourier/FrequencyDomainBuffer.h>
 
 using namespace Spectrogram;
-//using namespace Spectrogram::Audio;
-//using namespace Spectrogram::Fourier;
 
 class GraphGui : public QMainWindow {
 Q_OBJECT

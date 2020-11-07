@@ -15,10 +15,10 @@ GraphGui::GraphGui(QWidget *parent) :
         audioSystem(std::make_unique<Audio::Backend::Soundio>()) {
 
     // Choose a device
-    auto device = audioSystem.devices()[1];
+    auto device = audioSystem.devices()[2];
     // when length == sampleRate, a buffer is 1 second long
     // when length == sampleRate / 100, a buffer is 10 milliseconds long
-    size_t channelLength = device.sampleRate / 100;
+    size_t channelLength = device.sampleRate / 10;
 
     // Configure our buffer to hold the amount of data we want
     buffer = Audio::Buffer(device, channelLength);
@@ -64,12 +64,13 @@ void GraphGui::setYAxisLog() {
      *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
     */
     QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(10);
     customPlot->yAxis->setTicker(logTicker);
     customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
-    colorMap->setDataScaleType(QCPAxis::stLogarithmic);
-    colorMap->colorScale()->axis()->setTicker(logTicker);
-    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
+//    colorMap->setDataScaleType(QCPAxis::stLogarithmic);
+//    colorMap->colorScale()->axis()->setTicker(logTicker);
+//    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
 }
 
 void GraphGui::setupRealTimeColorMap() {
@@ -104,6 +105,7 @@ void GraphGui::setupRealTimeColorMap() {
 }
 
 void GraphGui::realtimeColorSlot() {
+    std::cout << "drawing" << std::endl;
 
     // Shift everything on the plot to the left
     for (int x = 0; x < xAxisSize - 1; ++x) {
@@ -116,13 +118,19 @@ void GraphGui::realtimeColorSlot() {
 
     // Get the latest information
     auto frequencyDomainBuffer = getNewData();
+    auto maxFreq = (--frequencyDomainBuffer.end())->first;
+    std::cout << maxFreq << std::endl;
+
+    // Make sure the y axis is scaled correctly
+    colorMap->data()->setRange(QCPRange(0, xAxisSize),
+                               QCPRange(0, maxFreq));
 
     // Plot the latest data at the rightmost column
     auto iter = frequencyDomainBuffer.begin();
     for (int y = 0; y < yAxisSize; ++y) {
 
         // Only plot one channel, for now
-        colorMap->data()->setCell(xAxisSize, y, (*iter).second[0]);
+        colorMap->data()->setCell(xAxisSize - 1, y, (*iter).second[0]);
 
         iter++;
     }
