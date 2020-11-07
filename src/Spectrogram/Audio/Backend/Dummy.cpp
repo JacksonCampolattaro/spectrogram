@@ -59,14 +59,16 @@ void Spectrogram::Audio::Backend::Dummy::start(const Device &device, NewSamplesC
                             l.push_back(acos(sinusoid) / M_PI_2 - 1.0f);
                             r.push_back(acos(sinusoid) / M_PI_2 - 1.0f);
                         }
+
+                        std::vector<Sample> sampleArray;
+                        sampleArray.emplace_back(l.back());
+                        sampleArray.emplace_back(r.back());
+
+                        // Notify the system of the new buffer
+                        callback(&sampleArray);
                     }
 
-                    std::vector<Sample *> arrayList;
-                    arrayList.emplace_back(&l.front());
-                    arrayList.emplace_back(&r.front());
-
-                    // Notify the system of the new buffer
-                    callback({0, 0});
+                    callback(nullptr);
                 }
             }
     );

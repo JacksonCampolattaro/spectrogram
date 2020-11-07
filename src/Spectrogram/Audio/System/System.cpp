@@ -12,6 +12,7 @@ const Spectrogram::Audio::DeviceList &Spectrogram::Audio::System::System::device
 }
 
 void Spectrogram::Audio::System::System::start(const Device &device) {
+    _backend->stop();
     _backend->start(device,
                     [this](auto array) {
                         pushSamples(array);
