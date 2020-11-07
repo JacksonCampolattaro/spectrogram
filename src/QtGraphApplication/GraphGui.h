@@ -29,14 +29,11 @@ public slots:
 
     void realtimeColorSlot();
 
-//    void draw(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    void draw(const Audio::Buffer &buffer);
 
 private:
 
     void createColorScale();
-
-    Fourier::FrequencyDomainBuffer getNewData();
-
 
     QCustomPlot *customPlot;
     QCPColorMap *colorMap;

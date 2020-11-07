@@ -106,38 +106,8 @@ void GraphGui::setupRealTimeColorMap() {
 
 void GraphGui::realtimeColorSlot() {
 
-    // Shift everything on the plot to the left
-    for (int x = 0; x < xAxisSize - 1; ++x) {
-        for (int y = 0; y < yAxisSize; ++y) {
-
-            // Each element is set to the value of the element to the right
-            colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
-        }
-    }
-
-    // Get the latest information
-    auto frequencyDomainBuffer = getNewData();
-
-    // Make sure the y axis is scaled correctly
-    auto maxFreq = (--frequencyDomainBuffer.end())->first;
-    colorMap->data()->setRange(QCPRange(0, xAxisSize),
-                               QCPRange(0, maxFreq));
-
-    // Plot the latest data at the rightmost column
-    auto iter = frequencyDomainBuffer.begin();
-    for (int y = 0; y < yAxisSize; ++y) {
-
-        // Only plot one channel, for now
-        auto value = (90.0f + (*iter).second[0]) / 90.0f;
-        colorMap->data()->setCell(xAxisSize - 1, y, value);
-
-        iter++;
-    }
-
-    // Redraw the plot
-    colorMap->rescaleDataRange(true);
-    customPlot->rescaleAxes();
-    customPlot->replot();
+    audioSystem.fillBuffer(buffer);
+    draw(buffer);
 
     /*
     static QTime time(QTime::currentTime());
@@ -172,9 +142,40 @@ void GraphGui::realtimeColorSlot() {
      */
 }
 
-Fourier::FrequencyDomainBuffer GraphGui::getNewData() {
+void GraphGui::draw(const Audio::Buffer &buffer) {
+    std::cout << "drawing" << std::endl;
 
-    audioSystem.fillBuffer(buffer);
-    return Fourier::transform(buffer);
+    // Shift everything on the plot to the left
+    for (int x = 0; x < xAxisSize - 1; ++x) {
+        for (int y = 0; y < yAxisSize; ++y) {
+
+            // Each element is set to the value of the element to the right
+            colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
+        }
+    }
+
+    // Get the latest information
+    auto frequencyDomainBuffer = Fourier::transform(buffer);
+
+    // Make sure the y axis is scaled correctly
+    auto maxFreq = (--frequencyDomainBuffer.end())->first;
+    colorMap->data()->setRange(QCPRange(0, xAxisSize),
+                               QCPRange(0, maxFreq));
+
+    // Plot the latest data at the rightmost column
+    auto iter = frequencyDomainBuffer.begin();
+    for (int y = 0; y < yAxisSize; ++y) {
+
+        // Only plot one channel, for now
+        auto value = (90.0f + (*iter).second[0]) / 90.0f;
+        colorMap->data()->setCell(xAxisSize - 1, y, value);
+
+        iter++;
+    }
+
+    // Redraw the plot
+    colorMap->rescaleDataRange(true);
+    customPlot->rescaleAxes();
+    customPlot->replot();
 }
 
