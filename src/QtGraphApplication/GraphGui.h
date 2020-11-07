@@ -9,29 +9,35 @@
 #include <Spectrogram/Audio/System/Blocking.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
 
-#include <Spectrogram/Fourier/processor.h>
+#include <Spectrogram/Fourier/FrequencyDomainBuffer.h>
 
 using namespace Spectrogram;
-using namespace Spectrogram::Audio;
+//using namespace Spectrogram::Audio;
+//using namespace Spectrogram::Fourier;
 
 class GraphGui : public QMainWindow {
 Q_OBJECT
 
 public:
     explicit GraphGui(QWidget *parent = 0);
+
     ~GraphGui();
 
     void setYAxisLog();
+
     void setupRealTimeColorMap();
 
 public slots:
 
     void realtimeColorSlot();
 
+//    void draw(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+
 private:
+
     void createColorScale();
 
-    Channel getNewChannel();
+    Fourier::FrequencyDomainBuffer getNewData();
 
 
     QCustomPlot *customPlot;
@@ -41,9 +47,8 @@ private:
     int xAxisSize;
     QTimer *dataTimer;
 
-    Buffer buffer{};
-    System::Blocking audioSystem;
-    Fourier::Processor audioProcessor{};
+    Audio::Buffer buffer{};
+    Audio::System::Blocking audioSystem;
 
 
 };

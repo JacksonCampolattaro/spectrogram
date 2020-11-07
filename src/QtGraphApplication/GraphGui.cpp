@@ -1,28 +1,30 @@
 #include "GraphGui.h"
 
+#include <Spectrogram/Fourier/Transformer.h>
+
 #define TO_KHZ 0.001
+
+
+//using namespace Spectrogram;
 
 namespace SF = Spectrogram::Fourier;
 namespace SA = Spectrogram::Audio;
 
 GraphGui::GraphGui(QWidget *parent) :
         QMainWindow(parent),
-        audioSystem(std::make_unique<Backend::Soundio>()) {
+        audioSystem(std::make_unique<Audio::Backend::Soundio>()) {
 
     // Choose a device
     auto device = audioSystem.devices()[1];
     // when length == sampleRate, a buffer is 1 second long
     // when length == sampleRate / 100, a buffer is 10 milliseconds long
-    size_t channelLength = device.sampleRate / 100; 
+    size_t channelLength = device.sampleRate / 100;
 
     // Configure our buffer to hold the amount of data we want
-    buffer = Buffer(device, channelLength);
+    buffer = Audio::Buffer(device, channelLength);
 
     // Tell the system to start listening to that device
     audioSystem.start(device, std::chrono::seconds(2));
-
-    // Set up the audio processor, too
-    audioProcessor.setSampleSize(channelLength);
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -57,18 +59,17 @@ void GraphGui::createColorScale() {
 }
 
 // TODO: Maybe this works right??? Not sure how to test
-void GraphGui::setYAxisLog()
-{
-  /* To change the axis scale type from a linear scale to a logarithmic scale, 
-   *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
-  */
-  QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-  customPlot->yAxis->setTicker(logTicker);
-  customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+void GraphGui::setYAxisLog() {
+    /* To change the axis scale type from a linear scale to a logarithmic scale,
+     *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
+    */
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    customPlot->yAxis->setTicker(logTicker);
+    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
-  colorMap->setDataScaleType(QCPAxis::stLogarithmic);
-  colorMap->colorScale()->axis()->setTicker(logTicker);
-  colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
+    colorMap->setDataScaleType(QCPAxis::stLogarithmic);
+    colorMap->colorScale()->axis()->setTicker(logTicker);
+    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
 }
 
 void GraphGui::setupRealTimeColorMap() {
@@ -103,6 +104,35 @@ void GraphGui::setupRealTimeColorMap() {
 }
 
 void GraphGui::realtimeColorSlot() {
+
+    // Shift everything on the plot to the left
+    for (int x = 0; x < xAxisSize - 1; ++x) {
+        for (int y = 0; y < yAxisSize; ++y) {
+
+            // Each element is set to the value of the element to the right
+            colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
+        }
+    }
+
+    // Get the latest information
+    auto frequencyDomainBuffer = getNewData();
+
+    // Plot the latest data at the rightmost column
+    auto iter = frequencyDomainBuffer.begin();
+    for (int y = 0; y < yAxisSize; ++y) {
+
+        // Only plot one channel, for now
+        colorMap->data()->setCell(xAxisSize, y, (*iter).second[0]);
+
+        iter++;
+    }
+
+    // Redraw the plot
+    colorMap->rescaleDataRange(true);
+    customPlot->rescaleAxes();
+    customPlot->replot();
+
+    /*
     static QTime time(QTime::currentTime());
     // calculate two new data points:
     double key = time.elapsed() / 1000.0; // time elapsed since start, in seconds
@@ -132,13 +162,12 @@ void GraphGui::realtimeColorSlot() {
         lastPointKey = key;
     }
     customPlot->replot();
+     */
 }
 
-SA::Channel GraphGui::getNewChannel() {
+Fourier::FrequencyDomainBuffer GraphGui::getNewData() {
 
     audioSystem.fillBuffer(buffer);
-    Channel timeDomainResult = audioProcessor.compute(buffer.channels()[0]);
-
-    return timeDomainResult;
+    return Fourier::transform(buffer);
 }
 
