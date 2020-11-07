@@ -18,7 +18,7 @@ public:
 
 public slots:
 
-    void startSlot(const Device &, std::chrono::milliseconds, size_t);
+    void startSlot(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
 
     void stopSlot();
 
