@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include "qcustomplot.h"
 #include <QTimer>
+#include <QThread>
+
+#include <Spectrogram/PNG/Writer.h>
 
 #include <Spectrogram/Audio/Buffer.h>
 #include <Spectrogram/Audio/System/Blocking.h>
@@ -22,13 +25,18 @@ public:
     ~GraphGui();
 
     void setYAxisLog();
-    void setupRealTimeColorMap();
 
 public slots:
-
     void realtimeColorSlot();
+    void printSuccess(bool success);
+    void onTakeSnapShotClicked();
+
+signals:
+    void writePngSnapShot(QCPColorMapData *data);
 
 private:
+    void setupRealTimeColorMap();
+    void setupPngWriter();
     void createColorScale();
 
     Channel getNewChannel();
@@ -45,7 +53,8 @@ private:
     System::Blocking audioSystem;
     Fourier::Processor audioProcessor{};
 
-
+    QThread writerThread;
+    PNG::Writer *pngWriter;
 };
 
 #endif // GRAPH_GUI_H

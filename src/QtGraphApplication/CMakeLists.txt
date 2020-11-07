@@ -13,7 +13,8 @@ target_link_libraries(QtGraphApplication
         Qt5::Widgets
         Qt5::PrintSupport
         Audio
-        Fourier)
+        Fourier
+        PNG)
 
 target_include_directories(QtGraphApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)

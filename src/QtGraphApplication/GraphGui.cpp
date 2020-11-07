@@ -1,9 +1,11 @@
 #include "GraphGui.h"
+#include <iostream>
 
 #define TO_KHZ 0.001
 
 namespace SF = Spectrogram::Fourier;
 namespace SA = Spectrogram::Audio;
+namespace SP = Spectrogram::PNG;
 
 GraphGui::GraphGui(QWidget *parent) :
         QMainWindow(parent),
@@ -41,10 +43,14 @@ GraphGui::GraphGui(QWidget *parent) :
 
     setupRealTimeColorMap();
     setGeometry(100, 100, 500, 400);
+
+    setupPngWriter();
 }
 
 GraphGui::~GraphGui() {
     audioSystem.stop();
+    writerThread.quit();
+    writerThread.wait();
 }
 
 void GraphGui::createColorScale() {
@@ -85,7 +91,7 @@ void GraphGui::setupRealTimeColorMap() {
 
     createColorScale();
 
-    setYAxisLog();
+    //setYAxisLog();
 
     /* setSize(keysize as in xAxis, valuesize as in yAxis) */
     colorMap->data()->setKeySize(xAxisSize);
@@ -104,14 +110,29 @@ void GraphGui::setupRealTimeColorMap() {
     dataTimer->start(0); // Interval 0 means to refresh as fast as possible
 }
 
+void GraphGui::setupPngWriter()
+{
+    pngWriter = new SP::Writer();
+    pngWriter->setFileName("snapshot.png");
+    pngWriter->moveToThread(&writerThread);
+
+    connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
+    connect(this, &GraphGui::writePngSnapShot, pngWriter, &SP::Writer::onWritePng);
+    connect(pngWriter, &SP::Writer::writingDone, this, &GraphGui::printSuccess);
+    connect(colorMap, &QCPColorMap::gradientChanged, pngWriter, &SP::Writer::onGradiantChanged);
+    writerThread.start();
+}
+
 void GraphGui::realtimeColorSlot() {
     static QTime time(QTime::currentTime());
+    static bool picTaken = false;
     // calculate two new data points:
     double key = time.elapsed() / 1000.0; // time elapsed since start, in seconds
     static double lastPointKey = 0;
     SA::Channel newChannel = getNewChannel();
     if (key - lastPointKey > 0.01) // at most re-map every 10 ms
     {
+        //std::cout << key << std::endl;
         // make key axis range scroll with the data (at a constant range size of xAxisSize)
         colorMap->data()->setKeyRange(QCPRange(key, key+xAxisSize));
         for (int x = 0; x < xAxisSize; ++x) {
@@ -134,6 +155,12 @@ void GraphGui::realtimeColorSlot() {
         lastPointKey = key;
     }
     customPlot->replot();
+
+    if(key > 15 && !picTaken)
+    {
+        picTaken = true;
+        onTakeSnapShotClicked();
+    }
 }
 
 SA::Channel GraphGui::getNewChannel() {
@@ -144,3 +171,19 @@ SA::Channel GraphGui::getNewChannel() {
     return timeDomainResult;
 }
 
+void GraphGui::printSuccess(bool success) {
+    QString msg;
+    QString fileName = pngWriter->getFileName();
+    if(success) {
+        msg = QString("%1 saved to present folder.").arg(fileName);
+    }
+    else {
+        msg = QString("Error: %1 not saved."). arg(fileName);
+    }
+    
+    std::cout << msg.toStdString() << std::endl;
+}
+
+void GraphGui::onTakeSnapShotClicked() {
+    emit writePngSnapShot(colorMap->data());
+}
