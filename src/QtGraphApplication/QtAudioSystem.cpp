@@ -4,7 +4,8 @@ QtAudioSystem::QtAudioSystem(std::unique_ptr<Backend::Backend> backend) :
         QObject(),
         Event(std::move(backend)) {
 
-    // TODO: Internal signals should be linked up here
+    QObject::connect(this, &QtAudioSystem::newDataSignal,
+                     this, &QtAudioSystem::newDataSlot);
 }
 
 void QtAudioSystem::startSlot(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength) {
@@ -21,4 +22,8 @@ void QtAudioSystem::notifyNewData() {
 
 void QtAudioSystem::processNewData(const Buffer &buffer) {
     newBufferSignal(buffer);
+}
+
+void QtAudioSystem::newDataSlot() {
+    checkForNewData();
 }

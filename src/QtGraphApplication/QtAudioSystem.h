@@ -7,7 +7,7 @@
 
 using namespace Spectrogram::Audio;
 
-class QtAudioSystem : public System::Event, public QObject {
+class QtAudioSystem : public QObject, public Spectrogram::Audio::System::Event {
 Q_OBJECT
 
 public:
@@ -31,6 +31,10 @@ private:
     void notifyNewData() override;
 
     void processNewData(const Buffer &buffer) override;
+
+private slots:
+
+    void newDataSlot();
 
 signals:
 
