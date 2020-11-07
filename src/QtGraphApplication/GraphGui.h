@@ -31,6 +31,8 @@ private:
 
     void createColorScale();
 
+    void setupPlot(size_t xSize, size_t ySize);
+
     QCustomPlot *customPlot;
     QCPColorMap *colorMap;
 
