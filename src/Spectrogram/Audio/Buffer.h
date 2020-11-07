@@ -36,6 +36,8 @@ namespace Spectrogram::Audio {
 
         typedef std::vector<Channel> ChannelRange;
 
+        Buffer() = default;
+
         Buffer(const Device &device, size_t numFrames);
 
         [[nodiscard]] size_t numFrames() const;
@@ -53,7 +55,7 @@ namespace Spectrogram::Audio {
     private:
 
         ChannelRange _channels;
-        float _timeLength;
+        float _timeLength = 0;
     };
 
     class FrameIter :

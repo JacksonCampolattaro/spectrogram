@@ -16,9 +16,7 @@ GraphGui::GraphGui(QWidget *parent) :
     size_t channelLength = device.sampleRate / 100; 
 
     // Configure our buffer to hold the amount of data we want
-    buffer.resize(device.channelCount);
-    for (auto &channel : buffer)
-        channel.resize(channelLength);
+    buffer = Buffer(device, channelLength);
 
     // Tell the system to start listening to that device
     audioSystem.start(device, std::chrono::seconds(2));
@@ -139,7 +137,7 @@ void GraphGui::realtimeColorSlot() {
 SA::Channel GraphGui::getNewChannel() {
 
     audioSystem.fillBuffer(buffer);
-    Channel timeDomainResult = audioProcessor.compute(buffer[0]);
+    Channel timeDomainResult = audioProcessor.compute(buffer.channels()[0]);
 
     return timeDomainResult;
 }

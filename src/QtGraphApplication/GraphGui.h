@@ -41,7 +41,7 @@ private:
     int xAxisSize;
     QTimer *dataTimer;
 
-    Buffer buffer;
+    Buffer buffer{};
     System::Blocking audioSystem;
     Fourier::Processor audioProcessor{};
 
