@@ -16,9 +16,12 @@ int main(int argc, char *argv[]) {
     // Link up the signals
     QObject::connect(&audioSystem, &QtAudioSystem::newBufferSignal,
                      &gui, &GraphGui::draw);
+    // TODO: There will be other signals to link
 
     // The GUI doesn't have buttons yet, so we'll have to manually start the backend
-    // TODO
+    auto device = audioSystem.devices()[2];
+    audioSystem.startSlot(device, std::chrono::seconds(2),
+                          device.sampleRate / 60);
 
     // Start the application
     return app.exec();

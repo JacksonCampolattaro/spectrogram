@@ -19,15 +19,11 @@ Q_OBJECT
 public:
     explicit GraphGui(QWidget *parent = 0);
 
-    ~GraphGui();
-
     void setYAxisLog();
 
     void setupRealTimeColorMap();
 
 public slots:
-
-    void realtimeColorSlot();
 
     void draw(const Audio::Buffer &buffer);
 
@@ -40,11 +36,6 @@ private:
 
     int yAxisSize;
     int xAxisSize;
-    QTimer *dataTimer;
-
-    Audio::Buffer buffer{};
-    Audio::System::Blocking audioSystem;
-
 
 };
 
