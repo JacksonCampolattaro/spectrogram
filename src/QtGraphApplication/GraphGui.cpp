@@ -11,7 +11,9 @@ GraphGui::GraphGui(QWidget *parent) :
 
     // Choose a device
     auto device = audioSystem.devices()[1];
-    size_t channelLength = device.sampleRate; // when length == sampleRate, a buffer is 1 second long
+    // when length == sampleRate, a buffer is 1 second long
+    // when length == sampleRate / 100, a buffer is 10 milliseconds long
+    size_t channelLength = device.sampleRate / 100; 
 
     // Configure our buffer to hold the amount of data we want
     buffer.resize(device.channelCount);
@@ -32,10 +34,10 @@ GraphGui::GraphGui(QWidget *parent) :
     setCentralWidget(customPlot);
 
     customPlot->xAxis->setLabel("Time (?)");
-    customPlot->yAxis->setLabel("Frequency (kHz)");
+    customPlot->yAxis->setLabel("Frequency (Hz)");
 
     yAxisSize = channelLength / 2;
-    xAxisSize = 10;
+    xAxisSize = 800;
 
     setupRealTimeColorMap();
     setGeometry(100, 100, 500, 400);
@@ -83,12 +85,12 @@ void GraphGui::setupRealTimeColorMap() {
 
     createColorScale();
 
-    //setYAxisLog();
+    setYAxisLog();
 
     /* setSize(keysize as in xAxis, valuesize as in yAxis) */
     colorMap->data()->setKeySize(xAxisSize);
     colorMap->data()->setValueSize(yAxisSize);
-    colorMap->data()->setRange(QCPRange(0, xAxisSize), QCPRange(0, yAxisSize * TO_KHZ));
+    colorMap->data()->setRange(QCPRange(0, xAxisSize), QCPRange(0, yAxisSize));
 
     colorMap->data()->fill(0);
     colorMap->setGradient(QCPColorGradient::gpGrayscale);
@@ -116,6 +118,7 @@ void GraphGui::realtimeColorSlot() {
             for (int y = 0; y < yAxisSize; ++y) {
                 // put new channel into the last column of the colormap
                 if (x == xAxisSize - 1) {
+                    // setCell needs to be used if working with logscale
                     colorMap->data()->setCell(x, y, (90.0f + newChannel[y]) / 90.0f);
                 }
                 // Shift all the channels down one
