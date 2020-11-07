@@ -98,10 +98,10 @@ void GraphGui::setupRealTimeColorMap() {
     customPlot->rescaleAxes();
     customPlot->replot();
 
-    dataTimer = new QTimer(this);
-    // setup a timer that repeatedly calls GraphGui::realtimeColorSlot:
-    connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeColorSlot()));
-    dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+//    dataTimer = new QTimer(this);
+//    // setup a timer that repeatedly calls GraphGui::realtimeColorSlot:
+//    connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeColorSlot()));
+//    dataTimer->start(0); // Interval 0 means to refresh as fast as possible
 }
 
 void GraphGui::realtimeColorSlot() {
