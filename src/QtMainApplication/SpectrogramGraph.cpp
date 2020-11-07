@@ -1,5 +1,4 @@
 #include "SpectrogramGraph.h"
-#include <QSharedPointer>
 
 #define TO_KHZ 0.001
 
@@ -12,7 +11,10 @@ SpectrogramGraph::SpectrogramGraph(QWidget *parent) :
 
     // Choose a device
     auto device = audioSystem.devices()[1];
-    size_t channelLength = device.sampleRate; // when length == sampleRate, a buffer is 1 second long
+
+    // when length == sampleRate, a buffer is 1 second long
+    // when length == sampleRate / 100, a buffer is 10 milliseconds long
+    size_t channelLength = device.sampleRate / 100; 
 
     // Configure our buffer to hold the amount of data we want
     buffer.resize(device.channelCount);
@@ -28,12 +30,16 @@ SpectrogramGraph::SpectrogramGraph(QWidget *parent) :
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     this->xAxis->setLabel("Time (?)");
-    this->yAxis->setLabel("Frequency (kHz)");
+    this->yAxis->setLabel("Frequency (Hz)");
 
     yAxisSize = channelLength / 2;
-    xAxisSize = 10;
+    xAxisSize = 800;
 
     setupRealTimeColorMap();
+}
+
+SpectrogramGraph::~SpectrogramGraph() {
+    audioSystem.stop();
 }
 
 void SpectrogramGraph::createColorScale() {
@@ -74,12 +80,12 @@ void SpectrogramGraph::setupRealTimeColorMap() {
 
     createColorScale();
 
-    //setYAxisLog();
+    setYAxisLog();
 
     /* setSize(keysize as in xAxis, valuesize as in yAxis) */
     colorMap->data()->setKeySize(xAxisSize);
     colorMap->data()->setValueSize(yAxisSize);
-    colorMap->data()->setRange(QCPRange(0, xAxisSize), QCPRange(0, yAxisSize * TO_KHZ));
+    colorMap->data()->setRange(QCPRange(0, xAxisSize), QCPRange(0, yAxisSize));
 
     colorMap->data()->fill(0);
     colorMap->setGradient(QCPColorGradient::gpGrayscale);

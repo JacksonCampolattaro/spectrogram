@@ -19,6 +19,7 @@ Q_OBJECT
 
 public:
     explicit SpectrogramGraph(QWidget *parent = 0);
+    ~SpectrogramGraph();
 
     void setYAxisLog();
     void setupRealTimeColorMap();
