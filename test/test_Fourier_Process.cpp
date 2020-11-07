@@ -68,13 +68,16 @@ TEST_CASE("Test math", "[Processor]") {
 
     Processor a(aSampleRate); 
     std::vector<float> aProcessedWindow = a.compute(aSamples);
-    aProcessedWindow = normalize(aProcessedWindow);
-    std::cout << "freq bin 3 should be 1 since the freq = 3:\n";
+    //aProcessedWindow = normalize(aProcessedWindow);
+    std::cout << "freq bin 3 should be near 1 since the freq = 3:\n";
     std::cout << "output:\n";
-    for(float db : aProcessedWindow)
-        std::cout << db << ", ";
-    std::cout << std::endl;
-    REQUIRE(aProcessedWindow[aFreq] == 1);
+    for(unsigned int i = 0; i < aProcessedWindow.size(); i++)
+    {
+        aProcessedWindow[i] = (90.0f + aProcessedWindow[i]) / 90.0f;
+        std::cout << aProcessedWindow[i] << ", ";
+    }
+    std::cout << "done" << std::endl;
+    REQUIRE(aProcessedWindow[aFreq] == Approx(.932107));
 
     ////////////////////////////////////////////////////////////////
 
