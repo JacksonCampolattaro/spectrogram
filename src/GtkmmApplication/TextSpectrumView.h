@@ -47,7 +47,7 @@ public:
                     start.emit(
                             device,
                             std::chrono::seconds(2),
-                            device.sampleRate
+                            device.sampleRate / 10
                     );
                 }
         );

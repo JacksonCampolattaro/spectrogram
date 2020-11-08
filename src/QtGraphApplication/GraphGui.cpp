@@ -17,19 +17,18 @@ GraphGui::GraphGui(QWidget *parent) :
     customPlot = new QCustomPlot(this);
     customPlot->xAxis->setLabel("Time");
     customPlot->yAxis->setLabel("Frequency (Hz)");
-    setYAxisLog();
     setCentralWidget(customPlot);
-    setGeometry(100, 200, 800, 400);
+    setGeometry(100, 200, 800, 800);
 }
 
 // TODO: Maybe this works right??? Not sure how to test
 void GraphGui::setYAxisLog() {
 
-    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
-    customPlot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    customPlot->yAxis->setTicker(logTicker);
-    //logTicker->setLogBase(10);
+//    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+//    logTicker->setLogBase(10);
+//    customPlot->yAxis->setTicker(logTicker);
+
 
 //    colorMap->colorScale()->axis()->setTicker(logTicker);
 //    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
@@ -42,14 +41,14 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     auto frequencyDomainBuffer = Fourier::transform(buffer);
 
     // Make sure the graph is scaled correctly for the data being drawn
-    if (yAxisSize != frequencyDomainBuffer.size()) {
+    if (yAxisSize != frequencyDomainBuffer.numFrames()) {
 
-        setupPlot(200, frequencyDomainBuffer.size());
+        setupPlot(200, frequencyDomainBuffer.numFrames());
 
         // Make sure the y axis is scaled correctly
-        auto maxFreq = (--frequencyDomainBuffer.end())->first;
+        auto maxFreq = frequencyDomainBuffer.numFrames() / frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(0.0001, maxFreq));
+                                   QCPRange(10, maxFreq));
         customPlot->rescaleAxes();
     }
 
@@ -63,17 +62,20 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     }
 
     // Plot the latest data at the rightmost column
-    auto iter = frequencyDomainBuffer.begin();
     for (int y = 0; y < yAxisSize; ++y) {
 
         // Only plot one channel, for now
-        auto value = (90.0f + (*iter).second[0]) / 90.0f;
-        //std::cout << value << ", ";
+        auto value = (90.0f + frequencyDomainBuffer.channels()[0][y]) / 90.0f;
+        std::cout << value << ", ";
         colorMap->data()->setCell(xAxisSize - 1, y, value);
 
-        iter++;
     }
-    //std::cout << std::endl;
+    std::cout << std::endl;
+
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(10);
+    colorMap->valueAxis()->setTicker(logTicker);
 
     // Redraw the plot
     colorMap->rescaleDataRange();

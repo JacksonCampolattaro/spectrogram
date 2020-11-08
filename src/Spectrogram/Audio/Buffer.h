@@ -52,7 +52,7 @@ namespace Spectrogram::Audio {
 
         [[nodiscard]] float time() const;
 
-    private:
+    protected:
 
         ChannelRange _channels;
         float _timeLength = 0;
