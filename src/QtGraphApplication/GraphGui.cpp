@@ -132,7 +132,7 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         // Only plot one channel, for now
         auto value = (90.0f + (*iter).second[0]) / 90.0f;
         //std::cout << value << ", ";
-        colorMap->data()->setCell(xAxisSize - 1, y, (float) y / (float) yAxisSize);
+        colorMap->data()->setCell(xAxisSize - 1, y, value);
 
         iter++;
     }
