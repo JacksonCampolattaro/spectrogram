@@ -21,15 +21,11 @@ public:
 
     void setYAxisLog();
 
-    void setupRealTimeColorMap();
-
 public slots:
 
     void draw(const Audio::Buffer &buffer);
 
 private:
-
-    void createColorScale();
 
     void setupPlot(size_t xSize, size_t ySize);
 
