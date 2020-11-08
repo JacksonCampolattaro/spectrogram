@@ -36,8 +36,8 @@ private:
     QCustomPlot *customPlot;
     QCPColorMap *colorMap;
 
-    int yAxisSize;
-    int xAxisSize;
+    int yAxisSize = 2205;
+    int xAxisSize = 800;
 
 };
 

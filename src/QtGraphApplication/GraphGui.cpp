@@ -15,27 +15,48 @@ GraphGui::GraphGui(QWidget *parent) :
 
     // setup customPlot as central widget of window:
     customPlot = new QCustomPlot(this);
-
+    customPlot->axisRect()->setupFullAxesBox(true);
     setCentralWidget(customPlot);
+    setGeometry(100, 200, 800, 400);
+
+    setupPlot(800, 2205);
+
+    //colorMap->data()->setRange({0, (float) xAxisSize}, {0, 2205});
+    colorMap->data()->setRange({-4, 4}, {-4, 4});
+    customPlot->rescaleAxes();
+
+    double x, y, z;
+    for (int xIndex = 0; xIndex < xAxisSize; ++xIndex) {
+        for (int yIndex = 0; yIndex < yAxisSize; ++yIndex) {
+            colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
+            double r = 3 * qSqrt(x * x + y * y) + 1e-2;
+            z = 2 * x * (qCos(r + 2) / r -
+                         qSin(r + 2) / r); // the B field strength of dipole radiation (modulo physical constants)
+            colorMap->data()->setCell(xIndex, yIndex, z);
+        }
+    }
+    colorMap->rescaleDataRange();
+
+    //auto colorScale = new QCPColorScale(customPlot);
+
+//    colorMap->setGradient(QCPColorGradient::gpJet);
+//    colorMap->rescaleDataRange(true);
+
 //
 //    customPlot->xAxis->setLabel("Time (?)");
 //    customPlot->yAxis->setLabel("Frequency (Hz)");
 //
-//    //yAxisSize = channelLength / 2;
-//    xAxisSize = 800;
-
-    setGeometry(100, 200, 800, 400);
 }
 
 void GraphGui::createColorScale() {
-    QCPColorScale *colorScale = new QCPColorScale(customPlot);
-    customPlot->plotLayout()->addElement(0, 1, colorScale);
-    colorScale->setLabel("dB change from baseline");
-    colorMap->setColorScale(colorScale);
-
-    QCPMarginGroup *group = new QCPMarginGroup(customPlot);
-    colorScale->setMarginGroup(QCP::msTop | QCP::msBottom, group);
-    customPlot->axisRect()->setMarginGroup(QCP::msTop | QCP::msBottom, group);
+//    QCPColorScale *colorScale = new QCPColorScale(customPlot);
+//    customPlot->plotLayout()->addElement(0, 1, colorScale);
+//    colorScale->setLabel("dB change from baseline");
+//    colorMap->setColorScale(colorScale);
+//
+//    QCPMarginGroup *group = new QCPMarginGroup(customPlot);
+//    colorScale->setMarginGroup(QCP::msTop | QCP::msBottom, group);
+//    customPlot->axisRect()->setMarginGroup(QCP::msTop | QCP::msBottom, group);
 }
 
 // TODO: Maybe this works right??? Not sure how to test
@@ -43,10 +64,10 @@ void GraphGui::setYAxisLog() {
     /* To change the axis scale type from a linear scale to a logarithmic scale,
      *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
     */
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    logTicker->setLogBase(10);
-    customPlot->yAxis->setTicker(logTicker);
-    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+//    logTicker->setLogBase(10);
+//    customPlot->yAxis->setTicker(logTicker);
+//    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
 
 //    colorMap->colorScale()->axis()->setTicker(logTicker);
 //    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
@@ -80,12 +101,21 @@ void GraphGui::setupRealTimeColorMap() {
 }
 
 void GraphGui::draw(const Audio::Buffer &buffer) {
+    return;
+
+    // Get the latest information
+    auto frequencyDomainBuffer = Fourier::transform(buffer);
 
     // Make sure the graph is scaled correctly for the data being drawn
-    if (yAxisSize != buffer.numFrames() / 2) {
-        std::cout << "changing" << std::endl;
-        setupPlot(800, buffer.numFrames() / 2);
-    }
+//    if (yAxisSize != buffer.numFrames() / 2) {
+//
+//        setupPlot(xAxisSize, buffer.numFrames() / 2);
+//
+//        // Make sure the y axis is scaled correctly
+//        auto maxFreq = (--frequencyDomainBuffer.end())->first;
+//        colorMap->data()->setRange(QCPRange(0, xAxisSize),
+//                                   QCPRange(0, maxFreq));
+//    }
 
     // Shift everything on the plot to the left
     for (int x = 0; x < xAxisSize - 1; ++x) {
@@ -96,31 +126,46 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         }
     }
 
-    // Get the latest information
-    auto frequencyDomainBuffer = Fourier::transform(buffer);
-
-    // Make sure the y axis is scaled correctly
-    auto maxFreq = (--frequencyDomainBuffer.end())->first;
-    colorMap->data()->setRange(QCPRange(0, xAxisSize),
-                               QCPRange(0, maxFreq));
-
     // Plot the latest data at the rightmost column
     auto iter = frequencyDomainBuffer.begin();
     for (int y = 0; y < yAxisSize; ++y) {
 
         // Only plot one channel, for now
         auto value = (90.0f + (*iter).second[0]) / 90.0f;
-        colorMap->data()->setCell(xAxisSize - 1, y, value);
+        //std::cout << value << ", ";
+        colorMap->data()->setCell(xAxisSize - 1, y, y);
 
         iter++;
     }
+    //std::cout << std::endl;
 
     // Redraw the plot
-    customPlot->rescaleAxes();
+    //customPlot->rescaleAxes();
+    colorMap->rescaleDataRange();
     customPlot->replot();
 }
 
 void GraphGui::setupPlot(size_t xSize, size_t ySize) {
 
+//    std::cout << "Setting up the plot" << std::endl;
+
+    yAxisSize = ySize;
+    xAxisSize = xSize;
+
+    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+    colorMap->data()->setSize(xAxisSize, 2205);
+
+    auto colorScale = new QCPColorScale(customPlot);
+    customPlot->plotLayout()->addElement(0, 1, colorScale); // add it to the right of the main axis rect
+    colorScale->setType(
+            QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
+    colorMap->setColorScale(colorScale); // associate the color map with the color scale
+    colorScale->axis()->setLabel("Magnetic Field Strength");
+
+    colorMap->setGradient(QCPColorGradient::gpPolar);
+
+    auto marginGroup = new QCPMarginGroup(customPlot);
+    customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
+    colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
 }
 
