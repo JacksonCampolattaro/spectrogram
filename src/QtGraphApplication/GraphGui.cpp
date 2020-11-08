@@ -18,34 +18,6 @@ GraphGui::GraphGui(QWidget *parent) :
     customPlot->axisRect()->setupFullAxesBox(true);
     setCentralWidget(customPlot);
     setGeometry(100, 200, 800, 400);
-
-    setupPlot(800, 2205);
-
-    //colorMap->data()->setRange({0, (float) xAxisSize}, {0, 2205});
-    colorMap->data()->setRange({-4, 4}, {-4, 4});
-    customPlot->rescaleAxes();
-
-    double x, y, z;
-    for (int xIndex = 0; xIndex < xAxisSize; ++xIndex) {
-        for (int yIndex = 0; yIndex < yAxisSize; ++yIndex) {
-            colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
-            double r = 3 * qSqrt(x * x + y * y) + 1e-2;
-            z = 2 * x * (qCos(r + 2) / r -
-                         qSin(r + 2) / r); // the B field strength of dipole radiation (modulo physical constants)
-            colorMap->data()->setCell(xIndex, yIndex, z);
-        }
-    }
-    colorMap->rescaleDataRange();
-
-    //auto colorScale = new QCPColorScale(customPlot);
-
-//    colorMap->setGradient(QCPColorGradient::gpJet);
-//    colorMap->rescaleDataRange(true);
-
-//
-//    customPlot->xAxis->setLabel("Time (?)");
-//    customPlot->yAxis->setLabel("Frequency (Hz)");
-//
 }
 
 void GraphGui::createColorScale() {
@@ -106,15 +78,17 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     auto frequencyDomainBuffer = Fourier::transform(buffer);
 
     // Make sure the graph is scaled correctly for the data being drawn
-//    if (yAxisSize != buffer.numFrames() / 2) {
-//
-//        setupPlot(xAxisSize, buffer.numFrames() / 2);
-//
-//        // Make sure the y axis is scaled correctly
-//        auto maxFreq = (--frequencyDomainBuffer.end())->first;
-//        colorMap->data()->setRange(QCPRange(0, xAxisSize),
-//                                   QCPRange(0, maxFreq));
-//    }
+    if (yAxisSize != frequencyDomainBuffer.size()) {
+        std::cout << "Setting up " << frequencyDomainBuffer.size() << std::endl;
+
+        setupPlot(200, frequencyDomainBuffer.size());
+
+        // Make sure the y axis is scaled correctly
+        auto maxFreq = (--frequencyDomainBuffer.end())->first;
+        colorMap->data()->setRange(QCPRange(0, (float) xAxisSize),
+                                   QCPRange(0, maxFreq));
+        customPlot->rescaleAxes();
+    }
 
     // Shift everything on the plot to the left
     for (int x = 0; x < xAxisSize - 1; ++x) {
@@ -139,7 +113,6 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     //std::cout << std::endl;
 
     // Redraw the plot
-    //customPlot->rescaleAxes();
     colorMap->rescaleDataRange();
     customPlot->replot();
 }
@@ -164,7 +137,7 @@ void GraphGui::setupPlot(size_t xSize, size_t ySize) {
     colorMap->setGradient(QCPColorGradient::gpPolar);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
-    customPlot->axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
-    colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, marginGroup);
+    customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+    colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 }
 
