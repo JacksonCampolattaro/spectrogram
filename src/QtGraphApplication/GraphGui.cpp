@@ -17,19 +17,19 @@ GraphGui::GraphGui(QWidget *parent) :
     customPlot = new QCustomPlot(this);
     customPlot->xAxis->setLabel("Time");
     customPlot->yAxis->setLabel("Frequency (Hz)");
+    setYAxisLog();
     setCentralWidget(customPlot);
     setGeometry(100, 200, 800, 400);
 }
 
 // TODO: Maybe this works right??? Not sure how to test
 void GraphGui::setYAxisLog() {
-    /* To change the axis scale type from a linear scale to a logarithmic scale,
-     *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
-    */
-//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-//    logTicker->setLogBase(10);
-//    customPlot->yAxis->setTicker(logTicker);
-//    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+
+    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+    customPlot->yAxis2->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    customPlot->yAxis->setTicker(logTicker);
+    //logTicker->setLogBase(10);
 
 //    colorMap->colorScale()->axis()->setTicker(logTicker);
 //    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
@@ -43,14 +43,13 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 
     // Make sure the graph is scaled correctly for the data being drawn
     if (yAxisSize != frequencyDomainBuffer.size()) {
-        std::cout << "Setting up " << frequencyDomainBuffer.size() << std::endl;
 
         setupPlot(200, frequencyDomainBuffer.size());
 
         // Make sure the y axis is scaled correctly
         auto maxFreq = (--frequencyDomainBuffer.end())->first;
         colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(0, maxFreq));
+                                   QCPRange(0.0001, maxFreq));
         customPlot->rescaleAxes();
     }
 
@@ -96,7 +95,7 @@ void GraphGui::setupPlot(size_t xSize, size_t ySize) {
     colorMap->setColorScale(colorScale);
     colorScale->axis()->setLabel("Intensity (unit?)");
 
-    colorMap->setGradient(QCPColorGradient::gpPolar);
+    colorMap->setGradient(QCPColorGradient::gpHot);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
