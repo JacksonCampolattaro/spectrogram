@@ -1,90 +1,124 @@
 #include "QtMainApplication.h"
 
-//#include <QMediaPlayer>
+#include <QDebug>
 
 QtMainApplication::QtMainApplication(QWidget *parent) :
         QMainWindow(parent)
 {
     // Perhaps this should be statically allocated instead?
 	spectrogram = new SpectrogramGraph(this);
+	
+	setCentralWidget(spectrogram); // IMPORTANT: Do NOT forget this line
+	setGeometry(100, 100, 500, 400);
+	
+	// Partly from media player example code on Qt website
+	playButton = new QToolButton(this);
+    playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
 
-    setCentralWidget(spectrogram);
-    setGeometry(100, 100, 500, 400);
-/*
-	topLevelVLayout = new QVBoxLayout(this);
-	topLevelVLayout->addWidget(spectrogram);
+    connect(playButton, &QAbstractButton::clicked, this, &QtMainApplication::play);
 
-	buttonLayout = new QHBoxLayout(this);
-	buttonLayout->setContentsMargins(0, 0, 0, 0);
-*/
-	// From media player example code on Qt website, not quite ready to implement it this way yet
-/*
-	m_playButton = new QToolButton(this);
-    m_playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    stopButton = new QToolButton(this);
+    stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
+    stopButton->setEnabled(false);
 
-    connect(m_playButton, &QAbstractButton::clicked, this, &PlayerControls::playClicked);
+    connect(stopButton, &QAbstractButton::clicked, this, &QtMainApplication::stop);
 
-    m_stopButton = new QToolButton(this);
-    m_stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
-    m_stopButton->setEnabled(false);
+	saveButton = new QToolButton(this);
+    saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
 
-    connect(m_stopButton, &QAbstractButton::clicked, this, &PlayerControls::stop);
-*/
-
+    connect(saveButton, &QAbstractButton::clicked, this, &QtMainApplication::saveOutput);
+	
+	
+	// Standard PushButton approach (for comparison)
 	playPauseButton = new QPushButton(this);
 	playPauseButton->setObjectName(QStringLiteral("playPauseButton"));
 	playPauseButton->setCheckable(true);
 	playPauseButton->setChecked(false);
-		QFont font;
-        font.setPointSize(10);
-        playPauseButton->setFont(font);
-		playPauseButton->setText("Play");
-	//playPauseButton->setM
+	QFont font;
+	font.setPointSize(10);
+	playPauseButton->setFont(font);
+	playPauseButton->setText("Start");
+	
 	connect(playPauseButton, &QAbstractButton::clicked,
 		this, &QtMainApplication::playPausePressed);
-/*
-	buttonLayout->addWidget(playPauseButton);
 
-	audioSelectBox = new QComboBox();
-	
-	buttonLayout->addWidget(audioSelectBox);
-
-	topLevelVLayout->addWidget((QWidget*)buttonLayout);
-	//topLevelVLayout->addLayout(buttonLayout);
-	//this->setLayout(topLevelVLayout);
-*/
-	//auto wrapPlayPauseButton = new QDockWidget();
-	
-	wrapPlayPauseButton = new QDockWidget(this);
-	wrapPlayPauseButton->setWidget(playPauseButton);
-	this->addDockWidget(Qt::TopDockWidgetArea, wrapPlayPauseButton);
-	
 	audioSelectBox = new QComboBox(this);
-	//audioSelectBox->setPlaceholderText("Select an Audio Source...");
-	audioSelectBox->setCurrentText("Select an Audio Source...");
 	
 	// TODO: Populate the entries with the options from the OS
 	//void QComboBox::addItems(const QStringList &texts)
 	//QStringList options = new QStringList();
 	//audioSelectBox->addItems(QStringList(QString("foo"), QString("bar"), QString("2000"))); // Placeholder
-	wrapAudioSelectBox = new QDockWidget(this);
-	wrapAudioSelectBox->setWidget(audioSelectBox);
-	this->addDockWidget(Qt::TopDockWidgetArea, wrapPlayPauseButton);
+	
+	audioSelectBox->addItem("Audio Source 0", QVariant(0));
+    audioSelectBox->addItem("Audio Source 1", QVariant(1));
+    audioSelectBox->addItem("Audio Source 2", QVariant(2));
+    audioSelectBox->setCurrentIndex(0);
 
-	connect(audioSelectBox, QOverload<int>::of(&QComboBox::activated),
+	QObject::connect(audioSelectBox, QOverload<int>::of(&QComboBox::activated),
 		this, &QtMainApplication::updateSource);
+
+	controls = new QToolBar(this);
+	controls->addWidget(playPauseButton);
+	controls->addWidget(saveButton);
+	controls->addWidget(stopButton);
+	controls->addWidget(playButton);
+	controls->addWidget(audioSelectBox);
+	addToolBar(Qt::TopToolBarArea, controls);
+/*
+	/// Alternate approach if the class is extending plain old QWidget ///
+	appLayout = new QGridLayout(this);
+	appLayout->addWidget(saveButton,		0, 0, 1, 1);
+	appLayout->addWidget(playPauseButton,	0, 1, 2, 1);
+	appLayout->addWidget(stopButton,		0, 2, 1, 1);
+	appLayout->addWidget(playButton,		0, 3, 1, 1);
+	appLayout->addWidget(audioSelectBox,	0, 4, 1, 1);
+	appLayout->addWidget(spectrogram,		1, 0, -1, -1);
+*/
+}
+
+void QtMainApplication::stopPressed(){
+	stopButton->setEnabled(false);
+	playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+}
+
+void QtMainApplication::playPressed()
+{
+	switch(playState)
+	{
+	case stopped:
+		stopButton->setEnabled(true);
+		playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+		break;
+	case started:
+		stopButton->setEnabled(false);
+		playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+		break;
+	case paused:
+		stopButton->setEnabled(false);
+		playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+		break;
+	}
+}
+
+void QtMainApplication::saveOutput(){
+	// Stub
 }
 
 /// Simple state machine function
 void QtMainApplication::playPausePressed()
 {
-    switch (playState) {
+	switch (playState) {
     case stopped://QMediaPlayer::StoppedState: // Currently unused
+		playPauseButton->setText("Start");
+		emit play();
+		break;
     case paused://QMediaPlayer::PausedState:
-        emit play();
+        playPauseButton->setText("Resume");
+		emit play();
         break;
     case started://QMediaPlayer::PlayingState:
-        emit pause();
+        playPauseButton->setText("Stop");
+		emit pause();
         break;
     }
 }
