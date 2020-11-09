@@ -48,7 +48,7 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         // Make sure the y axis is scaled correctly
         auto maxFreq = frequencyDomainBuffer.numFrames() / frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(10, maxFreq));
+                                   QCPRange(0, maxFreq));
         customPlot->rescaleAxes();
     }
 
@@ -64,18 +64,21 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     // Plot the latest data at the rightmost column
     for (int y = 0; y < yAxisSize; ++y) {
 
+        double key, value;
+        colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
+
         // Only plot one channel, for now
-        auto value = (90.0f + frequencyDomainBuffer.channels()[0][y]) / 90.0f;
-        std::cout << value << ", ";
-        colorMap->data()->setCell(xAxisSize - 1, y, value);
+        auto intensity = (90.0f + frequencyDomainBuffer.at(value)[0]) / 90.0f;
+//        std::cout << intensity << ", ";
+        colorMap->data()->setCell(xAxisSize - 1, y, intensity);
 
     }
     std::cout << std::endl;
 
-    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    logTicker->setLogBase(10);
-    colorMap->valueAxis()->setTicker(logTicker);
+//    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+//    logTicker->setLogBase(10);
+//    colorMap->valueAxis()->setTicker(logTicker);
 
     // Redraw the plot
     colorMap->rescaleDataRange();

@@ -19,6 +19,17 @@ namespace Spectrogram::Fourier {
         explicit FrequencyDomainBuffer(float time) {
             _timeLength = time;
         }
+
+        [[nodiscard]] Audio::Frame at(double frequency) const {
+            size_t index = frequency * time();
+
+            Audio::Frame frame;
+            for (const auto &channel : channels()) {
+                frame.emplace_back(channel[index]);
+            }
+
+            return frame;
+        }
     };
 }
 
