@@ -16,6 +16,7 @@ Q_OBJECT
 
 public:
     explicit QtSpectrogram(QWidget *parent = 0);
+    QCPColorMap* getColorMapPtr();
 
 public slots:
 
@@ -26,7 +27,7 @@ private:
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
-    
+
     QCPColorMap *colorMap;
 
     int yAxisSize = 700;

@@ -101,3 +101,6 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
 
 }
 
+QCPColorMap* QtSpectrogram::getColorMapPtr() {
+    return colorMap;
+}

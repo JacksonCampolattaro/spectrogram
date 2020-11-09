@@ -1,15 +1,16 @@
 #include "Writer.h"
+#include <iostream>
 
 namespace Spectrogram::PNG
 {
 
-    Writer::Writer(QWidget *parent, QString nFileName) :
+    Writer::Writer(QWidget *parent, QCPColorMap *colorMap, QString nFileName) :
             QObject(parent),
-            fileName(nFileName){
+            runningMap(colorMap),
+            fileName(nFileName) {
 
         pngPlot = new QCustomPlot();
         pngColorMap = new QCPColorMap(pngPlot->xAxis, pngPlot->yAxis);
-        pngColorMap->setGradient(QCPColorGradient::gpGrayscale);
     }
 
     void Writer::setFileName(QString newFileName)
@@ -21,40 +22,52 @@ namespace Spectrogram::PNG
         return fileName;
     }
 
-    void Writer::onWritePng(QCPColorMapData *data)
+    void Writer::setRunningMap(QCPColorMap *colorMap) {
+        runningMap = colorMap;
+    }
+
+    void Writer::onWriteSnapShot()
     {
-        static int snapShotsTaken = 1;
 
-        fixFileName(snapShotsTaken);
-
-        takeSnapShot(data);
+        takeSnapShot();
+        fixFileName();
         bool success = pngPlot->savePng(fileName);
 
         emit writingDone(success);
         
-        snapShotsTaken++;
     }
 
-    void Writer::takeSnapShot(QCPColorMapData *data)
+    void Writer::takeSnapShot()
     {
-        pngColorMap->setData(data, true);
+        copyRunningMap();
+    }
+
+    void Writer::copyRunningMap() {
+        pngColorMap->valueAxis()->setScaleType(runningMap->valueAxis()->scaleType());
+        pngColorMap->setData(runningMap->data(), true);
+        pngColorMap->setGradient(runningMap->gradient());
         pngColorMap->rescaleDataRange(true);
         pngPlot->rescaleAxes();
         pngPlot->replot();
+        //pngPlot->axisRect()->setAutoMargins(QCP::msNone);
+        //pngPlot->axisRect()->setMargins(QMargins(0,0,0,0));
     }
 
-    void Writer::onGradiantChanged(const QCPColorGradient &newGradient)
-    {
-        pngColorMap->setGradient(newGradient);
-    }
+    void Writer::fixFileName() {
+        static int numSnapShots = 1;
 
-    void Writer::fixFileName(const int &incr) {
-        if(fileName.contains(".png", Qt::CaseInsensitive)) {
-            fileName.replace(".png", QString("_%1.png").arg(incr), Qt::CaseInsensitive);
+        QString fixedFileName = fileName;
+        if(numSnapShots == 1 && !fixedFileName.contains(".png", Qt::CaseInsensitive)) {
+            fixedFileName.append(QString("_%1.png").arg(numSnapShots));
+        }
+        else if (numSnapShots == 1){
+            fixedFileName.replace(".png", QString("_%1.png").arg(numSnapShots), Qt::CaseInsensitive);
         }
         else {
-            fileName.append(QString("_%1.png").arg(incr));
+            fixedFileName.replace(QString("_%1.png").arg(numSnapShots - 1), QString("_%1.png").arg(numSnapShots));
         }
+        numSnapShots++;
+        fileName = fixedFileName;
     }
 }
 
