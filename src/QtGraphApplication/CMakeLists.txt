@@ -1,17 +1,12 @@
 set(CMAKE_AUTOMOC ON)
-find_package(Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
-find_package(QCustomPlot REQUIRED)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 
 add_executable(QtGraphApplication
         main.cpp)
 
 target_link_libraries(QtGraphApplication
-        ${QCustomPlot_LIBRARIES}
         Qt5::Widgets
-        Qt5::PrintSupport
-        Audio
-        Fourier
         Visualizer)
 
 target_include_directories(QtGraphApplication PUBLIC
