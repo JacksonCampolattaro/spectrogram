@@ -1,146 +1,116 @@
 #include "GraphGui.h"
 
+#include <Spectrogram/Fourier/Transformer.h>
+
 #define TO_KHZ 0.001
+
+
+//using namespace Spectrogram;
 
 namespace SF = Spectrogram::Fourier;
 namespace SA = Spectrogram::Audio;
 
 GraphGui::GraphGui(QWidget *parent) :
-        QMainWindow(parent),
-        audioSystem(std::make_unique<Backend::Soundio>()) {
+        QMainWindow(parent) {
 
-    // Choose a device
-    auto device = audioSystem.devices()[1];
-    // when length == sampleRate, a buffer is 1 second long
-    // when length == sampleRate / 100, a buffer is 10 milliseconds long
-    size_t channelLength = device.sampleRate / 100; 
+    // Set the dimensions of this window
+    setGeometry(100, 100, 1500, 700);
 
-    // Configure our buffer to hold the amount of data we want
-    buffer.resize(device.channelCount);
-    for (auto &channel : buffer)
-        channel.resize(channelLength);
-
-    // Tell the system to start listening to that device
-    audioSystem.start(device, std::chrono::seconds(2));
-
-    // Set up the audio processor, too
-    audioProcessor.setSampleSize(channelLength);
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    // setup customPlot as central widget of window:
+    // Create a plot widget and add it to the window
     customPlot = new QCustomPlot(this);
-
     setCentralWidget(customPlot);
 
-    customPlot->xAxis->setLabel("Time (?)");
-    customPlot->yAxis->setLabel("Frequency (Hz)");
-
-    yAxisSize = channelLength / 2;
-    xAxisSize = 800;
-
-    setupRealTimeColorMap();
-    setGeometry(100, 100, 500, 400);
-}
-
-GraphGui::~GraphGui() {
-    audioSystem.stop();
-}
-
-void GraphGui::createColorScale() {
-    QCPColorScale *colorScale = new QCPColorScale(customPlot);
-    customPlot->plotLayout()->addElement(0, 1, colorScale);
-    colorScale->setLabel("dB change from baseline");
-    colorMap->setColorScale(colorScale);
-
-    QCPMarginGroup *group = new QCPMarginGroup(customPlot);
-    colorScale->setMarginGroup(QCP::msTop | QCP::msBottom, group);
-    customPlot->axisRect()->setMarginGroup(QCP::msTop | QCP::msBottom, group);
-}
-
-// TODO: Maybe this works right??? Not sure how to test
-void GraphGui::setYAxisLog()
-{
-  /* To change the axis scale type from a linear scale to a logarithmic scale, 
-   *  set QCPAxis::setScaleType to QCPAxis::stLogarithmic.
-  */
-  QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-  customPlot->yAxis->setTicker(logTicker);
-  customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
-
-  colorMap->setDataScaleType(QCPAxis::stLogarithmic);
-  colorMap->colorScale()->axis()->setTicker(logTicker);
-  colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
-}
-
-void GraphGui::setupRealTimeColorMap() {
-
-    // include this section to fully disable antialiasing for higher performance:
-    customPlot->setNotAntialiasedElements(QCP::aeAll);
-    QFont font;
-    font.setStyleStrategy(QFont::NoAntialias);
-    customPlot->xAxis->setTickLabelFont(font);
-
+    // Create a colorMap
     colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
-    createColorScale();
+    // Create a color scale
+    auto colorScale = new QCPColorScale(customPlot);
 
-    setYAxisLog();
+    customPlot->xAxis->setLabel("Time (s)");
+    customPlot->yAxis->setLabel("Frequency (Hz)");
 
-    /* setSize(keysize as in xAxis, valuesize as in yAxis) */
-    colorMap->data()->setKeySize(xAxisSize);
-    colorMap->data()->setValueSize(yAxisSize);
-    colorMap->data()->setRange(QCPRange(0, xAxisSize), QCPRange(0, yAxisSize));
+    colorScale->axis()->setLabel("Intensity (unit?)");
+    customPlot->plotLayout()->addElement(0, 1, colorScale);
+    colorMap->setColorScale(colorScale);
 
-    colorMap->data()->fill(0);
-    colorMap->setGradient(QCPColorGradient::gpGrayscale);
-    colorMap->rescaleDataRange(true);
-    customPlot->rescaleAxes();
-    customPlot->replot();
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(2);
+    colorMap->valueAxis()->setTicker(logTicker);
 
-    dataTimer = new QTimer(this);
-    // setup a timer that repeatedly calls GraphGui::realtimeColorSlot:
-    connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeColorSlot()));
-    dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+    colorMap->setGradient(QCPColorGradient::gpHot);
+    colorMap->setInterpolate(true);
+
+    auto marginGroup = new QCPMarginGroup(customPlot);
+    customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+    colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+
+    colorMap->data()->setSize(xAxisSize, yAxisSize);
 }
 
-void GraphGui::realtimeColorSlot() {
-    static QTime time(QTime::currentTime());
-    // calculate two new data points:
-    double key = time.elapsed() / 1000.0; // time elapsed since start, in seconds
-    static double lastPointKey = 0;
-    SA::Channel newChannel = getNewChannel();
-    if (key - lastPointKey > 0.01) // at most re-map every 10 ms
-    {
-        // make key axis range scroll with the data (at a constant range size of xAxisSize)
-        colorMap->data()->setKeyRange(QCPRange(key, key+xAxisSize));
-        for (int x = 0; x < xAxisSize; ++x) {
-            for (int y = 0; y < yAxisSize; ++y) {
-                // put new channel into the last column of the colormap
-                if (x == xAxisSize - 1) {
-                    // setCell needs to be used if working with logscale
-                    colorMap->data()->setCell(x, y, (90.0f + newChannel[y]) / 90.0f);
-                }
-                // Shift all the channels down one
-                else {
-                    double newZ = colorMap->data()->cell(x + 1, y);
-                    colorMap->data()->setCell(x, y, newZ);
-                }
-            }
-        }
-        colorMap->rescaleDataRange(true);
+void GraphGui::draw(const Audio::Buffer &buffer) {
+
+    // Calculate the latest buffer value
+    auto frequencyDomainBuffer = Fourier::transform(buffer);
+
+    // Make sure the graph is scaled correctly for the data being drawn
+    if (colorMap->data()->valueRange().upper != frequencyDomainBuffer.maxFrequency()) {
+
+        // Make sure the y axis is scaled correctly
+        auto oldestTime = (float) colorMap->data()->keySize() * frequencyDomainBuffer.time();
+        colorMap->data()->setRange(QCPRange(-oldestTime, 0),
+                                   QCPRange(35, frequencyDomainBuffer.maxFrequency()));
+
+        // Update the axes to show the new range
         customPlot->rescaleAxes();
-        //customPlot->replot();
-        lastPointKey = key;
     }
+
+    // Move all existing data to the left
+    shiftData();
+
+    // Add another column
+    addData(frequencyDomainBuffer);
+
+    // Redraw the plot
+    colorMap->rescaleDataRange();
     customPlot->replot();
 }
 
-SA::Channel GraphGui::getNewChannel() {
+void GraphGui::shiftData() {
 
-    audioSystem.fillBuffer(buffer);
-    Channel timeDomainResult = audioProcessor.compute(buffer[0]);
+    // Shift everything on the plot to the left
+    for (int x = 0; x < colorMap->data()->keySize() - 1; ++x) {
+        for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
 
-    return timeDomainResult;
+            // Each element is set to the value of the element to the right
+            colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
+        }
+    }
+
+}
+
+void GraphGui::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
+
+    // Plot the latest data at the rightmost column
+    for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
+
+        double key, value;
+        colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
+
+        // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
+        auto max = colorMap->valueAxis()->range().upper;
+        auto min = colorMap->valueAxis()->range().lower;
+        value = pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
+
+        // Only plot one channel, for now
+        float intensity = 0;
+        for (const auto &channel : frequencyDomainBuffer.at(value))
+            intensity += (90.0f + channel) / 90.0f;
+        intensity = intensity / frequencyDomainBuffer.numChannels();
+
+        colorMap->data()->setCell(xAxisSize - 1, y, intensity);
+
+    }
+
 }
 

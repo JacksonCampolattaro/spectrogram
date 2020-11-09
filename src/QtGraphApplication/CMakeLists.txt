@@ -6,7 +6,7 @@ find_package(QCustomPlot REQUIRED)
 add_executable(QtGraphApplication
         main.cpp
         GraphGui.h
-        GraphGui.cpp)
+        GraphGui.cpp QtAudioSystem.cpp QtAudioSystem.h)
 
 target_link_libraries(QtGraphApplication
         ${QCustomPlot_LIBRARIES}

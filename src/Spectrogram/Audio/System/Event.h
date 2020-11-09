@@ -86,7 +86,7 @@ namespace Spectrogram::Audio::System {
 
         std::deque<ChannelQueue> _channelQueues;
 
-        Buffer _buffer;
+        std::unique_ptr<Buffer> _buffer;
 
     };
 

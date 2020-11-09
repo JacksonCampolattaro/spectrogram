@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Spectrogram/Fourier/processor.h>
+#include <Spectrogram/Fourier/Transformer.h>
 #include <Spectrogram/Audio/DeviceList.h>
 
 #include <gtkmm/widget.h>
@@ -46,7 +47,7 @@ public:
                     start.emit(
                             device,
                             std::chrono::seconds(2),
-                            device.sampleRate
+                            device.sampleRate / 10
                     );
                 }
         );
@@ -72,19 +73,15 @@ public:
 
     void drawBuffer(const Audio::Buffer &buffer) {
 
-        // Convert data to time domain
-        _processor = Fourier::Processor(buffer[0].size());
-        std::vector<Audio::Channel> timeDomainData;
-        for (auto &channel : buffer)
-            timeDomainData.push_back(_processor.compute(channel));
+        auto frequencyDomainResult = Fourier::transform(buffer);
 
-        // Add the data to the text buffer
         std::stringstream stream;
-        for (size_t frequency = 0; frequency < timeDomainData[0].size(); frequency += 1) {
-            stream << frequency << ":\t";
-            for (auto &channel : timeDomainData) {
+        for (const auto &frequency : frequencyDomainResult) {
 
-                float normalizedAmplitude = (90.0f + channel[frequency]) / 90.0f;
+            stream << frequency.first << ":\t";
+            for (auto intensity : frequency.second) {
+
+                float normalizedAmplitude = (90.0f + intensity) / 90.0f;
 
                 stream << "[";
 
@@ -93,13 +90,13 @@ public:
                     stream << ((int) (normalizedAmplitude * width) > i ? '|' : ' ');
                 }
 
-//                stream << normalizedAmplitude;
-
                 stream << "] ";
             }
             stream << "\n";
+
         }
         _textView.get_buffer()->set_text(stream.str());
+
     }
 
     void setDevices(const Audio::DeviceList &devices) {
