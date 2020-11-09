@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <math.h>
 
 namespace Spectrogram::Fourier {
 
@@ -21,11 +22,27 @@ namespace Spectrogram::Fourier {
         }
 
         [[nodiscard]] Audio::Frame at(double frequency) const {
-            size_t index = frequency * time();
+            double index = frequency * time();
 
             Audio::Frame frame;
             for (const auto &channel : channels()) {
-                frame.emplace_back(channel[index]);
+
+                // TODO: I hate _all_ of this
+
+                if (floor(index) == index) {
+                    frame.emplace_back(channel[index]);
+                } else {
+
+                    float belowIndex = floor(index);
+                    float belowError = index - belowIndex;
+                    float aboveIndex = ceil(index);
+                    float aboveError = aboveIndex - index;
+
+                    frame.emplace_back(
+                            (channel[belowIndex] * (1 - belowError)) + (channel[aboveIndex] * (1 - aboveError))
+                    );
+                }
+
             }
 
             return frame;

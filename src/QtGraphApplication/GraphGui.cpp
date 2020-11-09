@@ -13,12 +13,18 @@ namespace SA = Spectrogram::Audio;
 GraphGui::GraphGui(QWidget *parent) :
         QMainWindow(parent) {
 
-    // setup customPlot as central widget of window:
+    // Set the dimensions of this window
+    setGeometry(100, 200, 800, 500);
+
+    // Create a plot widget and add it to the window
     customPlot = new QCustomPlot(this);
+    setCentralWidget(customPlot);
+
+    // Create a colorMap
+    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+
     customPlot->xAxis->setLabel("Time");
     customPlot->yAxis->setLabel("Frequency (Hz)");
-
-    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
     auto colorScale = new QCPColorScale(customPlot);
     colorScale->axis()->setLabel("Intensity (unit?)");
@@ -26,15 +32,11 @@ GraphGui::GraphGui(QWidget *parent) :
     colorMap->setColorScale(colorScale);
 
     colorMap->setGradient(QCPColorGradient::gpHot);
-    colorMap->setAntialiased(true);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
-
-    setCentralWidget(customPlot);
-    setGeometry(100, 200, 800, 500);
 }
 
 void GraphGui::draw(const Audio::Buffer &buffer) {
