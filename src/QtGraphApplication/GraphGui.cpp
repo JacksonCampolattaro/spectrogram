@@ -38,7 +38,7 @@ GraphGui::GraphGui(QWidget *parent) :
     logTicker->setLogBase(2);
     colorMap->valueAxis()->setTicker(logTicker);
 
-    colorMap->setGradient(QCPColorGradient::gpGrayscale);
+    colorMap->setGradient(QCPColorGradient::gpHot);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
@@ -77,6 +77,13 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 }
 
 void GraphGui::shiftData() {
+
+    /*
+     * FIXME: This is a hot code segment
+     * Right now this is the limiting factor for our framerate,
+     * so we can find a way to do this faster,
+     * then the program will run smoothly at higher framerates
+     */
 
     // Shift everything on the plot to the left
     for (int x = 0; x < colorMap->data()->keySize() - 1; ++x) {
