@@ -1,36 +1,23 @@
-#include "GraphGui.h"
+#include "QtSpectrogram.h"
 
 #include <Spectrogram/Fourier/Transformer.h>
 
-#define TO_KHZ 0.001
-
-
 //using namespace Spectrogram;
 
-namespace SF = Spectrogram::Fourier;
-namespace SA = Spectrogram::Audio;
-
-GraphGui::GraphGui(QWidget *parent) :
-        QMainWindow(parent) {
-
-    // Set the dimensions of this window
-    setGeometry(100, 100, 1500, 700);
-
-    // Create a plot widget and add it to the window
-    customPlot = new QCustomPlot(this);
-    setCentralWidget(customPlot);
+QtSpectrogram::QtSpectrogram(QWidget *parent) :
+        QCustomPlot(parent) {
 
     // Create a colorMap
-    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+    colorMap = new QCPColorMap(this->xAxis, this->yAxis);
 
     // Create a color scale
-    auto colorScale = new QCPColorScale(customPlot);
+    auto colorScale = new QCPColorScale(this);
 
-    customPlot->xAxis->setLabel("Time (s)");
-    customPlot->yAxis->setLabel("Frequency (Hz)");
+    this->xAxis->setLabel("Time (s)");
+    this->yAxis->setLabel("Frequency (Hz)");
 
     colorScale->axis()->setLabel("Intensity (unit?)");
-    customPlot->plotLayout()->addElement(0, 1, colorScale);
+    this->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
 
     colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
@@ -41,14 +28,14 @@ GraphGui::GraphGui(QWidget *parent) :
     colorMap->setGradient(QCPColorGradient::gpHot);
     colorMap->setInterpolate(true);
 
-    auto marginGroup = new QCPMarginGroup(customPlot);
-    customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+    auto marginGroup = new QCPMarginGroup(this);
+    this->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 
     colorMap->data()->setSize(xAxisSize, yAxisSize);
 }
 
-void GraphGui::draw(const Audio::Buffer &buffer) {
+void QtSpectrogram::draw(const Audio::Buffer &buffer) {
 
     // Calculate the latest buffer value
     auto frequencyDomainBuffer = Fourier::transform(buffer);
@@ -62,7 +49,7 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
                                    QCPRange(35, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
-        customPlot->rescaleAxes();
+        this->rescaleAxes();
     }
 
     // Move all existing data to the left
@@ -73,10 +60,10 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 
     // Redraw the plot
     colorMap->rescaleDataRange();
-    customPlot->replot();
+    this->replot();
 }
 
-void GraphGui::shiftData() {
+void QtSpectrogram::shiftData() {
 
     // Shift everything on the plot to the left
     for (int x = 0; x < colorMap->data()->keySize() - 1; ++x) {
@@ -89,7 +76,7 @@ void GraphGui::shiftData() {
 
 }
 
-void GraphGui::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
+void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
 
     // Plot the latest data at the rightmost column
     for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
