@@ -110,7 +110,11 @@ void GraphGui::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuff
         value = pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
 
         // Only plot one channel, for now
-        auto intensity = (90.0f + frequencyDomainBuffer.at(value)[0]) / 90.0f;
+        float intensity = 0;
+        for (const auto &channel : frequencyDomainBuffer.at(value))
+            intensity += (90.0f + channel) / 90.0f;
+        intensity = intensity / frequencyDomainBuffer.numChannels();
+
         colorMap->data()->setCell(xAxisSize - 1, y, intensity);
 
     }
