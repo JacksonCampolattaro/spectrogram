@@ -14,7 +14,7 @@ GraphGui::GraphGui(QWidget *parent) :
         QMainWindow(parent) {
 
     // Set the dimensions of this window
-    setGeometry(100, 100, 800, 800);
+    setGeometry(100, 100, 1500, 700);
 
     // Create a plot widget and add it to the window
     customPlot = new QCustomPlot(this);
@@ -35,7 +35,7 @@ GraphGui::GraphGui(QWidget *parent) :
 
     colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
     QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    logTicker->setLogBase(10);
+    logTicker->setLogBase(2);
     colorMap->valueAxis()->setTicker(logTicker);
 
     colorMap->setGradient(QCPColorGradient::gpGrayscale);
@@ -57,9 +57,9 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     if (colorMap->data()->valueRange().upper != frequencyDomainBuffer.maxFrequency()) {
 
         // Make sure the y axis is scaled correctly
-        auto oldestTime = colorMap->data()->keySize() * frequencyDomainBuffer.time();
+        auto oldestTime = (float) colorMap->data()->keySize() * frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-oldestTime, 0),
-                                   QCPRange(25, frequencyDomainBuffer.maxFrequency()));
+                                   QCPRange(35, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
         customPlot->rescaleAxes();
@@ -100,7 +100,7 @@ void GraphGui::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuff
         // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
         auto max = colorMap->valueAxis()->range().upper;
         auto min = colorMap->valueAxis()->range().lower;
-        value = pow(10, ((value - min) / (max - min)) * (log10(max) - log10(min)) + log10(min));
+        value = pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
 
         // Only plot one channel, for now
         auto intensity = (90.0f + frequencyDomainBuffer.at(value)[0]) / 90.0f;

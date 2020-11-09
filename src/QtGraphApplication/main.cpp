@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     // The GUI doesn't have buttons yet, so we'll have to manually start the backend
     auto device = audioSystem.devices()[2];
     audioSystem.startSlot(device, std::chrono::seconds(2),
-                          device.sampleRate / 60);
+                          device.sampleRate / 20);
 
     // Start the application
     return app.exec();
