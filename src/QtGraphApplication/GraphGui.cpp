@@ -23,10 +23,12 @@ GraphGui::GraphGui(QWidget *parent) :
     // Create a colorMap
     colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
-    customPlot->xAxis->setLabel("Time");
+    // Create a color scale
+    auto colorScale = new QCPColorScale(customPlot);
+
+    customPlot->xAxis->setLabel("Time (s)");
     customPlot->yAxis->setLabel("Frequency (Hz)");
 
-    auto colorScale = new QCPColorScale(customPlot);
     colorScale->axis()->setLabel("Intensity (unit?)");
     customPlot->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
@@ -42,23 +44,24 @@ GraphGui::GraphGui(QWidget *parent) :
     auto marginGroup = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+
+    colorMap->data()->setSize(xAxisSize, yAxisSize);
 }
 
 void GraphGui::draw(const Audio::Buffer &buffer) {
 
-    // Get the latest information
+    // Calculate the latest buffer value
     auto frequencyDomainBuffer = Fourier::transform(buffer);
 
     // Make sure the graph is scaled correctly for the data being drawn
     if (colorMap->data()->valueRange().upper != frequencyDomainBuffer.maxFrequency()) {
 
-        colorMap->data()->setSize(xAxisSize, yAxisSize);
-
         // Make sure the y axis is scaled correctly
-        auto maxFreq = frequencyDomainBuffer.maxFrequency();
-        std::cout << maxFreq << std::endl;
-        colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(30, maxFreq));
+        auto oldestTime = colorMap->data()->keySize() * frequencyDomainBuffer.time();
+        colorMap->data()->setRange(QCPRange(-oldestTime, 0),
+                                   QCPRange(30, frequencyDomainBuffer.maxFrequency()));
+
+        // Update the axes to show the new range
         customPlot->rescaleAxes();
     }
 
@@ -80,7 +83,7 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
         auto max = colorMap->valueAxis()->range().upper;
         auto min = colorMap->valueAxis()->range().lower;
-        value = pow(10, ((value - min)/(max - min)) * (log10(max) - log10(min)) + log10(min));
+        value = pow(10, ((value - min) / (max - min)) * (log10(max) - log10(min)) + log10(min));
 
         // Only plot one channel, for now
         auto intensity = (90.0f + frequencyDomainBuffer.at(value)[0]) / 90.0f;
