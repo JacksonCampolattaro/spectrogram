@@ -25,11 +25,15 @@ public slots:
 
 private:
 
+    void shiftData();
+
+    void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+
     QCustomPlot *customPlot;
     QCPColorMap *colorMap;
 
-    int yAxisSize = 1000;
-    int xAxisSize = 800;
+    int yAxisSize = 800;
+    int xAxisSize = 400;
 
 };
 

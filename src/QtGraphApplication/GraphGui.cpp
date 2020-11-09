@@ -59,11 +59,24 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         // Make sure the y axis is scaled correctly
         auto oldestTime = colorMap->data()->keySize() * frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-oldestTime, 0),
-                                   QCPRange(30, frequencyDomainBuffer.maxFrequency()));
+                                   QCPRange(25, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
         customPlot->rescaleAxes();
     }
+
+    // Move all existing data to the left
+    shiftData();
+
+    // Add another column
+    addData(frequencyDomainBuffer);
+
+    // Redraw the plot
+    colorMap->rescaleDataRange();
+    customPlot->replot();
+}
+
+void GraphGui::shiftData() {
 
     // Shift everything on the plot to the left
     for (int x = 0; x < colorMap->data()->keySize() - 1; ++x) {
@@ -73,6 +86,10 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
             colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
         }
     }
+
+}
+
+void GraphGui::addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
 
     // Plot the latest data at the rightmost column
     for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
@@ -91,8 +108,5 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 
     }
 
-    // Redraw the plot
-    colorMap->rescaleDataRange();
-    customPlot->replot();
 }
 
