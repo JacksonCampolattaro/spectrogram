@@ -19,15 +19,11 @@ Q_OBJECT
 public:
     explicit GraphGui(QWidget *parent = 0);
 
-    void setYAxisLog();
-
 public slots:
 
     void draw(const Audio::Buffer &buffer);
 
 private:
-
-    void setupPlot(size_t xSize, size_t ySize);
 
     QCustomPlot *customPlot;
     QCPColorMap *colorMap;

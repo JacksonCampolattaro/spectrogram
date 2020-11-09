@@ -91,8 +91,3 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     customPlot->replot();
 }
 
-void GraphGui::setupPlot(size_t xSize, size_t ySize) {
-
-
-}
-
