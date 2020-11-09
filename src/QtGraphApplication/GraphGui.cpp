@@ -17,6 +17,19 @@ GraphGui::GraphGui(QWidget *parent) :
     customPlot = new QCustomPlot(this);
     customPlot->xAxis->setLabel("Time");
     customPlot->yAxis->setLabel("Frequency (Hz)");
+
+    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+
+    auto colorScale = new QCPColorScale(customPlot);
+    customPlot->plotLayout()->addElement(0, 1, colorScale);
+    colorScale->axis()->setLabel("Intensity (unit?)");
+    colorMap->setColorScale(colorScale);
+    colorMap->setGradient(QCPColorGradient::gpHot);
+
+    auto marginGroup = new QCPMarginGroup(customPlot);
+    customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+    colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
+
     setCentralWidget(customPlot);
     setGeometry(100, 200, 800, 800);
 }
@@ -45,10 +58,15 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 
         setupPlot(200, frequencyDomainBuffer.numFrames());
 
+        colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+        QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+        logTicker->setLogBase(10);
+        colorMap->valueAxis()->setTicker(logTicker);
+
         // Make sure the y axis is scaled correctly
         auto maxFreq = frequencyDomainBuffer.numFrames() / frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(0, maxFreq));
+                                   QCPRange(1, maxFreq));
         customPlot->rescaleAxes();
     }
 
@@ -75,11 +93,6 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     }
     std::cout << std::endl;
 
-//    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
-//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-//    logTicker->setLogBase(10);
-//    colorMap->valueAxis()->setTicker(logTicker);
-
     // Redraw the plot
     colorMap->rescaleDataRange();
     customPlot->replot();
@@ -92,18 +105,7 @@ void GraphGui::setupPlot(size_t xSize, size_t ySize) {
     yAxisSize = ySize;
     xAxisSize = xSize;
 
-    colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
     colorMap->data()->setSize(xAxisSize, yAxisSize);
 
-    auto colorScale = new QCPColorScale(customPlot);
-    customPlot->plotLayout()->addElement(0, 1, colorScale);
-    colorMap->setColorScale(colorScale);
-    colorScale->axis()->setLabel("Intensity (unit?)");
-
-    colorMap->setGradient(QCPColorGradient::gpHot);
-
-    auto marginGroup = new QCPMarginGroup(customPlot);
-    customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
-    colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 }
 
