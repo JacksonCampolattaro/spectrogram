@@ -21,31 +21,20 @@ GraphGui::GraphGui(QWidget *parent) :
     colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
     auto colorScale = new QCPColorScale(customPlot);
-    customPlot->plotLayout()->addElement(0, 1, colorScale);
     colorScale->axis()->setLabel("Intensity (unit?)");
+    customPlot->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
+
     colorMap->setGradient(QCPColorGradient::gpHot);
+    colorMap->setAntialiased(true);
+    colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
     customPlot->axisRect()->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 
     setCentralWidget(customPlot);
-    setGeometry(100, 200, 800, 800);
-}
-
-// TODO: Maybe this works right??? Not sure how to test
-void GraphGui::setYAxisLog() {
-
-//    customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
-//    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-//    logTicker->setLogBase(10);
-//    customPlot->yAxis->setTicker(logTicker);
-
-
-//    colorMap->colorScale()->axis()->setTicker(logTicker);
-//    colorMap->colorScale()->setDataScaleType(QCPAxis::stLogarithmic);
-//    colorMap->setDataScaleType(QCPAxis::stLogarithmic);
+    setGeometry(100, 200, 800, 500);
 }
 
 void GraphGui::draw(const Audio::Buffer &buffer) {
@@ -54,9 +43,9 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     auto frequencyDomainBuffer = Fourier::transform(buffer);
 
     // Make sure the graph is scaled correctly for the data being drawn
-    if (yAxisSize != frequencyDomainBuffer.numFrames()) {
+    if (colorMap->data()->valueRange().upper != frequencyDomainBuffer.maxFrequency()) {
 
-        setupPlot(200, frequencyDomainBuffer.numFrames());
+        colorMap->data()->setSize(xAxisSize, yAxisSize);
 
         colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
         QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
@@ -64,15 +53,16 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
         colorMap->valueAxis()->setTicker(logTicker);
 
         // Make sure the y axis is scaled correctly
-        auto maxFreq = frequencyDomainBuffer.numFrames() / frequencyDomainBuffer.time();
+        auto maxFreq = frequencyDomainBuffer.maxFrequency();
+        std::cout << maxFreq << std::endl;
         colorMap->data()->setRange(QCPRange(-(float) xAxisSize, 0),
-                                   QCPRange(1, maxFreq));
+                                   QCPRange(30, maxFreq));
         customPlot->rescaleAxes();
     }
 
     // Shift everything on the plot to the left
-    for (int x = 0; x < xAxisSize - 1; ++x) {
-        for (int y = 0; y < yAxisSize; ++y) {
+    for (int x = 0; x < colorMap->data()->keySize() - 1; ++x) {
+        for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
 
             // Each element is set to the value of the element to the right
             colorMap->data()->setCell(x, y, colorMap->data()->cell(x + 1, y));
@@ -80,18 +70,21 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     }
 
     // Plot the latest data at the rightmost column
-    for (int y = 0; y < yAxisSize; ++y) {
+    for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
 
         double key, value;
         colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
 
+        // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
+        auto max = colorMap->valueAxis()->range().upper;
+        auto min = colorMap->valueAxis()->range().lower;
+        value = pow(10, ((value - min)/(max - min)) * (log10(max) - log10(min)) + log10(min));
+
         // Only plot one channel, for now
         auto intensity = (90.0f + frequencyDomainBuffer.at(value)[0]) / 90.0f;
-//        std::cout << intensity << ", ";
         colorMap->data()->setCell(xAxisSize - 1, y, intensity);
 
     }
-    std::cout << std::endl;
 
     // Redraw the plot
     colorMap->rescaleDataRange();
@@ -100,12 +93,6 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
 
 void GraphGui::setupPlot(size_t xSize, size_t ySize) {
 
-//    std::cout << "Setting up the plot" << std::endl;
-
-    yAxisSize = ySize;
-    xAxisSize = xSize;
-
-    colorMap->data()->setSize(xAxisSize, yAxisSize);
 
 }
 

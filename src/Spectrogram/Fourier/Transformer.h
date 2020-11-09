@@ -15,23 +15,6 @@ namespace Spectrogram::Fourier {
         for (const auto &channel : buffer.channels())
             frequencyDomainBuffer.channels().push_back(processor.compute(channel));
 
-//        std::vector<std::vector<Intensity>> intensities;
-//        for (const auto &channel : buffer.channels())
-//            intensities.push_back(processor.compute(channel));
-//
-//        FrequencyDomainBuffer frequencyDomainBuffer;
-//        for (size_t index = 0; index < intensities[0].size(); ++index) {
-//
-//            Frequency frequency = index / buffer.time();
-//
-//            std::vector<Intensity> frame;
-//            for (auto channel : intensities)
-//                frame.push_back(channel[index]);
-//
-//            frequencyDomainBuffer.emplace(std::make_pair(frequency, frame));
-//
-//        }
-
         return frequencyDomainBuffer;
     }
 

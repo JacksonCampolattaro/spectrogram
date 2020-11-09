@@ -30,6 +30,10 @@ namespace Spectrogram::Fourier {
 
             return frame;
         }
+
+        [[nodiscard]] float maxFrequency() const {
+            return numFrames() / time();
+        }
     };
 }
 
