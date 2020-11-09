@@ -1,9 +1,7 @@
-#ifndef GRAPH_GUI_H
-#define GRAPH_GUI_H
+#ifndef SPECTROGRAM_QTSPECTROGRAM_H
+#define SPECTROGRAM_QTSPECTROGRAM_H
 
-#include <QMainWindow>
 #include "qcustomplot.h"
-#include <QTimer>
 
 #include <Spectrogram/Audio/Buffer.h>
 #include <Spectrogram/Audio/System/Blocking.h>
@@ -13,11 +11,11 @@
 
 using namespace Spectrogram;
 
-class GraphGui : public QMainWindow {
+class QtSpectrogram : public QCustomPlot  {
 Q_OBJECT
 
 public:
-    explicit GraphGui(QWidget *parent = 0);
+    explicit QtSpectrogram(QWidget *parent = 0);
 
 public slots:
 
@@ -28,8 +26,7 @@ private:
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
-
-    QCustomPlot *customPlot;
+    
     QCPColorMap *colorMap;
 
     int yAxisSize = 700;
@@ -37,4 +34,4 @@ private:
 
 };
 
-#endif // GRAPH_GUI_H
+#endif // SPECTROGRAM_QTSPECTROGRAM_H
