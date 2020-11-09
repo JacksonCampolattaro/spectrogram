@@ -13,7 +13,7 @@
 #include "Spectrogram/Visualizer/QtAudioSystem.h"
 
 #include <Spectrogram/Audio/DeviceList.h>
-#include <Spectrogram/PNG/Writer.h>
+#include "Spectrogram/PNG/Writer.h"
 
 //QT_MAIN_APP_BEGIN_NAMESPACE
 enum PlayerState {stopped, started, paused};
