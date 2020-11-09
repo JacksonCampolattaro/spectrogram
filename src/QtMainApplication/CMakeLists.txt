@@ -5,12 +5,9 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 add_executable(QtMainApplication
         main.cpp
         QtMainApplication.h
-        QtMainApplication.cpp
-        SpectrogramGraph.h
-        SpectrogramGraph.cpp)
+        QtMainApplication.cpp)
 
 target_link_libraries(QtMainApplication
-        ${QCustomPlot_LIBRARIES}
         Qt5::Widgets
         Visualizer)
 

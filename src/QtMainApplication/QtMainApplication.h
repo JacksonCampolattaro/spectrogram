@@ -8,7 +8,10 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QGridLayout>
-#include "SpectrogramGraph.h"
+#include "Spectrogram/Visualizer/QtSpectrogram.h"
+#include "Spectrogram/Visualizer/QtAudioSystem.h"
+
+#include <Spectrogram/Audio/DeviceList.h>
 
 //QT_MAIN_APP_BEGIN_NAMESPACE
 enum PlayerState {stopped, started, paused};
@@ -23,43 +26,50 @@ public:
 
 public slots:
 	// This slot function can be used publicly to add entries to the list of audio source options
-	void setAudioSource(int source); // TODO: Finish this
+	void addAudioSource(int source); // TODO: Finish this
+	void updateSpectrogram(const Audio::Buffer &buffer);
+	void updateSources(const DeviceList &deviceList);
+	void readyPause();
+	void readyPlay();
 
 signals:
 	// These are signals for the plot controls, forwarded
 	// from their respective button press events
-	void play();
-    void pause();
-    void stop();
-	void save();
+	void playPressed(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
+    void pausePressed();
+    //void stopPressed();
+	void savePressed();
+	
 	void changeSource(int source);
 
 private slots: // TODO: Full implement these
 	// These slots are for the UI responses to event
 	// signals, after emitting them for other modules
-	void playPausePressed();
-	void stopPressed();
-	void playPressed();
+	//void playPausePressed();
+	// void readyPause();
+	// void readyPlay();
 	void saveOutput();
-	void updateSource();
 
 private:
+
     // Composite GUI objects
-	SpectrogramGraph *spectrogram;
+	QtSpectrogram *spectrogram;
 	//QGridLayout *appLayout;	
 	//QVBoxLayout *topLevelVLayout;
 	//QHBoxLayout *buttonLayout;
 	QToolBar *controls;
 	
-	QToolButton *stopButton;
-	QToolButton *playButton;
+	QToolButton *stopButton; //OPTIONAL, YES CHOSEN
+	QToolButton *playButton; //OPTIONAL, YES CHOSEN
 	QToolButton *saveButton;
 
-	QPushButton *playPauseButton;
+	//QPushButton *playPauseButton;  //OPTIONAL, NOT CHOSEN
 	QComboBox *audioSelectBox;
 	
 	// State variable(s)
-	PlayerState playState = stopped;
+	PlayerState playState = paused;
+
+	const DeviceList *devices = nullptr;
 };
 
-#endif // QT_MAIN_APP_H
+#endif // QT_MAIN_APP_Ha

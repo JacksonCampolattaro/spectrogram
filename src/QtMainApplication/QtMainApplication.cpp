@@ -5,30 +5,44 @@
 QtMainApplication::QtMainApplication(QWidget *parent) :
         QMainWindow(parent)
 {
-    // Perhaps this should be statically allocated instead?
-	spectrogram = new SpectrogramGraph(this);
-	
+
+	// Perhaps this should be statically allocated instead?
+	spectrogram = new QtSpectrogram(this);
+
 	setCentralWidget(spectrogram); // IMPORTANT: Do NOT forget this line
 	setGeometry(100, 100, 500, 400);
+
+
 	
 	// Partly from media player example code on Qt website
 	playButton = new QToolButton(this);
     playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
 
-    connect(playButton, &QAbstractButton::clicked, this, &QtMainApplication::play);
+    // connect(playButton, &QAbstractButton::clicked,
+	// 	this, &QtMainApplication::playPressed);
+	// Stuff from Therese
+	connect(playButton, &QAbstractButton::clicked,
+		this, &QtMainApplication::readyPlay);
 
     stopButton = new QToolButton(this);
     stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
-    stopButton->setEnabled(false);
+    //stopButton->setEnabled(false);
 
-    connect(stopButton, &QAbstractButton::clicked, this, &QtMainApplication::stop);
+    //connect(stopButton, &QAbstractButton::clicked,
+	//	this, &QtMainApplication::stopPressed);
+	
+	// From Therese
+	connect(stopButton, &QAbstractButton::clicked,
+		this, &QtMainApplication::readyPause);
 
 	saveButton = new QToolButton(this);
     saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
 
-    connect(saveButton, &QAbstractButton::clicked, this, &QtMainApplication::saveOutput);
+    connect(saveButton, &QAbstractButton::clicked,
+		this, &QtMainApplication::saveOutput);
 	
-	
+
+/*
 	// Standard PushButton approach (for comparison)
 	playPauseButton = new QPushButton(this);
 	playPauseButton->setObjectName(QStringLiteral("playPauseButton"));
@@ -41,7 +55,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	
 	connect(playPauseButton, &QAbstractButton::clicked,
 		this, &QtMainApplication::playPausePressed);
-
+*/
 	audioSelectBox = new QComboBox(this);
 	
 	// TODO: Populate the entries with the options from the OS
@@ -54,11 +68,8 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
     audioSelectBox->addItem("Audio Source 2", QVariant(2));
     audioSelectBox->setCurrentIndex(0);
 
-	QObject::connect(audioSelectBox, QOverload<int>::of(&QComboBox::activated),
-		this, &QtMainApplication::updateSource);
-
 	controls = new QToolBar(this);
-	controls->addWidget(playPauseButton);
+	//controls->addWidget(playPauseButton);
 	controls->addWidget(saveButton);
 	controls->addWidget(stopButton);
 	controls->addWidget(playButton);
@@ -76,17 +87,17 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 */
 }
 
-void QtMainApplication::stopPressed(){
-	stopButton->setEnabled(false);
-	playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-}
-
+// void QtMainApplication::stopPressed(){
+// 	stopButton->setEnabled(false);
+// 	playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+// }
+/*
 void QtMainApplication::playPressed()
 {
 	switch(playState)
 	{
 	case stopped:
-		stopButton->setEnabled(true);
+		//stopButton->setEnabled(true);
 		playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
 		break;
 	case started:
@@ -99,29 +110,38 @@ void QtMainApplication::playPressed()
 		break;
 	}
 }
-
+*/
 void QtMainApplication::saveOutput(){
+	// TODO: Add this
 	// Stub
 }
-
+/*
 /// Simple state machine function
 void QtMainApplication::playPausePressed()
 {
+	
 	switch (playState) {
     case stopped://QMediaPlayer::StoppedState: // Currently unused
 		playPauseButton->setText("Start");
-		emit play();
+
 		break;
+		
     case paused://QMediaPlayer::PausedState:
-        playPauseButton->setText("Resume");
-		emit play();
+		
+        playPauseButton->setText("Start");
+
+		// FIXME: Which case is relevant here?
+
         break;
+
     case started://QMediaPlayer::PlayingState:
-        playPauseButton->setText("Stop");
-		emit pause();
+        playPauseButton->setText("Pause");
+
         break;
     }
+	
 }
+*/
 
 int QtMainApplication::getAudioSource() const
 {
@@ -129,7 +149,7 @@ int QtMainApplication::getAudioSource() const
 	return audioSelectBox->itemData(audioSelectBox->currentIndex()).toInt();
 }
 
-void QtMainApplication::setAudioSource(int source)
+void QtMainApplication::addAudioSource(int source) // TODO: Finish this
 {
     for (int i = 0; i < audioSelectBox->count(); ++i) {
         //if (qFuzzyCompare(source, float(audioSelectBox->itemData(i).toDouble()))) {
@@ -143,7 +163,27 @@ void QtMainApplication::setAudioSource(int source)
     audioSelectBox->setCurrentIndex(audioSelectBox->count() - 1);
 }
 
-void QtMainApplication::updateSource()
+void QtMainApplication::updateSources(const DeviceList &deviceList)
 {
+	this->devices = &deviceList;
+	// TODO: Update the list of devices
     emit changeSource(getAudioSource());
 }
+
+void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
+	spectrogram->draw(buffer);
+}
+
+void QtMainApplication::readyPause() {
+	emit pausePressed();
+}
+
+void QtMainApplication::readyPlay() {
+	// Choose the device indicated by the combobox
+	assert(devices);
+	const auto &device = (*devices)[1]; // For now, just choose the first device
+	// Start the audio subsystem
+	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 10);
+}
+
+
