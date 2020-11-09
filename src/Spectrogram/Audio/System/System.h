@@ -55,9 +55,8 @@ namespace Spectrogram::Audio::System {
          * When you subclass the System class, override this to do what you'd like with the samples.
          *
          * @param arrays N pointers to c-style arrays of samples, where N is the number of channels
-         * @param length the length of the arrays (length is nondeterministic, but common between the arrays)
          */
-        virtual void pushSamples(const std::vector<Sample> &array) = 0;
+        virtual void pushSamples(const std::vector<Sample> *array) = 0;
 
     private:
 

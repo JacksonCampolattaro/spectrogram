@@ -18,6 +18,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
     auto callback = userData->newSamplesCallback;
     int err;
 
+    // This prevents the latency from building up too much
     assert(maxFrameCount < 20000);
 
     int framesToRead = maxFrameCount;
@@ -47,7 +48,7 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
                     areas[channel].ptr += areas[channel].step;
 
                 }
-                callback(sampleArrays);
+                callback(&sampleArrays);
             }
         }
 
@@ -61,6 +62,8 @@ static void read_callback(struct SoundIoInStream *instream, [[maybe_unused]] int
         }
 
     }
+
+    callback(nullptr);
 }
 
 static void overflow_callback([[maybe_unused]] struct SoundIoInStream *instream) {
@@ -87,6 +90,8 @@ Spectrogram::Audio::Backend::Soundio::Soundio() {
         );
         soundio_device_unref(deviceInfo);
     }
+
+    _inStream = nullptr;
 }
 
 Spectrogram::Audio::DeviceList &Spectrogram::Audio::Backend::Soundio::devices() {
@@ -144,7 +149,7 @@ void Spectrogram::Audio::Backend::Soundio::stop() {
 
     if (_inStream) {
 
-        delete (UserData *) _inStream->userdata;
+//        delete (UserData *) _inStream->userdata;
         soundio_device_unref(_inStream->device);
         soundio_instream_destroy(_inStream);
         _inStream = nullptr;
