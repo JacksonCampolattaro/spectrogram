@@ -14,7 +14,7 @@ GraphGui::GraphGui(QWidget *parent) :
         QMainWindow(parent) {
 
     // Set the dimensions of this window
-    setGeometry(100, 200, 800, 500);
+    setGeometry(100, 100, 800, 800);
 
     // Create a plot widget and add it to the window
     customPlot = new QCustomPlot(this);
@@ -31,7 +31,12 @@ GraphGui::GraphGui(QWidget *parent) :
     customPlot->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
 
-    colorMap->setGradient(QCPColorGradient::gpHot);
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(10);
+    colorMap->valueAxis()->setTicker(logTicker);
+
+    colorMap->setGradient(QCPColorGradient::gpGrayscale);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(customPlot);
@@ -48,11 +53,6 @@ void GraphGui::draw(const Audio::Buffer &buffer) {
     if (colorMap->data()->valueRange().upper != frequencyDomainBuffer.maxFrequency()) {
 
         colorMap->data()->setSize(xAxisSize, yAxisSize);
-
-        colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
-        QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-        logTicker->setLogBase(10);
-        colorMap->valueAxis()->setTicker(logTicker);
 
         // Make sure the y axis is scaled correctly
         auto maxFreq = frequencyDomainBuffer.maxFrequency();
