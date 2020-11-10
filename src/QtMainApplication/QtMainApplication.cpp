@@ -36,9 +36,11 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	saveButton = new QToolButton(this);
     saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
 
-
+	// Connect snapshot saving
 	connect(saveButton, &QAbstractButton::clicked,
-		this, &QtMainApplication::saveOutput);
+		spectrogram, &QtSpectrogram::saveSnapShotPressed);
+	connect(spectrogram, &QtSpectrogram::snapShotWritingDone, 
+		this, &QtMainApplication::showSaveSuccess);
 	
 
 /*
@@ -75,7 +77,6 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	controls->addWidget(audioSelectBox);
 	addToolBar(Qt::TopToolBarArea, controls);
 
-	setupPngWriter();
 /*
 	/// Alternate approach if the class is extending plain old QWidget ///
 	appLayout = new QGridLayout(this);
@@ -87,10 +88,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	appLayout->addWidget(spectrogram,		1, 0, -1, -1);
 */
 }
-QtMainApplication::~QtMainApplication() {
-    writerThread.quit();
-    writerThread.wait();
-}
+
 // void QtMainApplication::stopPressed(){
 // 	stopButton->setEnabled(false);
 // 	playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -115,10 +113,6 @@ void QtMainApplication::playPressed()
 	}
 }
 */
-
-void QtMainApplication::saveOutput() {
-	emit savePressed();
-}
 
 /*
 /// Simple state machine function
@@ -191,31 +185,12 @@ void QtMainApplication::readyPlay() {
 	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 10);
 }
 
-// Needs to be in it's own thread so that when it's updated to save 
-// continuously it wont interfere with gui when it does computationally 
-// expensive picture appending.
-void QtMainApplication::setupPngWriter()
-{
-    pngWriter = new Spectrogram::PNG::Writer();
-    pngWriter->setFileName("snapshot.png");
-	// pngWriter will never modify the spectrogram's colorMap, 
-	// it just needs it to copy its data periodically
-	pngWriter->setRunningMap(spectrogram->getColorMapPtr());
-    pngWriter->moveToThread(&writerThread);
-
-    connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
-    connect(this, &QtMainApplication::savePressed, pngWriter, &Spectrogram::PNG::Writer::onWriteSnapShot);
-    connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtMainApplication::showSaveSuccess);
-    writerThread.start();
-}
-
 // TODO: This can be changed to whatever you want, 
 // I just have it printing to console for now for simplicity.
 // You could have a pop window appear or a little status message
 // show up in the gui or you could get rid of it entirely.
-void QtMainApplication::showSaveSuccess(bool success) {
+void QtMainApplication::showSaveSuccess(bool success, QString fileName) {
     QString msg;
-    QString fileName = pngWriter->getFileName();
     if(success) {
         msg = QString("%1 saved to present folder.").arg(fileName);
     }

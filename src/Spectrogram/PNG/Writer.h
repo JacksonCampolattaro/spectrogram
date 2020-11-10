@@ -20,7 +20,7 @@ namespace Spectrogram::PNG {
         void onWriteSnapShot();
 
     signals:
-        void writingDone(const bool&);
+        void writingDone(bool);
 
 
     private:

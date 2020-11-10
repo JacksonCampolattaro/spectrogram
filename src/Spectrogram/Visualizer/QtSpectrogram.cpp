@@ -33,6 +33,14 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 
     colorMap->data()->setSize(xAxisSize, yAxisSize);
+
+    // Should happen after creating the colormap
+    setupPngWriter();
+}
+
+QtSpectrogram::~QtSpectrogram() {
+    writerThread.quit();
+    writerThread.wait();
 }
 
 void QtSpectrogram::draw(const Audio::Buffer &buffer) {
@@ -101,6 +109,28 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
 
 }
 
-QCPColorMap* QtSpectrogram::getColorMapPtr() {
-    return colorMap;
+// Needs to be in it's own thread so that when it's updated to save 
+// continuously it wont interfere with gui when it does computationally 
+// expensive picture appending.
+void QtSpectrogram::setupPngWriter()
+{
+    pngWriter = new Spectrogram::PNG::Writer();
+    pngWriter->setFileName("snapshot.png");
+	// pngWriter will never modify the spectrogram's colorMap, 
+	// it just needs it to copy its data periodically
+	pngWriter->setRunningMap(colorMap);
+    pngWriter->moveToThread(&writerThread);
+
+    connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
+    connect(this, &QtSpectrogram::writeSnapShot, pngWriter, &Spectrogram::PNG::Writer::onWriteSnapShot);
+    connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtSpectrogram::onWritingDone);
+    
+    writerThread.start();
+}
+void QtSpectrogram::saveSnapShotPressed() {
+    emit writeSnapShot();
+}
+void QtSpectrogram::onWritingDone(bool success) {
+    QString filename = pngWriter->getFileName();
+    emit snapShotWritingDone(success, filename);
 }

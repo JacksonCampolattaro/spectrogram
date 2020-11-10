@@ -9,8 +9,7 @@ add_executable(QtMainApplication
 
 target_link_libraries(QtMainApplication
         Qt5::Widgets
-        Visualizer
-        PNG)
+        Visualizer)
 
 target_include_directories(QtMainApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)

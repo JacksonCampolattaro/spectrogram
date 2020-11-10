@@ -8,12 +8,10 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QGridLayout>
-#include <QThread>
 #include "Spectrogram/Visualizer/QtSpectrogram.h"
 #include "Spectrogram/Visualizer/QtAudioSystem.h"
 
 #include <Spectrogram/Audio/DeviceList.h>
-#include "Spectrogram/PNG/Writer.h"
 
 //QT_MAIN_APP_BEGIN_NAMESPACE
 enum PlayerState {stopped, started, paused};
@@ -24,7 +22,6 @@ Q_OBJECT
 
 public:
     explicit QtMainApplication(QWidget *parent = 0);
-	~QtMainApplication();
 	int getAudioSource() const; // TODO: Finish this
 
 public slots:
@@ -34,7 +31,7 @@ public slots:
 	void updateSources(const DeviceList &deviceList);
 	void readyPause();
 	void readyPlay();
-	void showSaveSuccess(bool success);
+	void showSaveSuccess(bool success, QString fileName);
 
 signals:
 	// These are signals for the plot controls, forwarded
@@ -42,7 +39,7 @@ signals:
 	void playPressed(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
     void pausePressed();
     //void stopPressed();
-	void savePressed();
+	//void savePressed();
 	
 	void changeSource(int source);
 
@@ -52,10 +49,9 @@ private slots: // TODO: Full implement these
 	//void playPausePressed();
 	// void readyPause();
 	// void readyPlay();
-	void saveOutput();
+	//void saveOutput();
 
 private:
-	void setupPngWriter();
     // Composite GUI objects
 	QtSpectrogram *spectrogram;
 	//QGridLayout *appLayout;	
@@ -75,8 +71,6 @@ private:
 
 	const DeviceList *devices = nullptr;
 
-	QThread writerThread;
-	Spectrogram::PNG::Writer *pngWriter;
 };
 
 #endif // QT_MAIN_APP_Ha
