@@ -11,8 +11,6 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 
 	setCentralWidget(spectrogram); // IMPORTANT: Do NOT forget this line
 	setGeometry(100, 100, 500, 400);
-
-
 	
 	// Partly from media player example code on Qt website
 	playButton = new QToolButton(this);
@@ -38,8 +36,11 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	saveButton = new QToolButton(this);
     saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
 
-    connect(saveButton, &QAbstractButton::clicked,
-		this, &QtMainApplication::saveOutput);
+	// Connect snapshot saving
+	connect(saveButton, &QAbstractButton::clicked,
+		spectrogram, &QtSpectrogram::saveSnapShotPressed);
+	connect(spectrogram, &QtSpectrogram::snapShotWritingDone, 
+		this, &QtMainApplication::showSaveSuccess);
 	
 
 /*
@@ -75,6 +76,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	controls->addWidget(playButton);
 	controls->addWidget(audioSelectBox);
 	addToolBar(Qt::TopToolBarArea, controls);
+
 /*
 	/// Alternate approach if the class is extending plain old QWidget ///
 	appLayout = new QGridLayout(this);
@@ -111,10 +113,7 @@ void QtMainApplication::playPressed()
 	}
 }
 */
-void QtMainApplication::saveOutput(){
-	// TODO: Add this
-	// Stub
-}
+
 /*
 /// Simple state machine function
 void QtMainApplication::playPausePressed()
@@ -185,5 +184,22 @@ void QtMainApplication::readyPlay() {
 	// Start the audio subsystem
 	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 10);
 }
+
+// TODO: This can be changed to whatever you want, 
+// I just have it printing to console for now for simplicity.
+// You could have a pop window appear or a little status message
+// show up in the gui or you could get rid of it entirely.
+void QtMainApplication::showSaveSuccess(bool success, QString fileName) {
+    QString msg;
+    if(success) {
+        msg = QString("%1 saved to present folder.").arg(fileName);
+    }
+    else {
+        msg = QString("Error: %1 not saved."). arg(fileName);
+    }
+    
+    std::cout << msg.toStdString() << std::endl;
+}
+
 
 

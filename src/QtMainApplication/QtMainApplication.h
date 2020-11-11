@@ -31,6 +31,7 @@ public slots:
 	void updateSources(const DeviceList &deviceList);
 	void readyPause();
 	void readyPlay();
+	void showSaveSuccess(bool success, QString fileName);
 
 signals:
 	// These are signals for the plot controls, forwarded
@@ -38,7 +39,7 @@ signals:
 	void playPressed(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
     void pausePressed();
     //void stopPressed();
-	void savePressed();
+	//void savePressed();
 	
 	void changeSource(int source);
 
@@ -48,10 +49,9 @@ private slots: // TODO: Full implement these
 	//void playPausePressed();
 	// void readyPause();
 	// void readyPlay();
-	void saveOutput();
+	//void saveOutput();
 
 private:
-
     // Composite GUI objects
 	QtSpectrogram *spectrogram;
 	//QGridLayout *appLayout;	
@@ -70,6 +70,7 @@ private:
 	PlayerState playState = paused;
 
 	const DeviceList *devices = nullptr;
+
 };
 
 #endif // QT_MAIN_APP_Ha
