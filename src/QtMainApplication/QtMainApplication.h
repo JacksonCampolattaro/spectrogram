@@ -22,6 +22,7 @@ Q_OBJECT
 
 public:
     explicit QtMainApplication(QWidget *parent = 0);
+	~QtMainApplication();
 	int getAudioSource() const; // TODO: Finish this
 
 public slots:
@@ -52,6 +53,8 @@ private slots: // TODO: Full implement these
 	//void saveOutput();
 
 private:
+	void setupSaveButton();
+
     // Composite GUI objects
 	QtSpectrogram *spectrogram;
 	//QGridLayout *appLayout;	
@@ -61,7 +64,12 @@ private:
 	
 	QToolButton *stopButton; //OPTIONAL, YES CHOSEN
 	QToolButton *playButton; //OPTIONAL, YES CHOSEN
-	QToolButton *saveButton;
+
+	QPushButton *saveButton; 
+	QStateMachine saveMachine;
+	QState *off;
+	QState *on;
+	//QToolButton *saveButton;
 
 	//QPushButton *playPauseButton;  //OPTIONAL, NOT CHOSEN
 	QComboBox *audioSelectBox;

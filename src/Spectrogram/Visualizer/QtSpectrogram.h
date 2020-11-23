@@ -23,12 +23,15 @@ public:
 public slots:
 
     void draw(const Audio::Buffer &buffer);
-    void saveSnapShotPressed();
     void onWritingDone(bool success);
+    void startSavePressed();
+    void stopSavePressed();
 
 signals:
-    void writeSnapShot();
-    void snapShotWritingDone(bool success, QString filename);
+    void pngWritingDone(bool success, QString filename);
+    void startSaving();
+    void stopSaving();
+    void updateSave();
 
 private:
     void setupPngWriter();
