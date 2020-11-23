@@ -82,12 +82,6 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 */
 }
 
-QtMainApplication::~QtMainApplication()
-{
-	/* FIXME: This only work sometimes :( but is better then nothing for now */
-	emit pausePressed();
-}
-
 /*TODO: (Msg from Therese) I just picked a two-way button stop and start for easy testing.
 		Feel free to change it up if you want. 
 		https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/

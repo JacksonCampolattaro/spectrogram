@@ -22,7 +22,6 @@ Q_OBJECT
 
 public:
     explicit QtMainApplication(QWidget *parent = 0);
-	~QtMainApplication();
 	int getAudioSource() const; // TODO: Finish this
 
 public slots:
