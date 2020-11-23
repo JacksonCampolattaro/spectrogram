@@ -4,9 +4,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
 
+option(BUILD_DEPENDENCIES "Build our application" OFF)
 option(BUILD_APPLICATIONS "Build our application" ON)
 option(BUILD_TESTS "Build the test suite" OFF)
 option(BUILD_DOCUMENTATION "Build doxygen docs" OFF)
+
+if (BUILD_DEPENDENCIES)
+    add_subdirectory(third-party)
+endif ()
 
 if (BUILD_APPLICATIONS)
     add_subdirectory(src)
