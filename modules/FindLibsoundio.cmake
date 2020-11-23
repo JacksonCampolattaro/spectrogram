@@ -1,44 +1,44 @@
 
 # Sets the possible install locations
-set(LIBSOUNDIO_HINTS
-        ${LIBSOUNDIO_ROOT}
-        $ENV{LIBSOUNDIO_ROOT}
+set(Libsoundio_HINTS
+        ${Libsoundio_ROOT}
+        $ENV{Libsoundio_ROOT}
         )
-set(LIBSOUNDIO_PATHS
+set(Libsoundio_PATHS
         /usr
         /usr/local
         /usr/local/
         )
 
 # Finds the include directories
-find_path(LIBSOUNDIO_INCLUDE_DIRS
+find_path(Libsoundio_INCLUDE_DIRS
         NAMES soundio.h
-        HINTS ${LIBSOUNDIO_HINTS}
+        HINTS ${Libsoundio_HINTS}
         PATH_SUFFIXES include api inc include/x86_64 include/x64 include/soundio
-        PATHS ${LIBSOUNDIO_PATHS}
+        PATHS ${Libsoundio_PATHS}
         )
-mark_as_advanced(LIBSOUNDIO_INCLUDE_DIRS)
-#message(${LIBSOUNDIO_INCLUDE_DIRS})
+mark_as_advanced(Libsoundio_INCLUDE_DIRS)
+#message(${Libsoundio_INCLUDE_DIRS})
 
 # Finds the library
-unset(LIBSOUNDIO_LIBRARIES CACHE)
-find_library(LIBSOUNDIO_LIBRARIES
+unset(Libsoundio_LIBRARIES CACHE)
+find_library(Libsoundio_LIBRARIES
         NAMES libsoundio.so
-        HINTS ${LIBSOUNDIO_HINTS}
+        HINTS ${Libsoundio_HINTS}
         PATH_SUFFIXES lib lib64 lib/x86_64 lib/x64 lib/x86 lib/Win32
-        PATHS ${LIBSOUNDIO_PATHS}
+        PATHS ${Libsoundio_PATHS}
         )
-#set(LIBSOUNDIO_LIBRARIES "/usr/lib64/libsoundio.so")
-mark_as_advanced(LIBSOUNDIO_LIBRARIES)
+#set(Libsoundio_LIBRARIES "/usr/lib64/libsoundio.so")
+mark_as_advanced(Libsoundio_LIBRARIES)
 
 # Notification messages
-if(NOT LIBSOUNDIO_INCLUDE_DIRS)
-    message(STATUS "Could NOT find 'soundio/soundio.h', install Libsoundio or set LIBSOUNDIO_ROOT")
+if(NOT Libsoundio_INCLUDE_DIRS)
+    message(STATUS "Could NOT find 'soundio/soundio.h', install Libsoundio or set Libsoundio_ROOT")
 endif()
-if(NOT LIBSOUNDIO_LIBRARIES)
-    message(STATUS "Could NOT find the Libsoundio library, install it or set LIBSOUNDIO_ROOT")
+if(NOT Libsoundio_LIBRARIES)
+    message(STATUS "Could NOT find the Libsoundio library, install it or set Libsoundio_ROOT")
 endif()
 
 # Determines whether or not the library was found
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Libsoundio DEFAULT_MSG LIBSOUNDIO_INCLUDE_DIRS LIBSOUNDIO_LIBRARIES)
+find_package_handle_standard_args(Libsoundio DEFAULT_MSG Libsoundio_INCLUDE_DIRS Libsoundio_LIBRARIES)
