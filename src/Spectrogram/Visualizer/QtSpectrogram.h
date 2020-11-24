@@ -34,10 +34,13 @@ signals:
     void updateSave();
 
 private:
+    void setupYAxisLogScale();
     void setupPngWriter();
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    float getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    double getLogValue(const int &y);
 
     QCPColorMap *colorMap;
 
