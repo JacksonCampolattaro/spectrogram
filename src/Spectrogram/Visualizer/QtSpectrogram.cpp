@@ -104,33 +104,41 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
         intensity = intensity / frequencyDomainBuffer.numChannels();
 
         colorMap->data()->setCell(xAxisSize - 1, y, intensity);
-
     }
-
+    emit updateSave();
 }
 
-// Needs to be in it's own thread so that when it's updated to save 
+// Needs to be in it's own thread so that when it saves
 // continuously it wont interfere with gui when it does computationally 
 // expensive picture appending.
 void QtSpectrogram::setupPngWriter()
 {
     pngWriter = new Spectrogram::PNG::Writer();
-    pngWriter->setFileName("snapshot.png");
+    pngWriter->setFileName("spectrogram.png");
 	// pngWriter will never modify the spectrogram's colorMap, 
 	// it just needs it to copy its data periodically
 	pngWriter->setRunningMap(colorMap);
     pngWriter->moveToThread(&writerThread);
 
     connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
-    connect(this, &QtSpectrogram::writeSnapShot, pngWriter, &Spectrogram::PNG::Writer::onWriteSnapShot);
     connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtSpectrogram::onWritingDone);
     
+    connect(this, &QtSpectrogram::startSaving, pngWriter, &Spectrogram::PNG::Writer::onStartSaving);
+    connect(this, &QtSpectrogram::stopSaving, pngWriter, &Spectrogram::PNG::Writer::onStopSaving);
+    connect(this, &QtSpectrogram::updateSave, pngWriter, &Spectrogram::PNG::Writer::continuousSave);
+
     writerThread.start();
 }
-void QtSpectrogram::saveSnapShotPressed() {
-    emit writeSnapShot();
-}
+
 void QtSpectrogram::onWritingDone(bool success) {
     QString filename = pngWriter->getFileName();
-    emit snapShotWritingDone(success, filename);
+    emit pngWritingDone(success, filename);
+}
+
+void QtSpectrogram::startSavePressed() {
+    emit startSaving();
+}
+
+void QtSpectrogram::stopSavePressed() {
+    emit stopSaving();
 }

@@ -52,6 +52,8 @@ private slots: // TODO: Full implement these
 	//void saveOutput();
 
 private:
+	void setupSaveButton();
+
     // Composite GUI objects
 	QtSpectrogram *spectrogram;
 	//QGridLayout *appLayout;	
@@ -61,7 +63,12 @@ private:
 	
 	QToolButton *stopButton; //OPTIONAL, YES CHOSEN
 	QToolButton *playButton; //OPTIONAL, YES CHOSEN
-	QToolButton *saveButton;
+
+	QPushButton *saveButton; 
+	QStateMachine saveMachine;
+	QState *off;
+	QState *on;
+	//QToolButton *saveButton;
 
 	//QPushButton *playPauseButton;  //OPTIONAL, NOT CHOSEN
 	QComboBox *audioSelectBox;
