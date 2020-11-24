@@ -12,7 +12,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo apt-get install -y libboost-dev libfftw3-dev libgtkmm-3.0-dev libqcustomplot-dev
+        run: sudo apt-get install -y libboost-dev libfftw3-dev libgtkmm-3.0-dev libqcustomplot-dev libqcustomplot-dev libsoundio-dev
+        # Automatically installed: libsoundio-dev
 
       - name: Configure CMake
         shell: bash
