@@ -8,6 +8,7 @@ TEST_CASE("Saving and loading settings profiles", "[Settings]") {
     Settings::Profile profile{};
 
     profile.colorScheme = 5;
+    profile.logscale = false;
 
     std::stringstream stream{};
 
@@ -20,5 +21,6 @@ TEST_CASE("Saving and loading settings profiles", "[Settings]") {
     stream >> newProfile;
 
     CHECK(newProfile.colorScheme == 5);
+    CHECK(newProfile.logscale == false);
 }
 

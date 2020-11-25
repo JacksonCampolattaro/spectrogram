@@ -14,13 +14,14 @@ namespace Settings {
     class Profile {
     public:
 
-        int colorScheme;
-
+        int colorScheme = 0;
+        bool logscale = true;
 
         friend std::ostream &operator<<(std::ostream &out, const Settings::Profile &p) {
 
             const toml::value data{
-                {"colorscheme", p._colorSchemeNames[p.colorScheme]}
+                {"colorscheme", p._colorSchemeNames[p.colorScheme]},
+                {"logscale", p.logscale}
             };
 
             out << data;
@@ -34,6 +35,8 @@ namespace Settings {
 
             std::string colorSchemeName = toml::find<std::string>(data, "colorscheme");
             p.colorScheme = std::find(p._colorSchemeNames.begin(), p._colorSchemeNames.end(), colorSchemeName) - p._colorSchemeNames.begin();
+
+            p.logscale = toml::find<bool>(data, "logscale");
 
             return in;
         }
