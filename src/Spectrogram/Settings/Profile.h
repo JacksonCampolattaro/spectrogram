@@ -20,7 +20,7 @@ namespace Settings {
         friend std::ostream &operator<<(std::ostream &out, const Settings::Profile &p) {
 
             const toml::value data{
-                {"colorscheme", p.colorScheme}
+                {"colorscheme", p._colorSchemeNames[p.colorScheme]}
             };
 
             out << data;
@@ -32,10 +32,28 @@ namespace Settings {
 
             auto data = toml::parse(in);
 
-            p.colorScheme = toml::find<int>(data, "colorscheme");
+            std::string colorSchemeName = toml::find<std::string>(data, "colorscheme");
+            p.colorScheme = std::find(p._colorSchemeNames.begin(), p._colorSchemeNames.end(), colorSchemeName) - p._colorSchemeNames.begin();
 
             return in;
         }
+
+    private:
+
+        std::vector<std::string> _colorSchemeNames = {
+                "grayscale",
+                "hot",
+                "cold",
+                "night",
+                "candy",
+                "geography",
+                "ion",
+                "thermal",
+                "polar",
+                "spectrum",
+                "jet",
+                "hues"
+        };
     };
 
 }

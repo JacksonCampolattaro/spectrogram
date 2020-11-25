@@ -7,7 +7,7 @@ if (NOT Libsoundio_FOUND)
     FetchContent_Declare(
             Libsoundio
             GIT_REPOSITORY https://github.com/UnaNancyOwen/libsoundio.git
-            GIT_TAG        6736fa2daa4b78110a43547b556c54dc5e61e7b6 # This has a patch that adds better CMake Support
+            GIT_TAG 6736fa2daa4b78110a43547b556c54dc5e61e7b6 # This has a patch that adds better CMake Support
     )
     FetchContent_MakeAvailable(Libsoundio)
 
