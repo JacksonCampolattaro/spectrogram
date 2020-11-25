@@ -13,11 +13,13 @@ endif ()
 
 add_executable(test main.cpp
         test_Fourier_Process.cpp
-        test_Audio_System.cpp)
+        test_Audio_System.cpp
+        test_Settings.cpp)
 
 target_link_libraries(test LINK_PUBLIC
         Audio
         Fourier
+        Settings
         Catch2::Catch2)
 
 target_include_directories(test PUBLIC

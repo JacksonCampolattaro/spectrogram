@@ -42,3 +42,9 @@ endif()
 # Determines whether or not the library was found
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Libsoundio DEFAULT_MSG LIBSOUNDIO_INCLUDE_DIRS LIBSOUNDIO_LIBRARIES)
+
+# TODO: I should add something like this
+if (LIBSOUNDIO_FOUND)
+#    add_library(libsoundio::libsoundio ALIAS ${LIBSOUNDIO})
+#    set(libsoundio::libsoundio ${LIBSOUNDIO_LIBRARIES} CACHE STRING "" FORCE)
+endif ()
