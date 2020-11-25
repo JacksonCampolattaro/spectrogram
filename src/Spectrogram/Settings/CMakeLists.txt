@@ -12,7 +12,8 @@ if (NOT toml_FOUND)
 endif ()
 
 add_library(Settings
-        Settings.h Settings.cpp)
+        Settings.h Settings.cpp
+        Profile.h Profile.cpp)
 
 target_include_directories(Settings PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

@@ -1,12 +1,13 @@
 
+# TODO: I'd really like to get both ways working!
 #find_package(Libsoundio QUIET)
 if (NOT Libsoundio_FOUND)
 
     include(FetchContent)
     FetchContent_Declare(
             Libsoundio
-            GIT_REPOSITORY https://github.com/UnaNancyOwen/libsoundio.git # This has a patch that adds CMake Support
-            GIT_TAG        6736fa2daa4b78110a43547b556c54dc5e61e7b6
+            GIT_REPOSITORY https://github.com/UnaNancyOwen/libsoundio.git
+            GIT_TAG        6736fa2daa4b78110a43547b556c54dc5e61e7b6 # This has a patch that adds better CMake Support
     )
     FetchContent_MakeAvailable(Libsoundio)
 

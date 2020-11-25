@@ -4,6 +4,11 @@
 
 #include <Spectrogram/Settings/Settings.h>
 
+#include <toml.hpp>
+
+#include <istream>
+#include <ostream>
+
 namespace Settings {
 
     class Profile {
@@ -11,6 +16,8 @@ namespace Settings {
 
         int colorScheme;
 
+        friend std::ostream & operator << (std::ostream &out, const Profile &p);
+        friend std::istream & operator >> (std::istream &in,  Profile &p);
     };
 
 }
