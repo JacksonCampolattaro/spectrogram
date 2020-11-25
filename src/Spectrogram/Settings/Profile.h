@@ -16,8 +16,26 @@ namespace Settings {
 
         int colorScheme;
 
-        friend std::ostream & operator << (std::ostream &out, const Profile &p);
-        friend std::istream & operator >> (std::istream &in,  Profile &p);
+
+        friend std::ostream &operator<<(std::ostream &out, const Settings::Profile &p) {
+
+            const toml::value data{
+                {"colorscheme", p.colorScheme}
+            };
+
+            out << data;
+
+            return out;
+        }
+
+        friend std::istream &operator>>(std::istream &in, Settings::Profile &p) {
+
+            auto data = toml::parse(in);
+
+            p.colorScheme = toml::find<int>(data, "colorscheme");
+
+            return in;
+        }
     };
 
 }
