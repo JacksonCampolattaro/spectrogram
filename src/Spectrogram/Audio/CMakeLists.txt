@@ -1,5 +1,5 @@
 
-find_package(Libsoundio QUIET)
+#find_package(Libsoundio QUIET)
 if (NOT Libsoundio_FOUND)
 
     include(FetchContent)
