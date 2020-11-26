@@ -1,7 +1,6 @@
+
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
-find_package(QCustomPlot REQUIRED)
-
 
 add_library(Visualizer
         QtSpectrogram.h
@@ -10,7 +9,8 @@ add_library(Visualizer
         QtAudioSystem.h)
 
 target_link_libraries(Visualizer
-        ${QCustomPlot_LIBRARIES}
+#        ${QCustomPlot_LIBRARIES}
+        QCustomPlot
         Qt5::Widgets
         Qt5::PrintSupport
         Audio

@@ -41,8 +41,8 @@ private:
 
     QCPColorMap *colorMap;
 
-    int yAxisSize = 700;
-    int xAxisSize = 200;
+    int yAxisSize = 400;
+    int xAxisSize = 100;
 
     QThread writerThread;
 	Spectrogram::PNG::Writer *pngWriter;
