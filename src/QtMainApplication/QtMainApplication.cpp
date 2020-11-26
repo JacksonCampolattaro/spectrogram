@@ -205,9 +205,9 @@ void QtMainApplication::readyPause() {
 void QtMainApplication::readyPlay() {
 	// Choose the device indicated by the combobox
 	assert(devices);
-	const auto &device = (*devices)[1]; // For now, just choose the first device
+	const auto &device = (*devices)[getAudioSource()];
 	// Start the audio subsystem
-	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 10);
+	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 5);
 }
 
 // TODO: This can be changed to whatever you want, 
