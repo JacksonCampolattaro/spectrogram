@@ -28,19 +28,20 @@ public slots:
 	// This slot function can be used publicly to add entries to the list of audio source options
 	void addAudioSource(int source); // TODO: Finish this
 	void updateSpectrogram(const Audio::Buffer &buffer);
+
 	void updateSources(const DeviceList &deviceList);
-	void readyPause();
-	void readyPlay();
+
+	void stopButtonClicked();
+	void startButtonClicked();
+
 	void showSaveSuccess(bool success, QString fileName);
 
 signals:
 	// These are signals for the plot controls, forwarded
 	// from their respective button press events
-	void playPressed(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
-    void pausePressed();
-    //void stopPressed();
-	//void savePressed();
-	
+	void startSignal(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength);
+    void stopSignal();
+
 	void changeSource(int source);
 
 private slots: // TODO: Full implement these

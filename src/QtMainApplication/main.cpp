@@ -12,9 +12,9 @@ int main(int argc, char* argv[])
 
 	QtAudioSystem audioSystem(std::make_unique<Backend::Soundio>());
 	gui.updateSources(audioSystem.devices()); // Manually tell the gui what devices are available
-	QObject::connect(&gui, &QtMainApplication::playPressed,
+	QObject::connect(&gui, &QtMainApplication::startSignal,
                      &audioSystem, &QtAudioSystem::startSlot);
-	QObject::connect(&gui, &QtMainApplication::pausePressed,
+	QObject::connect(&gui, &QtMainApplication::stopSignal,
                      &audioSystem, &QtAudioSystem::stopSlot);
 
 	QObject::connect(&audioSystem, &QtAudioSystem::newBufferSignal,
