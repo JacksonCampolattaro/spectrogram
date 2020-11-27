@@ -21,8 +21,7 @@ class QtMainApplication : public QMainWindow {
 Q_OBJECT
 
 public:
-    explicit QtMainApplication(QWidget *parent = 0);
-	int getAudioSource() const; // TODO: Finish this
+    explicit QtMainApplication(QWidget *parent = nullptr);
 
 public slots:
 	// This slot function can be used publicly to add entries to the list of audio source options

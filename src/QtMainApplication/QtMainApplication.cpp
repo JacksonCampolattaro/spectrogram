@@ -85,11 +85,6 @@ void QtMainApplication::setupSaveButton() {
             this, &QtMainApplication::showSaveSuccess);
 }
 
-int QtMainApplication::getAudioSource() const {
-    //return m_rateBox->itemData(m_rateBox->currentIndex()).toDouble();
-    return audioSelectBox->itemData(audioSelectBox->currentIndex()).toInt();
-}
-
 void QtMainApplication::updateSources(const DeviceList &deviceList) {
 
     // Update the stored device list
@@ -114,7 +109,7 @@ void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
 void QtMainApplication::startButtonClicked() {
     // Choose the device indicated by the combobox
     assert(devices);
-    const auto &device = (*devices)[getAudioSource()];
+    const auto &device = (*devices)[audioSelectBox->currentData().toInt()];
     // Start the audio subsystem
     emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 5);
 }
