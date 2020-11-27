@@ -33,24 +33,18 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 
     setupSaveButton();
 
+    // The combobox will be empty by default, at least until we're told what devices are available
     audioSelectBox = new QComboBox(this);
+    audioSelectBox->setDisabled(true);
 
-    // TODO: Populate the entries with the options from the OS
-    //void QComboBox::addItems(const QStringList &texts)
-    //QStringList options = new QStringList();
-    //audioSelectBox->addItems(QStringList(QString("foo"), QString("bar"), QString("2000"))); // Placeholder
-
-    audioSelectBox->addItem("Audio Source 0", QVariant(0));
-    audioSelectBox->addItem("Audio Source 1", QVariant(1));
-    audioSelectBox->addItem("Audio Source 2", QVariant(2));
-    audioSelectBox->setCurrentIndex(0);
-
+    // Create a toolbar, and add all our buttons to it
     controls = new QToolBar(this);
-    //controls->addWidget(playPauseButton);
     controls->addWidget(stopButton);
     controls->addWidget(startButton);
     controls->addWidget(audioSelectBox);
     controls->addWidget(saveButton);
+
+    // We'll put the toolbar at the top of the screen
     addToolBar(Qt::TopToolBarArea, controls);
 
 }
