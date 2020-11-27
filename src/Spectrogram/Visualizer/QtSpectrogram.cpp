@@ -65,14 +65,14 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
     addData(frequencyDomainBuffer);
 
     // Only draw every nth frame
-    static int frameCount = 0;
-    frameCount++;
-    if (frameCount % 1 == 0) {
+    // static int frameCount = 0;
+    // frameCount++;
+    // if (frameCount % 1 == 0) {
 
         // Redraw the plot
         colorMap->rescaleDataRange();
         this->replot();
-    }
+    // }
 }
 
 void QtSpectrogram::shiftData() {
