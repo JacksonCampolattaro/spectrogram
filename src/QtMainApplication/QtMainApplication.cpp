@@ -107,11 +107,15 @@ void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
 }
 
 void QtMainApplication::startButtonClicked() {
-    // Choose the device indicated by the combobox
+
+    // The device list _must_ be set before starting
     assert(devices);
+
+    // Choose the device indicated by the combobox
     const auto &device = (*devices)[audioSelectBox->currentData().toInt()];
+
     // Start the audio subsystem
-    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 5);
+    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 10);
 }
 
 // TODO: This can be changed to whatever you want, 
