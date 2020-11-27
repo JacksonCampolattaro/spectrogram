@@ -205,7 +205,7 @@ void QtMainApplication::readyPause() {
 void QtMainApplication::readyPlay() {
 	// Choose the device indicated by the combobox
 	assert(devices);
-	const auto &device = (*devices)[1]; // For now, just choose the first device
+	const auto &device = (*devices)[getAudioSource()];
 	// Start the audio subsystem
 	// when length == sampleRate, a buffer is 1 second long
     // when length == sampleRate / 20, a buffer is 50 milliseconds long

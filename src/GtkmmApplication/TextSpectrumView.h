@@ -76,10 +76,12 @@ public:
         auto frequencyDomainResult = Fourier::transform(buffer);
 
         std::stringstream stream;
-        for (const auto &frequency : frequencyDomainResult) {
+        for (int frequency = 0;
+             frequency < (int) frequencyDomainResult.maxFrequency(); frequency += (int) (1.0 + frequency * 1.01)) {
 
-            stream << frequency.first << ":\t";
-            for (auto intensity : frequency.second) {
+
+            stream << frequency << ":\t";
+            for (auto intensity : frequencyDomainResult.at(frequency)) {
 
                 float normalizedAmplitude = (90.0f + intensity) / 90.0f;
 
@@ -95,6 +97,7 @@ public:
             stream << "\n";
 
         }
+
         _textView.get_buffer()->set_text(stream.str());
 
     }
