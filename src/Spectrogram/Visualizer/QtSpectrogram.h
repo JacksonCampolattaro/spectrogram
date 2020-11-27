@@ -26,6 +26,7 @@ public slots:
     void onWritingDone(bool success);
     void startSavePressed();
     void stopSavePressed();
+    void changeColorGradient(int);
 
 signals:
     void pngWritingDone(bool success, QString filename);

@@ -22,7 +22,7 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
 
     setupYAxisLogScale();
 
-    colorMap->setGradient(QCPColorGradient::gpHot);
+    changeColorGradient(1);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(this);
@@ -123,6 +123,25 @@ void QtSpectrogram::setupYAxisLogScale() {
     QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
     logTicker->setLogBase(2);
     colorMap->valueAxis()->setTicker(logTicker);
+}
+
+void QtSpectrogram::changeColorGradient(int grad) {
+    /* enums: 0 - 11
+       gpGrayscale 	
+       gpHot 	
+       gpCold 	
+       gpNight 	
+       gpCandy 	
+       gpGeography 	
+       gpIon 	
+       gpThermal 	
+       gpPolar 	
+       gpSpectrum 	
+       gpJet 
+       gpHues
+    */
+    QCPColorGradient newColor = static_cast<QCPColorGradient::GradientPreset>(grad);
+    colorMap->setGradient(newColor);
 }
 
 // Needs to be in it's own thread so that when it saves
