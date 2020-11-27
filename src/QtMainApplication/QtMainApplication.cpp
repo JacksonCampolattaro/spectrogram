@@ -207,7 +207,9 @@ void QtMainApplication::readyPlay() {
 	assert(devices);
 	const auto &device = (*devices)[getAudioSource()];
 	// Start the audio subsystem
-	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 5);
+	// when length == sampleRate, a buffer is 1 second long
+    // when length == sampleRate / 20, a buffer is 50 milliseconds long
+	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 20);
 }
 
 // TODO: This can be changed to whatever you want, 

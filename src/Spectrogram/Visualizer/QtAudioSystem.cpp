@@ -8,6 +8,10 @@ QtAudioSystem::QtAudioSystem(std::unique_ptr<Backend::Backend> backend) :
                      this, &QtAudioSystem::newDataSlot);
 }
 
+QtAudioSystem::~QtAudioSystem() {
+    stopSlot();
+}
+
 void QtAudioSystem::startSlot(const Device &device, std::chrono::milliseconds maxLatency, size_t bufferLength) {
     Event::start(device, maxLatency, bufferLength);
 }
