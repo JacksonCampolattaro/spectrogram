@@ -5,33 +5,31 @@
 QtMainApplication::QtMainApplication(QWidget *parent) :
         QMainWindow(parent) {
 
-    // Perhaps this should be statically allocated instead?
-    spectrogram = new QtSpectrogram(this);
-
-    setCentralWidget(spectrogram); // IMPORTANT: Do NOT forget this line
+    // Set the size of the window, and it's initial location on the user's screen
     setGeometry(100, 100, 600, 400);
 
-    // Partly from media player example code on Qt website
-    playButton = new QToolButton(this);
-    playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    // Create a new spectrogram widget, giving qt ownership
+    spectrogram = new QtSpectrogram(this);
 
-    // connect(playButton, &QAbstractButton::clicked,
-    // 	this, &QtMainApplication::playPressed);
-    // Stuff from Therese
-    connect(playButton, &QAbstractButton::clicked,
+    // The spectrogram is the only central widget, with everything else in a toolbar
+    // TODO: If we want to change that, we can simply make the central widget a VBox!
+    setCentralWidget(spectrogram);
+
+    // A button to start the spectrogram, with a play icon
+    startButton = new QToolButton(this);
+    startButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+
+    // When this button is clicked, we should signal the backend
+    connect(startButton, &QAbstractButton::clicked,
             this, &QtMainApplication::startButtonClicked);
 
+    // A button to stop the spectrogram, with a stop icon
     stopButton = new QToolButton(this);
     stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
-    //stopButton->setEnabled(false);
 
-    //connect(stopButton, &QAbstractButton::clicked,
-    //	this, &QtMainApplication::stopPressed);
-
-    // From Therese
+    // We can chain signals so that the stop button directly triggers the stop signal
     connect(stopButton, &QAbstractButton::clicked,
-            this, &QtMainApplication::stopButtonClicked);
-
+            this, &QtMainApplication::stopSignal);
 
     setupSaveButton();
 
@@ -50,7 +48,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
     controls = new QToolBar(this);
     //controls->addWidget(playPauseButton);
     controls->addWidget(stopButton);
-    controls->addWidget(playButton);
+    controls->addWidget(startButton);
     controls->addWidget(audioSelectBox);
     controls->addWidget(saveButton);
     addToolBar(Qt::TopToolBarArea, controls);
@@ -105,10 +103,6 @@ void QtMainApplication::updateSources(const DeviceList &deviceList) {
 
 void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
     spectrogram->draw(buffer);
-}
-
-void QtMainApplication::stopButtonClicked() {
-    emit stopSignal();
 }
 
 void QtMainApplication::startButtonClicked() {

@@ -30,7 +30,6 @@ public slots:
 
 	void updateSources(const DeviceList &deviceList);
 
-	void stopButtonClicked();
 	void startButtonClicked();
 
 	void showSaveSuccess(bool success, QString fileName);
@@ -62,7 +61,7 @@ private:
 	QToolBar *controls;
 	
 	QToolButton *stopButton; //OPTIONAL, YES CHOSEN
-	QToolButton *playButton; //OPTIONAL, YES CHOSEN
+	QToolButton *startButton; //OPTIONAL, YES CHOSEN
 
 	QPushButton *saveButton; 
 	QStateMachine saveMachine;
