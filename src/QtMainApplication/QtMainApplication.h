@@ -26,7 +26,6 @@ public:
 
 public slots:
 	// This slot function can be used publicly to add entries to the list of audio source options
-	void addAudioSource(int source); // TODO: Finish this
 	void updateSpectrogram(const Audio::Buffer &buffer);
 
 	void updateSources(const DeviceList &deviceList);

@@ -97,20 +97,6 @@ int QtMainApplication::getAudioSource() const {
     return audioSelectBox->itemData(audioSelectBox->currentIndex()).toInt();
 }
 
-void QtMainApplication::addAudioSource(int source) // TODO: Finish this
-{
-    for (int i = 0; i < audioSelectBox->count(); ++i) {
-        //if (qFuzzyCompare(source, float(audioSelectBox->itemData(i).toDouble()))) {
-        if (source == audioSelectBox->itemData(i).toInt()) {
-            audioSelectBox->setCurrentIndex(i);
-            return;
-        }
-    }
-
-    audioSelectBox->addItem(QString("%1x").arg(source), QVariant(source));
-    audioSelectBox->setCurrentIndex(audioSelectBox->count() - 1);
-}
-
 void QtMainApplication::updateSources(const DeviceList &deviceList) {
     this->devices = &deviceList;
     // TODO: Update the list of devices
