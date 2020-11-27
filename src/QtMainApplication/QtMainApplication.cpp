@@ -31,6 +31,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
     connect(stopButton, &QAbstractButton::clicked,
             this, &QtMainApplication::stopSignal);
 
+    // This creates the UI element that toggles saving data
     setupSaveButton();
 
     // The combobox will be empty by default, at least until we're told what devices are available
@@ -90,9 +91,20 @@ int QtMainApplication::getAudioSource() const {
 }
 
 void QtMainApplication::updateSources(const DeviceList &deviceList) {
+
+    // Update the stored device list
     this->devices = &deviceList;
-    // TODO: Update the list of devices
-    emit changeSource(getAudioSource());
+
+    // Clear the combobox
+    audioSelectBox->clear();
+
+    // Add options to the combobox
+    for (auto &device : deviceList) {
+        audioSelectBox->addItem(QString::fromStdString(device.name), QVariant(device.id));
+    }
+
+    // Enable device selection
+    audioSelectBox->setEnabled(true);
 }
 
 void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
