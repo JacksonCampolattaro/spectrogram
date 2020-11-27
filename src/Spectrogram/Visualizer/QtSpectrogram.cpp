@@ -66,15 +66,9 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
     // Add another column
     addData(frequencyDomainBuffer);
 
-    // Only draw every nth frame
-    static int frameCount = 0;
-    frameCount++;
-    if (frameCount % 1 == 0) {
-
-        // Redraw the plot
-        colorMap->rescaleDataRange();
-        this->replot();
-    }
+    // Redraw the plot
+    colorMap->rescaleDataRange();
+    this->replot();
 }
 
 void QtSpectrogram::shiftData() {
@@ -117,18 +111,17 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
 // Needs to be in it's own thread so that when it saves
 // continuously it wont interfere with gui when it does computationally 
 // expensive picture appending.
-void QtSpectrogram::setupPngWriter()
-{
+void QtSpectrogram::setupPngWriter() {
     pngWriter = new Spectrogram::PNG::Writer();
     pngWriter->setFileName("spectrogram.png");
-	// pngWriter will never modify the spectrogram's colorMap, 
-	// it just needs it to copy its data periodically
-	pngWriter->setRunningMap(colorMap);
+    // pngWriter will never modify the spectrogram's colorMap,
+    // it just needs it to copy its data periodically
+    pngWriter->setRunningMap(colorMap);
     pngWriter->moveToThread(&writerThread);
 
     connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
     connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtSpectrogram::onWritingDone);
-    
+
     connect(this, &QtSpectrogram::startSaving, pngWriter, &Spectrogram::PNG::Writer::onStartSaving);
     connect(this, &QtSpectrogram::stopSaving, pngWriter, &Spectrogram::PNG::Writer::onStopSaving);
     connect(this, &QtSpectrogram::updateSave, pngWriter, &Spectrogram::PNG::Writer::continuousSave);
