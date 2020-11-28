@@ -1,16 +1,16 @@
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-add_executable(QtMainApplication
+add_executable(QtApplication
         main.cpp
-        QtMainApplication.h QtMainApplication.cpp
+        QtApplication.h QtApplication.cpp
         QtAudioSystem.h QtAudioSystem.cpp)
 
-target_link_libraries(QtMainApplication
+target_link_libraries(QtApplication
         Qt5::Widgets
         Visualizer)
 
-target_include_directories(QtMainApplication PUBLIC
+target_include_directories(QtApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
 
 # target_compile_options(QtMainApplication PRIVATE

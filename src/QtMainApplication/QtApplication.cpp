@@ -1,8 +1,8 @@
-#include "QtMainApplication.h"
+#include "QtApplication.h"
 
 #include <QDebug>
 
-QtMainApplication::QtMainApplication(QWidget *parent) :
+QtApplication::QtApplication(QWidget *parent) :
         QMainWindow(parent) {
 
     // Set the size of the window, and it's initial location on the user's screen
@@ -21,7 +21,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 
     // When this button is clicked, we should signal the backend
     connect(startButton, &QAbstractButton::clicked,
-            this, &QtMainApplication::startButtonClicked);
+            this, &QtApplication::startButtonClicked);
 
     // A button to stop the spectrogram, with a stop icon
     stopButton = new QToolButton(this);
@@ -29,7 +29,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 
     // We can chain signals so that the stop button directly triggers the stop signal
     connect(stopButton, &QAbstractButton::clicked,
-            this, &QtMainApplication::stopSignal);
+            this, &QtApplication::stopSignal);
 
     // This creates the UI element that toggles saving data
     setupSaveButton();
@@ -53,7 +53,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 /*TODO: (Msg from Therese) I just picked a two-way button stop and start for easy testing.
 		Feel free to change it up if you want. 
 		https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
-void QtMainApplication::setupSaveButton() {
+void QtApplication::setupSaveButton() {
     /*Picture saving buttons*/
     // TODO: (Msg from Therese) I did a pushbutton because I'm lazy, feel free to make pretty
     saveButton = new QPushButton(this);
@@ -82,10 +82,10 @@ void QtMainApplication::setupSaveButton() {
     connect(on, &QState::exited,
             spectrogram, &QtSpectrogram::stopSavePressed);
     connect(spectrogram, &QtSpectrogram::pngWritingDone,
-            this, &QtMainApplication::showSaveSuccess);
+            this, &QtApplication::showSaveSuccess);
 }
 
-void QtMainApplication::updateSources(const DeviceList &deviceList) {
+void QtApplication::updateSources(const DeviceList &deviceList) {
 
     // Update the stored device list
     this->devices = &deviceList;
@@ -102,11 +102,11 @@ void QtMainApplication::updateSources(const DeviceList &deviceList) {
     audioSelectBox->setEnabled(true);
 }
 
-void QtMainApplication::updateSpectrogram(const Audio::Buffer &buffer) {
+void QtApplication::updateSpectrogram(const Audio::Buffer &buffer) {
     spectrogram->draw(buffer);
 }
 
-void QtMainApplication::startButtonClicked() {
+void QtApplication::startButtonClicked() {
 
     // The device list _must_ be set before starting
     assert(devices);
@@ -122,7 +122,7 @@ void QtMainApplication::startButtonClicked() {
 // I just have it printing to console for now for simplicity.
 // You could have a pop window appear or a little status message
 // show up in the gui or you could get rid of it entirely.
-void QtMainApplication::showSaveSuccess(bool success, QString fileName) {
+void QtApplication::showSaveSuccess(bool success, QString fileName) {
     QString msg;
     if (success) {
         msg = QString("%1 saved to present folder.").arg(fileName);

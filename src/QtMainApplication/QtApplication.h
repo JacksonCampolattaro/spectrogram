@@ -13,11 +13,11 @@
 
 #include "QtAudioSystem.h"
 
-class QtMainApplication : public QMainWindow {
+class QtApplication : public QMainWindow {
 Q_OBJECT
 
 public:
-    explicit QtMainApplication(QWidget *parent = nullptr);
+    explicit QtApplication(QWidget *parent = nullptr);
 
 public slots:
 
