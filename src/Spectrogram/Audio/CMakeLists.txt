@@ -1,4 +1,18 @@
 
+# TODO: I'd really like to get both ways working!
+#find_package(Libsoundio QUIET)
+if (NOT Libsoundio_FOUND)
+
+    include(FetchContent)
+    FetchContent_Declare(
+            Libsoundio
+            GIT_REPOSITORY https://github.com/UnaNancyOwen/libsoundio.git
+            GIT_TAG 6736fa2daa4b78110a43547b556c54dc5e61e7b6 # This has a patch that adds better CMake Support
+    )
+    FetchContent_MakeAvailable(Libsoundio)
+
+endif ()
+
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -8,26 +22,8 @@ add_library(Audio
 target_include_directories(Audio PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
-find_package(Libsoundio QUIET)
-if (NOT Libsoundio_FOUND)
-
-    include(FetchContent)
-    FetchContent_Declare(
-            Libsoundio
-            GIT_REPOSITORY https://github.com/andrewrk/libsoundio
-            GIT_TAG 2.0.0
-    )
-    FetchContent_MakeAvailable(Libsoundio)
-
-    target_include_directories(Audio PUBLIC
-            ${PROJECT_BINARY_DIR}/_deps/libsoundio-src)
-
-    # TODO: This isn't working...
-
-endif ()
-
 target_link_libraries(Audio
-        ${Libsoundio_LIBRARIES}
+        libsoundio::libsoundio
         Threads::Threads
         Boost::boost)
 
