@@ -26,6 +26,7 @@ public slots:
     void onWritingDone(bool success);
     void startSavePressed();
     void stopSavePressed();
+    void changeColorGradient(int);
 
 signals:
     void pngWritingDone(bool success, QString filename);
@@ -34,15 +35,18 @@ signals:
     void updateSave();
 
 private:
+    void setupYAxisLogScale();
     void setupPngWriter();
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    float getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    double getLogValue(const int &y);
 
     QCPColorMap *colorMap;
 
-    int yAxisSize = 400;
-    int xAxisSize = 100;
+    int yAxisSize = 500;
+    int xAxisSize = 200;
 
     QThread writerThread;
 	Spectrogram::PNG::Writer *pngWriter;
