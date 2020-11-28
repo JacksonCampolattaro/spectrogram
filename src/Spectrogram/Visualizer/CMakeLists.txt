@@ -3,6 +3,7 @@ find_package(Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
 
 find_package(QCustomPlot REQUIRED)
 
+
 add_library(Visualizer
         QtSpectrogram.h
         QtSpectrogram.cpp
