@@ -1,11 +1,10 @@
 set(CMAKE_AUTOMOC ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-
 add_executable(QtMainApplication
         main.cpp
-        QtMainApplication.h
-        QtMainApplication.cpp)
+        QtMainApplication.h QtMainApplication.cpp
+        QtAudioSystem.h QtAudioSystem.cpp)
 
 target_link_libraries(QtMainApplication
         Qt5::Widgets

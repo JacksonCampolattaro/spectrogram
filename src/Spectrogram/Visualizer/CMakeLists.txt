@@ -5,9 +5,7 @@ find_package(QCustomPlot REQUIRED)
 
 add_library(Visualizer
         QtSpectrogram.h
-        QtSpectrogram.cpp 
-        QtAudioSystem.cpp 
-        QtAudioSystem.h)
+        QtSpectrogram.cpp)
 
 target_link_libraries(Visualizer
         ${QCustomPlot_LIBRARIES}

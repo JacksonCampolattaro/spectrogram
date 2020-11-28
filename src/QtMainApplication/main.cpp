@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <Spectrogram/Visualizer/QtAudioSystem.h>
+#include <QtMainApplication/QtAudioSystem.h>
 #include "QtMainApplication.h"
 
 
