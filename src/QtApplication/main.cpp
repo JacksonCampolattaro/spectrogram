@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QtMainApplication/QtAudioSystem.h>
+#include <QtApplication/QtAudioSystem.h>
 #include "QtApplication.h"
 
 

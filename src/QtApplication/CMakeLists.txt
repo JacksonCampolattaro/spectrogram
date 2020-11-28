@@ -13,7 +13,7 @@ target_link_libraries(QtApplication
 target_include_directories(QtApplication PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
 
-# target_compile_options(QtMainApplication PRIVATE
+# target_compile_options(QtApplication PRIVATE
 #         -Werror
 #         -Wall
 #         -Wextra)
