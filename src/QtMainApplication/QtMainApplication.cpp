@@ -10,7 +10,7 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	spectrogram = new QtSpectrogram(this);
 
 	setCentralWidget(spectrogram); // IMPORTANT: Do NOT forget this line
-	setGeometry(100, 100, 500, 400);
+	setGeometry(100, 100, 600, 400);
 	
 	// Partly from media player example code on Qt website
 	playButton = new QToolButton(this);
@@ -33,15 +33,8 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 	connect(stopButton, &QAbstractButton::clicked,
 		this, &QtMainApplication::readyPause);
 
-	saveButton = new QToolButton(this);
-    saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
 
-	// Connect snapshot saving
-	connect(saveButton, &QAbstractButton::clicked,
-		spectrogram, &QtSpectrogram::saveSnapShotPressed);
-	connect(spectrogram, &QtSpectrogram::snapShotWritingDone, 
-		this, &QtMainApplication::showSaveSuccess);
-	
+	setupSaveButton();
 
 /*
 	// Standard PushButton approach (for comparison)
@@ -71,10 +64,10 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 
 	controls = new QToolBar(this);
 	//controls->addWidget(playPauseButton);
-	controls->addWidget(saveButton);
 	controls->addWidget(stopButton);
 	controls->addWidget(playButton);
 	controls->addWidget(audioSelectBox);
+	controls->addWidget(saveButton);
 	addToolBar(Qt::TopToolBarArea, controls);
 
 /*
@@ -89,6 +82,40 @@ QtMainApplication::QtMainApplication(QWidget *parent) :
 */
 }
 
+/*TODO: (Msg from Therese) I just picked a two-way button stop and start for easy testing.
+		Feel free to change it up if you want. 
+		https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
+void QtMainApplication::setupSaveButton() {
+	/*Picture saving buttons*/
+	// TODO: (Msg from Therese) I did a pushbutton because I'm lazy, feel free to make pretty
+	saveButton = new QPushButton(this);
+	// saveButton = new QToolButton(this);
+    // saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
+
+	off = new QState();
+    off->assignProperty(saveButton, "text", "Start Saving");
+    off->setObjectName("off");
+
+    on = new QState();
+    on->assignProperty(saveButton, "text", "Stop Saving");
+	on->setObjectName("on");
+
+	off->addTransition(saveButton, &QAbstractButton::clicked, on);
+    on->addTransition(saveButton, &QAbstractButton::clicked, off);
+
+	saveMachine.addState(off);
+    saveMachine.addState(on);
+
+	saveMachine.setInitialState(off);
+	saveMachine.start();
+
+	connect(on, &QState::entered, 
+		spectrogram, &QtSpectrogram::startSavePressed);
+    connect(on, &QState::exited, 
+		spectrogram, &QtSpectrogram::stopSavePressed);
+	connect(spectrogram, &QtSpectrogram::pngWritingDone, 
+		this, &QtMainApplication::showSaveSuccess);
+}
 // void QtMainApplication::stopPressed(){
 // 	stopButton->setEnabled(false);
 // 	playButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -128,8 +155,6 @@ void QtMainApplication::playPausePressed()
     case paused://QMediaPlayer::PausedState:
 		
         playPauseButton->setText("Start");
-
-		// FIXME: Which case is relevant here?
 
         break;
 
@@ -180,9 +205,11 @@ void QtMainApplication::readyPause() {
 void QtMainApplication::readyPlay() {
 	// Choose the device indicated by the combobox
 	assert(devices);
-	const auto &device = (*devices)[1]; // For now, just choose the first device
+	const auto &device = (*devices)[getAudioSource()];
 	// Start the audio subsystem
-	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 10);
+	// when length == sampleRate, a buffer is 1 second long
+    // when length == sampleRate / 20, a buffer is 50 milliseconds long
+	emit playPressed(device, std::chrono::seconds(2), device.sampleRate / 20);
 }
 
 // TODO: This can be changed to whatever you want, 

@@ -13,7 +13,8 @@ Q_OBJECT
 public:
 
     QtAudioSystem(std::unique_ptr<Backend::Backend> backend);
-
+    ~QtAudioSystem();
+    
     using Event::devices;
 
 public slots:

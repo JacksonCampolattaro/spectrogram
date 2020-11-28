@@ -23,22 +23,29 @@ public:
 public slots:
 
     void draw(const Audio::Buffer &buffer);
-    void saveSnapShotPressed();
     void onWritingDone(bool success);
+    void startSavePressed();
+    void stopSavePressed();
+    void changeColorGradient(int);
 
 signals:
-    void writeSnapShot();
-    void snapShotWritingDone(bool success, QString filename);
+    void pngWritingDone(bool success, QString filename);
+    void startSaving();
+    void stopSaving();
+    void updateSave();
 
 private:
+    void setupYAxisLogScale();
     void setupPngWriter();
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    float getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    double getLogValue(const int &y);
 
     QCPColorMap *colorMap;
 
-    int yAxisSize = 700;
+    int yAxisSize = 500;
     int xAxisSize = 200;
 
     QThread writerThread;

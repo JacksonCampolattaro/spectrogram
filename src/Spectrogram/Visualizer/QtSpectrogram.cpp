@@ -20,12 +20,9 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     this->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
 
-    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    logTicker->setLogBase(2);
-    colorMap->valueAxis()->setTicker(logTicker);
+    setupYAxisLogScale();
 
-    colorMap->setGradient(QCPColorGradient::gpHot);
+    changeColorGradient(1);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(this);
@@ -54,6 +51,7 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
         // Make sure the y axis is scaled correctly
         auto oldestTime = (float) colorMap->data()->keySize() * frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-oldestTime, 0),
+                                    //35
                                    QCPRange(35, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
@@ -66,9 +64,15 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
     // Add another column
     addData(frequencyDomainBuffer);
 
-    // Redraw the plot
-    colorMap->rescaleDataRange();
-    this->replot();
+    // Only draw every nth frame
+    // static int frameCount = 0;
+    // frameCount++;
+    // if (frameCount % 1 == 0) {
+
+        // Redraw the plot
+        colorMap->rescaleDataRange();
+        this->replot();
+    // }
 }
 
 void QtSpectrogram::shiftData() {
@@ -89,48 +93,93 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
     // Plot the latest data at the rightmost column
     for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
 
-        double key, value;
-        colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
-
-        // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
-        auto max = colorMap->valueAxis()->range().upper;
-        auto min = colorMap->valueAxis()->range().lower;
-        value = pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
-
-        // Only plot one channel, for now
-        float intensity = 0;
-        for (const auto &channel : frequencyDomainBuffer.at(value))
-            intensity += (90.0f + channel) / 90.0f;
-        intensity = intensity / frequencyDomainBuffer.numChannels();
+        float intensity = getIntensity(y, frequencyDomainBuffer);
 
         colorMap->data()->setCell(xAxisSize - 1, y, intensity);
-
     }
-
+    emit updateSave();
 }
 
-// Needs to be in it's own thread so that when it's updated to save 
+float QtSpectrogram::getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
+    double value;
+    // for linear value = y
+    value = getLogValue(y); 
+
+    // Only plot one channel, for now
+    float intensity = 0;
+    for (const auto &channel : frequencyDomainBuffer.at(value))
+        intensity += (90.0f + channel) / 90.0f;
+
+    return intensity / frequencyDomainBuffer.numChannels();
+}
+
+double QtSpectrogram::getLogValue(const int &y) {
+
+    double key, value;
+    colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
+
+    // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
+    auto max = colorMap->valueAxis()->range().upper;
+    auto min = colorMap->valueAxis()->range().lower;
+    return pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
+}
+
+void QtSpectrogram::setupYAxisLogScale() {
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(2);
+    colorMap->valueAxis()->setTicker(logTicker);
+}
+
+void QtSpectrogram::changeColorGradient(int grad) {
+    /* enums: 0 - 11
+       gpGrayscale 	
+       gpHot 	
+       gpCold 	
+       gpNight 	
+       gpCandy 	
+       gpGeography 	
+       gpIon 	
+       gpThermal 	
+       gpPolar 	
+       gpSpectrum 	
+       gpJet 
+       gpHues
+    */
+    QCPColorGradient newColor = static_cast<QCPColorGradient::GradientPreset>(grad);
+    colorMap->setGradient(newColor);
+}
+
+// Needs to be in it's own thread so that when it saves
 // continuously it wont interfere with gui when it does computationally 
 // expensive picture appending.
-void QtSpectrogram::setupPngWriter()
-{
+void QtSpectrogram::setupPngWriter() {
     pngWriter = new Spectrogram::PNG::Writer();
-    pngWriter->setFileName("snapshot.png");
+    pngWriter->setFileName("spectrogram.png");
 	// pngWriter will never modify the spectrogram's colorMap, 
 	// it just needs it to copy its data periodically
 	pngWriter->setRunningMap(colorMap);
     pngWriter->moveToThread(&writerThread);
 
     connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
-    connect(this, &QtSpectrogram::writeSnapShot, pngWriter, &Spectrogram::PNG::Writer::onWriteSnapShot);
     connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtSpectrogram::onWritingDone);
     
+    connect(this, &QtSpectrogram::startSaving, pngWriter, &Spectrogram::PNG::Writer::onStartSaving);
+    connect(this, &QtSpectrogram::stopSaving, pngWriter, &Spectrogram::PNG::Writer::onStopSaving);
+    connect(this, &QtSpectrogram::updateSave, pngWriter, &Spectrogram::PNG::Writer::continuousSave);
+
     writerThread.start();
 }
-void QtSpectrogram::saveSnapShotPressed() {
-    emit writeSnapShot();
-}
+
 void QtSpectrogram::onWritingDone(bool success) {
     QString filename = pngWriter->getFileName();
-    emit snapShotWritingDone(success, filename);
+    emit pngWritingDone(success, filename);
+}
+
+void QtSpectrogram::startSavePressed() {
+    emit startSaving();
+}
+
+void QtSpectrogram::stopSavePressed() {
+    emit stopSaving();
 }
