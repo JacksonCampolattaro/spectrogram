@@ -13,7 +13,8 @@ target_link_libraries(Visualizer
         Qt5::PrintSupport
         Audio
         Fourier
-        PNG)
+        PNG
+        Settings)
 
 target_include_directories(Visualizer PUBLIC
         ${PROJECT_SOURCE_DIR}/src)

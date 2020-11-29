@@ -16,11 +16,13 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     this->xAxis->setLabel("Time (s)");
     this->yAxis->setLabel("Frequency (Hz)");
 
-    colorScale->axis()->setLabel("Intensity (unit?)");
+    colorScale->axis()->setLabel("Intensity");
     this->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
 
+    // Log scale set by default
     setupYAxisLogScale();
+    logScale = true;
 
     changeColorGradient(1);
     colorMap->setInterpolate(true);
@@ -30,6 +32,9 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 
     colorMap->data()->setSize(xAxisSize, yAxisSize);
+
+    //Initially set data range to 0-1, it will refine the range as it gathers more data
+    colorMap->setDataRange(QCPRange(0,1));	
 
     // Should happen after creating the colormap
     setupPngWriter();
@@ -51,7 +56,6 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
         // Make sure the y axis is scaled correctly
         auto oldestTime = (float) colorMap->data()->keySize() * frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-oldestTime, 0),
-                                    //35
                                    QCPRange(35, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
@@ -69,9 +73,9 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
     // frameCount++;
     // if (frameCount % 1 == 0) {
 
-        // Redraw the plot
-        colorMap->rescaleDataRange();
-        this->replot();
+    // Redraw the plot
+    colorMap->rescaleDataRange();
+    this->replot();
     // }
 }
 
@@ -102,8 +106,9 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
 
 float QtSpectrogram::getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
     double value;
-    // for linear value = y
-    value = getLogValue(y); 
+
+    // if logscale get logarithmic y value, else it is linear scale no need to change y
+    value = (logScale) ? getLogValue(y) : y;
 
     // Only plot one channel, for now
     float intensity = 0;
@@ -131,6 +136,18 @@ void QtSpectrogram::setupYAxisLogScale() {
     colorMap->valueAxis()->setTicker(logTicker);
 }
 
+void QtSpectrogram::setupYAxisLinearScale() {
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLinear);
+    QSharedPointer<QCPAxisTicker> linearTicker(new QCPAxisTicker);
+    colorMap->valueAxis()->setTicker(linearTicker);
+}
+
+void  QtSpectrogram::changeYScaleType(bool log) {
+    logScale = log;
+
+    logScale ? setupYAxisLogScale() : setupYAxisLinearScale();
+}
+
 void QtSpectrogram::changeColorGradient(int grad) {
     /* enums: 0 - 11
        gpGrayscale 	
@@ -148,6 +165,14 @@ void QtSpectrogram::changeColorGradient(int grad) {
     */
     QCPColorGradient newColor = static_cast<QCPColorGradient::GradientPreset>(grad);
     colorMap->setGradient(newColor);
+}
+
+void QtSpectrogram::changeSettings(const Settings::Profile &settings) {
+    if(settings.logscale != logScale) {
+        this->changeYScaleType(settings.logscale);
+    }
+    
+    this->changeColorGradient(settings.colorScheme);
 }
 
 // Needs to be in it's own thread so that when it saves

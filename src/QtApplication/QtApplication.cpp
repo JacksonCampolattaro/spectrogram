@@ -50,12 +50,10 @@ QtApplication::QtApplication(QWidget *parent) :
 
 }
 
-/*TODO: (Msg from Therese) I just picked a two-way button stop and start for easy testing.
-		Feel free to change it up if you want. 
-		https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
+/*https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
 void QtApplication::setupSaveButton() {
     /*Picture saving buttons*/
-    // TODO: (Msg from Therese) I did a pushbutton because I'm lazy, feel free to make pretty
+    // TODO: Feel free to change the look of the buttton
     saveButton = new QPushButton(this);
     // saveButton = new QToolButton(this);
     // saveButton->setIcon(style()->standardIcon(QStyle::QStyle::SP_DialogSaveButton));
