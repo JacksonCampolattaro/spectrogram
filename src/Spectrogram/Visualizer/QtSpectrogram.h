@@ -27,6 +27,7 @@ public slots:
     void startSavePressed();
     void stopSavePressed();
     void changeColorGradient(int);
+    void changeYScaleType(bool);
 
 signals:
     void pngWritingDone(bool success, QString filename);
@@ -36,6 +37,7 @@ signals:
 
 private:
     void setupYAxisLogScale();
+    void setupYAxisLinearScale();
     void setupPngWriter();
     void shiftData();
 
@@ -47,6 +49,9 @@ private:
 
     int yAxisSize = 500;
     int xAxisSize = 200;
+
+    int minYValue;
+    bool logScale;
 
     QThread writerThread;
 	Spectrogram::PNG::Writer *pngWriter;
