@@ -116,6 +116,10 @@ void QtApplication::startButtonClicked() {
     emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 10);
 }
 
+// TODO: This can be changed to whatever you want, 
+// I just have it printing to console for now for simplicity.
+// You could have a pop window appear or a little status message
+// show up in the gui or you could get rid of it entirely.
 void QtApplication::showSaveSuccess(bool success, QString fileName) {
     QString msg;
     if (success) {
