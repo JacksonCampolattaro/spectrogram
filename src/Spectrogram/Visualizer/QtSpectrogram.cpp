@@ -167,6 +167,14 @@ void QtSpectrogram::changeColorGradient(int grad) {
     colorMap->setGradient(newColor);
 }
 
+void QtSpectrogram::changeSettings(const Settings::Profile &settings) {
+    if(settings.logscale != logScale) {
+        this->changeYScaleType(settings.logscale);
+    }
+    
+    this->changeColorGradient(settings.colorScheme);
+}
+
 // Needs to be in it's own thread so that when it saves
 // continuously it wont interfere with gui when it does computationally 
 // expensive picture appending.
