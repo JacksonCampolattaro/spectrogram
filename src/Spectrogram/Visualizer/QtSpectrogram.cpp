@@ -56,7 +56,7 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
         // Make sure the y axis is scaled correctly
         auto oldestTime = (float) colorMap->data()->keySize() * frequencyDomainBuffer.time();
         colorMap->data()->setRange(QCPRange(-oldestTime, 0),
-                                   QCPRange(minYValue, frequencyDomainBuffer.maxFrequency()));
+                                   QCPRange(35, frequencyDomainBuffer.maxFrequency()));
 
         // Update the axes to show the new range
         this->rescaleAxes();
@@ -130,7 +130,6 @@ double QtSpectrogram::getLogValue(const int &y) {
 }
 
 void QtSpectrogram::setupYAxisLogScale() {
-    minYValue = 30;
     colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
     QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
     logTicker->setLogBase(2);
@@ -138,7 +137,6 @@ void QtSpectrogram::setupYAxisLogScale() {
 }
 
 void QtSpectrogram::setupYAxisLinearScale() {
-    minYValue = 0;
     colorMap->valueAxis()->setScaleType(QCPAxis::stLinear);
     QSharedPointer<QCPAxisTicker> linearTicker(new QCPAxisTicker);
     colorMap->valueAxis()->setTicker(linearTicker);

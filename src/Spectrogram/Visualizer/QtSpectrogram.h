@@ -50,7 +50,6 @@ private:
     int yAxisSize = 500;
     int xAxisSize = 200;
 
-    int minYValue;
     bool logScale;
 
     QThread writerThread;
