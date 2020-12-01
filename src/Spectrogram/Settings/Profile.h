@@ -21,9 +21,9 @@ namespace Settings {
         friend std::ostream &operator<<(std::ostream &out, const Settings::Profile &p) {
 
             const toml::value data{
-                    {"colorscheme",       p._colorSchemeNames[p.colorScheme]},
-                    {"logscale",          p.logscale},
-                    {"frames_per_second", p.framesPerSecond}
+                    {"colorscheme", p._colorSchemeNames[p.colorScheme]},
+                    {"logscale",    p.logscale},
+                    {"framerate",   p.framesPerSecond}
             };
 
             out << data;
@@ -47,9 +47,9 @@ namespace Settings {
                 p.logscale = toml::find<bool>(data, "logscale");
             }
 
-            if (data.contains("frames_per_second")) {
+            if (data.contains("framerate")) {
 
-                p.framesPerSecond = toml::find<size_t>(data, "frames_per_second");
+                p.framesPerSecond = toml::find<size_t>(data, "framerate");
             }
 
             return in;
