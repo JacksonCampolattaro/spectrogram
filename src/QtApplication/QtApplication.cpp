@@ -113,7 +113,7 @@ void QtApplication::startButtonClicked() {
     const auto &device = (*devices)[audioSelectBox->currentData().toInt()];
 
     // Start the audio subsystem
-    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 10);
+    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / framesPerSecond);
 }
 
 // TODO: This can be changed to whatever you want, 

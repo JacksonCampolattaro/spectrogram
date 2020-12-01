@@ -58,6 +58,8 @@ private:
 
     const DeviceList *devices = nullptr;
 
+    size_t framesPerSecond = 10;
+
 };
 
 #endif // QT_MAIN_APP_Ha
