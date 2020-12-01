@@ -111,12 +111,10 @@ void Spectrogram::Audio::Backend::Soundio::start(const Device &device, NewSample
 
     // Select a sample rate
     int sampleRate = soundioDevice->sample_rate_current;
-    std::cout << "sample rate = " << sampleRate << "\n";
 
     // Select a format
     auto format = sampleTypeToFormat<Sample>();
     assert(soundio_device_supports_format(soundioDevice, format));
-    std::cout << "format = " << soundio_format_string(format) << "\n";
 
     // Configure the input stream
     _inStream = soundio_instream_create(soundioDevice);
