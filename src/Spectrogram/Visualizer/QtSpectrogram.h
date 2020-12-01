@@ -10,6 +10,7 @@
 
 #include <Spectrogram/Fourier/FrequencyDomainBuffer.h>
 #include "Spectrogram/PNG/Writer.h"
+#include "Spectrogram/Settings/Profile.h"
 
 using namespace Spectrogram;
 
@@ -21,11 +22,11 @@ public:
     ~QtSpectrogram();
 
 public slots:
-
     void draw(const Audio::Buffer &buffer);
     void onWritingDone(bool success);
     void startSavePressed();
     void stopSavePressed();
+    void changeSettings(const Settings::Profile &settings);
 
 signals:
     void pngWritingDone(bool success, QString filename);
@@ -34,15 +35,25 @@ signals:
     void updateSave();
 
 private:
+    void setupYAxisLogScale();
+    void setupYAxisLinearScale();
     void setupPngWriter();
+
+    void changeColorGradient(int);
+    void changeYScaleType(bool);
+
     void shiftData();
 
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    float getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
+    double getLogValue(const int &y);
 
     QCPColorMap *colorMap;
 
-    int yAxisSize = 400;
-    int xAxisSize = 100;
+    int yAxisSize = 500;
+    int xAxisSize = 200;
+
+    bool logScale;
 
     QThread writerThread;
 	Spectrogram::PNG::Writer *pngWriter;

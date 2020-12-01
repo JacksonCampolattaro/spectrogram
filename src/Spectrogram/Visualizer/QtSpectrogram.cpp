@@ -16,16 +16,15 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     this->xAxis->setLabel("Time (s)");
     this->yAxis->setLabel("Frequency (Hz)");
 
-    colorScale->axis()->setLabel("Intensity (unit?)");
+    colorScale->axis()->setLabel("Intensity");
     this->plotLayout()->addElement(0, 1, colorScale);
     colorMap->setColorScale(colorScale);
 
-    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    logTicker->setLogBase(2);
-    colorMap->valueAxis()->setTicker(logTicker);
+    // Log scale set by default
+    setupYAxisLogScale();
+    logScale = true;
 
-    colorMap->setGradient(QCPColorGradient::gpHot);
+    changeColorGradient(1);
     colorMap->setInterpolate(true);
 
     auto marginGroup = new QCPMarginGroup(this);
@@ -33,6 +32,9 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     colorScale->setMarginGroup(QCP::msBottom | QCP::msTop, marginGroup);
 
     colorMap->data()->setSize(xAxisSize, yAxisSize);
+
+    //Initially set data range to 0-1, it will refine the range as it gathers more data
+    colorMap->setDataRange(QCPRange(0,1));	
 
     // Should happen after creating the colormap
     setupPngWriter();
@@ -66,9 +68,15 @@ void QtSpectrogram::draw(const Audio::Buffer &buffer) {
     // Add another column
     addData(frequencyDomainBuffer);
 
+    // Only draw every nth frame
+    // static int frameCount = 0;
+    // frameCount++;
+    // if (frameCount % 1 == 0) {
+
     // Redraw the plot
     colorMap->rescaleDataRange();
     this->replot();
+    // }
 }
 
 void QtSpectrogram::shiftData() {
@@ -89,23 +97,82 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
     // Plot the latest data at the rightmost column
     for (int y = 0; y < colorMap->data()->valueSize(); ++y) {
 
-        double key, value;
-        colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
-
-        // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
-        auto max = colorMap->valueAxis()->range().upper;
-        auto min = colorMap->valueAxis()->range().lower;
-        value = pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
-
-        // Only plot one channel, for now
-        float intensity = 0;
-        for (const auto &channel : frequencyDomainBuffer.at(value))
-            intensity += (90.0f + channel) / 90.0f;
-        intensity = intensity / frequencyDomainBuffer.numChannels();
+        float intensity = getIntensity(y, frequencyDomainBuffer);
 
         colorMap->data()->setCell(xAxisSize - 1, y, intensity);
     }
     emit updateSave();
+}
+
+float QtSpectrogram::getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer) {
+    double value;
+
+    // if logscale get logarithmic y value, else it is linear scale no need to change y
+    value = (logScale) ? getLogValue(y) : y;
+
+    // Only plot one channel, for now
+    float intensity = 0;
+    for (const auto &channel : frequencyDomainBuffer.at(value))
+        intensity += (90.0f + channel) / 90.0f;
+
+    return intensity / frequencyDomainBuffer.numChannels();
+}
+
+double QtSpectrogram::getLogValue(const int &y) {
+
+    double key, value;
+    colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
+
+    // Equation found here: https://stackoverflow.com/questions/19472747/convert-linear-scale-to-logarithmic
+    auto max = colorMap->valueAxis()->range().upper;
+    auto min = colorMap->valueAxis()->range().lower;
+    return pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
+}
+
+void QtSpectrogram::setupYAxisLogScale() {
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    logTicker->setLogBase(2);
+    colorMap->valueAxis()->setTicker(logTicker);
+}
+
+void QtSpectrogram::setupYAxisLinearScale() {
+    colorMap->valueAxis()->setScaleType(QCPAxis::stLinear);
+    QSharedPointer<QCPAxisTicker> linearTicker(new QCPAxisTicker);
+    colorMap->valueAxis()->setTicker(linearTicker);
+}
+
+void  QtSpectrogram::changeYScaleType(bool log) {
+    logScale = log;
+
+    logScale ? setupYAxisLogScale() : setupYAxisLinearScale();
+}
+
+void QtSpectrogram::changeColorGradient(int grad) {
+    /* enums: 0 - 11
+       gpGrayscale 	
+       gpHot 	
+       gpCold 	
+       gpNight 	
+       gpCandy 	
+       gpGeography 	
+       gpIon 	
+       gpThermal 	
+       gpPolar 	
+       gpSpectrum 	
+       gpJet 
+       gpHues
+    */
+    QCPColorGradient newColor = static_cast<QCPColorGradient::GradientPreset>(grad);
+    colorMap->setGradient(newColor);
+}
+
+void QtSpectrogram::changeSettings(const Settings::Profile &settings) {
+    if(settings.logscale != logScale) {
+        this->changeYScaleType(settings.logscale);
+    }
+    
+    this->changeColorGradient(settings.colorScheme);
 }
 
 // Needs to be in it's own thread so that when it saves
@@ -114,14 +181,14 @@ void QtSpectrogram::addData(const Fourier::FrequencyDomainBuffer &frequencyDomai
 void QtSpectrogram::setupPngWriter() {
     pngWriter = new Spectrogram::PNG::Writer();
     pngWriter->setFileName("spectrogram.png");
-    // pngWriter will never modify the spectrogram's colorMap,
-    // it just needs it to copy its data periodically
-    pngWriter->setRunningMap(colorMap);
+	// pngWriter will never modify the spectrogram's colorMap, 
+	// it just needs it to copy its data periodically
+	pngWriter->setRunningMap(colorMap);
     pngWriter->moveToThread(&writerThread);
 
     connect(&writerThread, &QThread::finished, pngWriter, &QObject::deleteLater);
     connect(pngWriter, &Spectrogram::PNG::Writer::writingDone, this, &QtSpectrogram::onWritingDone);
-
+    
     connect(this, &QtSpectrogram::startSaving, pngWriter, &Spectrogram::PNG::Writer::onStartSaving);
     connect(this, &QtSpectrogram::stopSaving, pngWriter, &Spectrogram::PNG::Writer::onStopSaving);
     connect(this, &QtSpectrogram::updateSave, pngWriter, &Spectrogram::PNG::Writer::continuousSave);
