@@ -16,6 +16,7 @@ namespace Settings {
 
         int colorScheme = 0;
         bool logscale = true;
+        size_t framesPerSecond = 20;
 
         friend std::ostream &operator<<(std::ostream &out, const Settings::Profile &p) {
 
@@ -33,10 +34,16 @@ namespace Settings {
 
             auto data = toml::parse(in);
 
-            std::string colorSchemeName = toml::find<std::string>(data, "colorscheme");
-            p.colorScheme = std::find(p._colorSchemeNames.begin(), p._colorSchemeNames.end(), colorSchemeName) - p._colorSchemeNames.begin();
+            if (data.contains("colorscheme")) {
 
-            p.logscale = toml::find<bool>(data, "logscale");
+                std::string colorSchemeName = toml::find<std::string>(data, "colorscheme");
+                p.colorScheme = std::find(p._colorSchemeNames.begin(), p._colorSchemeNames.end(), colorSchemeName) - p._colorSchemeNames.begin();
+            }
+
+            if (data.contains("logscale")) {
+
+                p.logscale = toml::find<bool>(data, "logscale");
+            }
 
             return in;
         }
