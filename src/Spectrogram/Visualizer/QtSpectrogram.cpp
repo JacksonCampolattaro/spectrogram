@@ -34,7 +34,7 @@ QtSpectrogram::QtSpectrogram(QWidget *parent) :
     colorMap->data()->setSize(xAxisSize, yAxisSize);
 
     //Initially set data range to 0-1, it will refine the range as it gathers more data
-    colorMap->setDataRange(QCPRange(0,1));	
+    colorMap->setDataRange(QCPRange(0,1));
 
     // Should happen after creating the colormap
     setupPngWriter();

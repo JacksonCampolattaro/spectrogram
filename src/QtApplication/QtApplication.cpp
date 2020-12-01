@@ -113,7 +113,7 @@ void QtApplication::startButtonClicked() {
     const auto &device = (*devices)[audioSelectBox->currentData().toInt()];
 
     // Start the audio subsystem
-    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / 10);
+    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / (framesPerSecond / 2));
 }
 
 // TODO: This can be changed to whatever you want, 
@@ -132,6 +132,11 @@ void QtApplication::showSaveSuccess(bool success, QString fileName) {
 }
 
 void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings) {
+
+    // The next run will be started with a higher framerate
+    framesPerSecond = settings.framesPerSecond;
+
+    // Set the spectrogram formatting
     spectrogram->changeSettings(settings);
 }
 
