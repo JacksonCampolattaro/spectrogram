@@ -1,7 +1,12 @@
-#include <QApplication>
-#include <QtApplication/QtAudioSystem.h>
 
 #include <fstream>
+
+#include <QApplication>
+
+#include <Spectrogram/Audio/Backend/Dummy.h>
+#include <Spectrogram/Audio/Backend/Soundio.h>
+
+#include <QtApplication/QtAudioSystem.h>
 
 #include "QtApplication.h"
 
