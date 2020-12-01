@@ -131,5 +131,7 @@ void QtApplication::showSaveSuccess(bool success, QString fileName) {
     std::cout << msg.toStdString() << std::endl;
 }
 
-
+void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings) {
+    spectrogram->changeSettings(settings);
+}
 

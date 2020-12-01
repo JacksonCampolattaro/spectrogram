@@ -31,6 +31,9 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QtApplication gui;
+
+    gui.changeSpectrogramSettings(settings);
+    
     gui.show();
 
     QtAudioSystem audioSystem(std::make_unique<Backend::Soundio>());
