@@ -29,6 +29,8 @@ public slots:
 
     void showSaveSuccess(bool success, QString fileName);
 
+    void changeSpectrogramSettings(const Settings::Profile &settings);
+
 signals:
 
     // These are signals for the plot controls, forwarded
