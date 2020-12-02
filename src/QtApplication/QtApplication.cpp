@@ -345,6 +345,9 @@ void QtApplication::showSaveSuccess(bool success, QString fileName) {
 
 void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings) {
 
+    // Might as well stop the program, when settings are changed!
+    emit stopSignal();
+
     // The next run will be started with a higher framerate
     framesPerSecond = settings.framesPerSecond;
 
