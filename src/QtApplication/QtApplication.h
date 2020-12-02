@@ -2,11 +2,15 @@
 #define QT_MAIN_APP_H
 
 #include <QMainWindow>
+#include <QDialog>
 #include <QComboBox>
+#include <QCheckBox>
+#include <QSpinBox>
 #include <QPushButton>
 #include <QToolButton>
 #include <QToolBar>
 #include <QGridLayout>
+#include <QFormLayout>
 
 #include <Spectrogram/Visualizer/QtSpectrogram.h>
 #include <Spectrogram/Audio/DeviceList.h>
@@ -31,6 +35,8 @@ public slots:
 
     void changeSpectrogramSettings(const Settings::Profile &settings);
 
+	void showSettings();
+
 signals:
 
     // These are signals for the plot controls, forwarded
@@ -39,8 +45,11 @@ signals:
 
     void stopSignal();
 
+	void settingsChanged(const Settings::Profile &settings);
+
 private:
     void setupSaveButton();
+	void setupSettingsWindow();
 
     QtSpectrogram *spectrogram;
 
@@ -58,7 +67,24 @@ private:
 
     const DeviceList *devices = nullptr;
 
-    size_t framesPerSecond = 10;
+	QPushButton *settingsButton;
+
+	// TODO: Pull this out into its own class that extends QDialog
+	Settings::Profile *plotSettings;
+	QDialog *settingsWindow;
+
+	QFormLayout *settingsWindowLayout;
+	QComboBox *colorSchemeSelectBox; // 0 by default
+	QSpinBox *frameRateBox;	// 20 by default
+	QCheckBox *isLogBox;	// True by default
+	
+	QPushButton *saveSettingsButton;
+	QPushButton *discardSettingsButton;
+
+	// These are encapsulated in the Settings object
+	size_t framesPerSecond = 10;
+	//bool logscale = true;
+	//int colorScheme = 0;
 
 };
 

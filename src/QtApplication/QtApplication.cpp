@@ -10,6 +10,8 @@ QtApplication::QtApplication(QWidget *parent) :
 
     // Create a new spectrogram widget, giving qt ownership
     spectrogram = new QtSpectrogram(this);
+	//connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
+	//		spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
 
     // The spectrogram is the only central widget, with everything else in a toolbar
     // TODO: If we want to change that, we can simply make the central widget a VBox!
@@ -38,16 +40,25 @@ QtApplication::QtApplication(QWidget *parent) :
     audioSelectBox = new QComboBox(this);
     audioSelectBox->setDisabled(true);
 
-    // Create a toolbar, and add all our buttons to it
+    // This creates the UI element to change settings
+	settingsButton = new QPushButton("Settings", this);
+	connect(settingsButton, &QAbstractButton::clicked,
+            this, &QtApplication::showSettings);
+	
+	// Create a toolbar, and add all our buttons to it
     controls = new QToolBar(this);
     controls->addWidget(stopButton);
     controls->addWidget(startButton);
     controls->addWidget(audioSelectBox);
     controls->addWidget(saveButton);
+	controls->addWidget(settingsButton);
 
     // We'll put the toolbar at the top of the screen
     addToolBar(Qt::TopToolBarArea, controls);
 
+	// This creates and initializes the pop-up Settings window
+	settingsWindow = 0;
+	setupSettingsWindow();
 }
 
 /*https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
@@ -81,6 +92,58 @@ void QtApplication::setupSaveButton() {
             spectrogram, &QtSpectrogram::stopSavePressed);
     connect(spectrogram, &QtSpectrogram::pngWritingDone,
             this, &QtApplication::showSaveSuccess);
+}
+
+// Similar to a custom implementation of
+// 		[virtual]QMenu *QMainWindow::createPopupMenu()
+void QtApplication::setupSettingsWindow() {
+		
+	/*
+	settingsWindow = new QDialog();
+	settingsWindow->setParent(nullptr); // Need to manually change the parent
+	settingsWindow->setModal(true);		// Prevent user from interacting with main window until finished with popout
+	
+	
+	//Dialog dialog;
+    //if (!QGuiApplication::styleHints()->showIsFullScreen() && !QGuiApplication::styleHints()->showIsMaximized()) {
+    //    const QRect availableGeometry = dialog.screen()->availableGeometry();
+    //    dialog.resize(availableGeometry.width() / 3, availableGeometry.height() * 2 / 3);
+    //    dialog.move((availableGeometry.width() - dialog.width()) / 2,
+    //                (availableGeometry.height() - dialog.height()) / 2);
+    //}
+    //dialog.show();
+	
+	
+	//// New Settings UI Stuff ///
+	// Default states
+
+	discardSettingsButton = new QPushButton("Cancel");
+	saveSettingsButton = new QPushButton("Save");
+	saveSettingsButton->setDefault(true);
+
+	//connect(discardSettingsButton, &QPushButton::clicked,
+    //        this, settingsWindow->close());
+	//connect(discardSettingsButton, &QPushButton::clicked,
+    //        settingsWindow, SLOT(&QDialog::reject)());
+	
+	connect(saveSettingsButton, &QAbstractButton::clicked,
+            this, &QtApplication::settingsChanged);
+			//settingsChanged(const Settings::Profile &settings);
+	
+	//settingsWindow->show();
+	//settingsWindow->popup();
+	settingsWindow->exec();
+	*/
+}
+
+void QtApplication::showSettings(){
+	
+	if(!settingsWindow){
+		return;
+	}
+
+	//settingsWindow->exec();
+	settingsWindow->show();
 }
 
 void QtApplication::updateSources(const DeviceList &deviceList) {
@@ -137,6 +200,7 @@ void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings)
     framesPerSecond = settings.framesPerSecond;
 
     // Set the spectrogram formatting
-    spectrogram->changeSettings(settings);
+    //spectrogram->changeSettings(settings);
+	emit settingsChanged(settings);
 }
 
