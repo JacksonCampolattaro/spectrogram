@@ -55,7 +55,8 @@ QtApplication::QtApplication(QWidget *parent) :
     spectrogram = new QtSpectrogram(this);
 	//connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
 	connect(this, &QtApplication::settingsChanged,
-			spectrogram, &QtSpectrogram::changeSettings);
+            this, &QtApplication::changeSpectrogramSettings);
+//			spectrogram, &QtSpectrogram::changeSettings);
 			//spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
 
     // The spectrogram is the only central widget, with everything else in a toolbar
@@ -287,7 +288,7 @@ void QtApplication::saveSettingsClicked(){
 	plotSettings.logscale = isLogBox->isChecked();	// True by default
 
 	emit settingsChanged(plotSettings);
-	
+
 	/***Re-draw canvas here??***/
 	settingsWindow->close();
 	
@@ -324,7 +325,7 @@ void QtApplication::startButtonClicked() {
     const auto &device = (*devices)[audioSelectBox->currentData().toInt()];
 
     // Start the audio subsystem
-    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / (framesPerSecond / 2));
+    emit startSignal(device, std::chrono::seconds(2), device.sampleRate / (framesPerSecond / 2.0));
 }
 
 // TODO: This can be changed to whatever you want, 
@@ -351,7 +352,7 @@ void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings)
 	plotSettings.colorScheme = settings.colorScheme;
 	plotSettings.framesPerSecond = settings.framesPerSecond;
 	plotSettings.logscale = settings.logscale;
-    
+
 	// Set the spectrogram formatting
 	spectrogram->changeSettings(settings);
 	//emit settingsChanged(settings);
