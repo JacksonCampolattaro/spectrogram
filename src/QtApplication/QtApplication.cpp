@@ -1,17 +1,24 @@
 #include "QtApplication.h"
 
 #include <QDebug>
+#include <QSlider>
+#include <QScreen>
+#include <QStyleHints>
+//qDebug() << "insert message";
 
 QtApplication::QtApplication(QWidget *parent) :
         QMainWindow(parent) {
 
     // Set the size of the window, and it's initial location on the user's screen
-    setGeometry(100, 100, 600, 400);
+    winBounds = new QRect(
+				100, 100, 600, 400);
+	setGeometry(100, 100, 600, 400);
+	//resize(500, 300);
 
     // Create a new spectrogram widget, giving qt ownership
     spectrogram = new QtSpectrogram(this);
-	//connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
-	//		spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
+	connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
+			spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
 
     // The spectrogram is the only central widget, with everything else in a toolbar
     // TODO: If we want to change that, we can simply make the central widget a VBox!
@@ -44,6 +51,8 @@ QtApplication::QtApplication(QWidget *parent) :
 	settingsButton = new QPushButton("Settings", this);
 	connect(settingsButton, &QAbstractButton::clicked,
             this, &QtApplication::showSettings);
+			//this, SLOT(showSettings()));
+			//setEnabled(available);
 	
 	// Create a toolbar, and add all our buttons to it
     controls = new QToolBar(this);
@@ -56,9 +65,10 @@ QtApplication::QtApplication(QWidget *parent) :
     // We'll put the toolbar at the top of the screen
     addToolBar(Qt::TopToolBarArea, controls);
 
-	// This creates and initializes the pop-up Settings window
 	settingsWindow = 0;
 	setupSettingsWindow();
+
+	qDebug() << "*end of initialization reached*";
 }
 
 /*https://doc.qt.io/qt-5/qtwidgets-statemachine-twowaybutton-example.html*/
@@ -98,52 +108,144 @@ void QtApplication::setupSaveButton() {
 // 		[virtual]QMenu *QMainWindow::createPopupMenu()
 void QtApplication::setupSettingsWindow() {
 		
-	/*
-	settingsWindow = new QDialog();
-	settingsWindow->setParent(nullptr); // Need to manually change the parent
-	settingsWindow->setModal(true);		// Prevent user from interacting with main window until finished with popout
+	qDebug() << "*open settings window command issued*";
 	
+	//settingsWindow = new QDialog();
+	//settingsWindow->setParent(nullptr); // Need to manually change the parent?
+	//settingsWindow->setModal(true);	// Prevent user from interacting with main window until finished with popout	
 	
-	//Dialog dialog;
-    //if (!QGuiApplication::styleHints()->showIsFullScreen() && !QGuiApplication::styleHints()->showIsMaximized()) {
-    //    const QRect availableGeometry = dialog.screen()->availableGeometry();
-    //    dialog.resize(availableGeometry.width() / 3, availableGeometry.height() * 2 / 3);
-    //    dialog.move((availableGeometry.width() - dialog.width()) / 2,
-    //                (availableGeometry.height() - dialog.height()) / 2);
-    //}
-    //dialog.show();
-	
-	
-	//// New Settings UI Stuff ///
-	// Default states
+	//plotSettings->colorScheme = "";
 
-	discardSettingsButton = new QPushButton("Cancel");
-	saveSettingsButton = new QPushButton("Save");
-	saveSettingsButton->setDefault(true);
+	if (!settingsWindow) {
 
-	//connect(discardSettingsButton, &QPushButton::clicked,
-    //        this, settingsWindow->close());
-	//connect(discardSettingsButton, &QPushButton::clicked,
-    //        settingsWindow, SLOT(&QDialog::reject)());
-	
-	connect(saveSettingsButton, &QAbstractButton::clicked,
-            this, &QtApplication::settingsChanged);
-			//settingsChanged(const Settings::Profile &settings);
-	
+		//QFormLayout *settingsWindowLayout;
+		//QComboBox *colorSchemeSelectBox; // 0 by default
+		colorSchemeSelectBox = new QComboBox();
+		colorSchemeSelectBox->setDisabled(false);
+		
+		colorSchemeSelectBox->addItem("grayscale");
+		colorSchemeSelectBox->addItem("hot");
+		colorSchemeSelectBox->addItem("cold");
+		colorSchemeSelectBox->addItem("night");
+		colorSchemeSelectBox->addItem("candy");
+		colorSchemeSelectBox->addItem("geography");
+		colorSchemeSelectBox->addItem("ion");
+		colorSchemeSelectBox->addItem("thermal");
+		colorSchemeSelectBox->addItem("polar");
+		colorSchemeSelectBox->addItem("spectrum");
+		colorSchemeSelectBox->addItem("jet");
+		colorSchemeSelectBox->addItem("hues");
+		
+		colorSchemeSelectBox->setCurrentIndex(0); // Grayscale by default
+
+		//QSpinBox *frameRateBox;	// 20 by default
+		frameRateBox = new QSpinBox();
+		frameRateBox->setRange(5, 60);
+		frameRateBox->setValue(20);
+		frameRateBox->setSingleStep(5);
+
+		//QCheckBox *isLogBox;	// True by default
+		isLogBox = new QCheckBox();
+		isLogBox->setCheckable(true);
+		isLogBox->setChecked(true);
+		
+
+        QFormLayout *formLayout = new QFormLayout;
+        //formLayout->addRow(tr("Brightness"), brightnessSlider);
+        //formLayout->addRow(tr("Contrast"), contrastSlider);
+        //formLayout->addRow(tr("Hue"), hueSlider);
+        //formLayout->addRow(tr("Saturation"), saturationSlider);
+		formLayout->addRow(tr("Color Scheme:"), colorSchemeSelectBox);
+		formLayout->addRow(tr("Frame Rate:"), frameRateBox);
+		formLayout->addRow(tr("Log Scale:"), isLogBox);
+
+
+		discardSettingsButton = new QPushButton("Cancel");
+		connect(discardSettingsButton, &QPushButton::clicked,
+		        settingsWindow, &QDialog::close);
+		//connect(discardSettingsButton, SIGNAL(clicked()), settingsWindow, SLOT(close()));
+		//connect(discardSettingsButton, &QPushButton::clicked,
+		//        this, settingsWindow->close());
+		//connect(discardSettingsButton, &QPushButton::clicked,
+		//        settingsWindow, SLOT(&QDialog::reject)());
+
+		saveSettingsButton = new QPushButton("Save");
+		saveSettingsButton->setDefault(true);
+		connect(saveSettingsButton, &QAbstractButton::clicked,
+				this, &QtApplication::saveSettingsClicked);
+		//		this, &QtApplication::settingsChanged);
+				//settingsChanged(const Settings::Profile &settings);
+
+		//QPushButton *button = new QPushButton("Close");
+        //layout->addRow(button);
+
+		//QVBoxLayout *vboxWindowLayout = new QVBoxLayout;
+		settingsWindowLayout = new QVBoxLayout;
+		settingsWindowLayout->addLayout(formLayout);
+
+		QHBoxLayout *hboxLayout = new QHBoxLayout;
+		hboxLayout->addWidget(saveSettingsButton);
+		hboxLayout->addWidget(discardSettingsButton);
+		settingsWindowLayout->addLayout(hboxLayout);
+
+        settingsWindow = new QDialog(this);
+        settingsWindow->setWindowTitle("Plot Settings");
+        settingsWindow->setModal(true);
+		settingsWindow->setLayout(settingsWindowLayout);
+
+		/*
+		if (!QGuiApplication::styleHints()->showIsFullScreen() && !QGuiApplication::styleHints()->showIsMaximized()) {
+		    
+			const QRect availableGeometry = *(this->winBounds);
+
+		    settingsWindow->resize(availableGeometry.width() / 3, availableGeometry.height() * 2 / 3);
+		    settingsWindow->move((availableGeometry.width() - settingsWindow->width()) / 2,
+		                		(availableGeometry.height() - settingsWindow->height()) / 2);
+		}
+		*/
+
+        //connect(button, SIGNAL(clicked()), settingsWindow, SLOT(close()));
+    }
+    
 	//settingsWindow->show();
 	//settingsWindow->popup();
-	settingsWindow->exec();
-	*/
+	//settingsWindow->exec();
 }
 
 void QtApplication::showSettings(){
 	
 	if(!settingsWindow){
+		qDebug() << "*Error: invalid open settings window command issued*";
 		return;
 	}
+	
+	//emit stopSignal();
+	//if(saveMachine.on){
+	//	startButtonClicked();
+	//}
 
+	qDebug() << "*open settings window command issued*";
 	//settingsWindow->exec();
+	
+	// Refresh the stored state of each UI element
+	colorSchemeSelectBox->setCurrentIndex(plotSettings.colorScheme);
+	frameRateBox->setValue(plotSettings.framesPerSecond);
+	isLogBox->setChecked(plotSettings.logscale);
+
 	settingsWindow->show();
+	//settingsWindow->popup();
+	//settingsWindow->exec();
+}
+
+void QtApplication::saveSettingsClicked(){
+	
+	//Settings::Profile &settings;
+	plotSettings.colorScheme = colorSchemeSelectBox->currentIndex(); // 0 by default
+	plotSettings.framesPerSecond = frameRateBox->value();	// 20 by default
+	plotSettings.logscale = isLogBox->isChecked();	// True by default
+
+	emit settingsChanged(plotSettings);
+	settingsWindow->close();
 }
 
 void QtApplication::updateSources(const DeviceList &deviceList) {
@@ -199,8 +301,13 @@ void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings)
     // The next run will be started with a higher framerate
     framesPerSecond = settings.framesPerSecond;
 
-    // Set the spectrogram formatting
-    //spectrogram->changeSettings(settings);
-	emit settingsChanged(settings);
+	// Initialize frontend settings state
+	plotSettings.colorScheme = settings.colorScheme;
+	plotSettings.framesPerSecond = settings.framesPerSecond;
+	plotSettings.logscale = settings.logscale;
+    
+	// Set the spectrogram formatting
+	spectrogram->changeSettings(settings);
+	//emit settingsChanged(settings);
 }
 

@@ -2,6 +2,9 @@
 #include <fstream>
 
 #include <QApplication>
+#include <QStyleHints>
+#include <QScreen>
+#include <QWidget>
 
 #include <Spectrogram/Audio/Backend/Dummy.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
@@ -36,6 +39,9 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QtApplication gui;
+	
+	QGuiApplication::setApplicationDisplayName(
+		QtApplication::tr("Audio Spectrogram Application"));
 
     gui.changeSpectrogramSettings(settings);
     
