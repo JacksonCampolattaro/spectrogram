@@ -200,8 +200,7 @@ void QtApplication::setupSettingsWindow() {
 
 
 		discardSettingsButton = new QPushButton("Cancel");
-		//connect(discardSettingsButton, &QPushButton::clicked,
-		//        settingsWindow, &QDialog::close);
+
 		//connect(discardSettingsButton, SIGNAL(clicked()), settingsWindow, SLOT(close()));
 		//connect(discardSettingsButton, &QPushButton::clicked,
 		//        this, settingsWindow->close());
@@ -231,7 +230,8 @@ void QtApplication::setupSettingsWindow() {
         settingsWindow->setWindowTitle("Plot Settings");
         settingsWindow->setModal(true);
 		settingsWindow->setLayout(settingsWindowLayout);
-
+		connect(discardSettingsButton, &QPushButton::clicked,
+		       settingsWindow, &QDialog::close);
 		/*
 		if (!QGuiApplication::styleHints()->showIsFullScreen() && !QGuiApplication::styleHints()->showIsMaximized()) {
 		    
