@@ -5,6 +5,42 @@
 #include <QScreen>
 #include <QStyleHints>
 //qDebug() << "insert message";
+/***
+ * Links to reference pages I used, might help with debugging
+ ***
+ MOST IMPORTANT
+	https://doc.qt.io/qt-5/qmainwindow.html#createPopupMenu
+	https://doc.qt.io/qt-5/qtwidgets-widgets-windowflags-example.html
+	
+	https://doc.qt.io/archives/qt-5.6/qtmultimedia-multimediawidgets-player-player-cpp.html
+	
+	https://doc.qt.io/qt-5/qdialog.html
+
+Full App Examples
+	https://doc.qt.io/qt-5/qtexamplesandtutorials.html
+	https://doc.qt.io/archives/qt-5.6/qtmultimedia-multimediawidgets-player-example.html
+	https://doc.qt.io/qt-5/qtwidgets-mainwindows-application-example.html
+	
+Pop-out Window
+	https://doc.qt.io/qt-5/qmainwindow.html#createPopupMenu
+	https://doc.qt.io/qt-5/qdialog.html
+		https://doc.qt.io/qt-5/qtwidgets-dialogs-standarddialogs-example.html
+	https://doc.qt.io/qt-5/qmessagebox.html
+	https://doc.qt.io/qt-5/qdockwidget.html
+
+Layout
+	https://doc.qt.io/qt-5/examples-layouts.html
+	https://doc.qt.io/qt-5/qtwidgets-widgets-groupbox-example.html
+	https://doc.qt.io/qt-5/qtwidgets-layouts-basiclayouts-example.html
+	https://doc.qt.io/qt-5/qformlayout.html
+
+Individual UI Elements
+	https://doc.qt.io/qt-5/qspinbox.html
+	https://doc.qt.io/qt-5/qcheckbox.html
+	https://doc.qt.io/qt-5/qcombobox.html
+	https://doc.qt.io/qt-5/qstyle.html#StandardPixmap-enum
+ *
+ ***/
 
 QtApplication::QtApplication(QWidget *parent) :
         QMainWindow(parent) {
@@ -17,8 +53,10 @@ QtApplication::QtApplication(QWidget *parent) :
 
     // Create a new spectrogram widget, giving qt ownership
     spectrogram = new QtSpectrogram(this);
-	connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
-			spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
+	//connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
+	connect(this, &QtApplication::settingsChanged,
+			spectrogram, &QtSpectrogram::changeSettings);
+			//spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
 
     // The spectrogram is the only central widget, with everything else in a toolbar
     // TODO: If we want to change that, we can simply make the central widget a VBox!
@@ -161,8 +199,8 @@ void QtApplication::setupSettingsWindow() {
 
 
 		discardSettingsButton = new QPushButton("Cancel");
-		connect(discardSettingsButton, &QPushButton::clicked,
-		        settingsWindow, &QDialog::close);
+		//connect(discardSettingsButton, &QPushButton::clicked,
+		//        settingsWindow, &QDialog::close);
 		//connect(discardSettingsButton, SIGNAL(clicked()), settingsWindow, SLOT(close()));
 		//connect(discardSettingsButton, &QPushButton::clicked,
 		//        this, settingsWindow->close());
@@ -232,9 +270,13 @@ void QtApplication::showSettings(){
 	frameRateBox->setValue(plotSettings.framesPerSecond);
 	isLogBox->setChecked(plotSettings.logscale);
 
-	settingsWindow->show();
+	/*** Important-ish Note:
+	 * There was conflicting info on whther to use show() or
+	 * exec() for dialog windows like this, so might try both
+	 * ***/
+	//settingsWindow->show();
 	//settingsWindow->popup();
-	//settingsWindow->exec();
+	settingsWindow->exec();
 }
 
 void QtApplication::saveSettingsClicked(){
@@ -245,7 +287,11 @@ void QtApplication::saveSettingsClicked(){
 	plotSettings.logscale = isLogBox->isChecked();	// True by default
 
 	emit settingsChanged(plotSettings);
+	
+	/***Re-draw canvas here??***/
 	settingsWindow->close();
+	
+	//startButtonClicked();
 }
 
 void QtApplication::updateSources(const DeviceList &deviceList) {
