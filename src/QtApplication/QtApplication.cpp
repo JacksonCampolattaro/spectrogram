@@ -274,9 +274,9 @@ void QtApplication::showSettings(){
 	 * There was conflicting info on whther to use show() or
 	 * exec() for dialog windows like this, so might try both
 	 * ***/
-	//settingsWindow->show();
+	settingsWindow->show();
 	//settingsWindow->popup();
-	settingsWindow->exec();
+	//settingsWindow->exec();
 }
 
 void QtApplication::saveSettingsClicked(){
