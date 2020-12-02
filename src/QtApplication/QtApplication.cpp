@@ -55,7 +55,7 @@ QtApplication::QtApplication(QWidget *parent) :
     spectrogram = new QtSpectrogram(this);
 	//connect(this, SIGNAL(settingsChanged(const Settings::Profile &settings)),
 	connect(this, &QtApplication::settingsChanged,
-            this, &QtApplication::changeSpectrogramSettings);
+            this, &QtApplication::applySettingsProfile);
 //			spectrogram, &QtSpectrogram::changeSettings);
 			//spectrogram, SLOT(changeSettings(const Settings::Profile &settings)));
 
@@ -343,7 +343,7 @@ void QtApplication::showSaveSuccess(bool success, QString fileName) {
     std::cout << msg.toStdString() << std::endl;
 }
 
-void QtApplication::changeSpectrogramSettings(const Settings::Profile &settings) {
+void QtApplication::applySettingsProfile(const Settings::Profile &settings) {
 
     // Might as well stop the program, when settings are changed!
     emit stopSignal();

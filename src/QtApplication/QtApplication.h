@@ -36,7 +36,7 @@ public slots:
 
 	// This slot is manually called in main.cpp to initialize
 	// the plot with profile settings stored in spectrogram.rc
-	void changeSpectrogramSettings(const Settings::Profile &settings);
+	void applySettingsProfile(const Settings::Profile &settings);
 
 	// Triggers the popup settings window
 	void showSettings();

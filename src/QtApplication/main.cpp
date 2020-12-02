@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	QGuiApplication::setApplicationDisplayName(
 		QtApplication::tr("Audio Spectrogram Application"));
 
-    gui.changeSpectrogramSettings(settings);
+    gui.applySettingsProfile(settings);
     
     gui.show();
 
