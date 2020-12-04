@@ -108,7 +108,7 @@ float QtSpectrogram::getIntensity(const int &y, const Fourier::FrequencyDomainBu
     double value;
 
     // if logscale get logarithmic y value, else it is linear scale no need to change y
-    value = (logScale) ? getLogValue(y) : y;
+    value = (logScale) ? getLogValue(y) : getLinearValue(y);
 
     // Only plot one channel, for now
     float intensity = 0;
@@ -127,6 +127,13 @@ double QtSpectrogram::getLogValue(const int &y) {
     auto max = colorMap->valueAxis()->range().upper;
     auto min = colorMap->valueAxis()->range().lower;
     return pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
+}
+
+double QtSpectrogram::getLinearValue(const int &y) {
+    double key, value;
+    colorMap->data()->cellToCoord(xAxisSize - 1, y, &key, &value);
+
+    return value;
 }
 
 void QtSpectrogram::setupYAxisLogScale() {

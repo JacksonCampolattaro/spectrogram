@@ -3,8 +3,8 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_executable(QtApplication
         main.cpp
-        QtApplication.h QtApplication.cpp
-        QtAudioSystem.h QtAudioSystem.cpp)
+        QtAudioSystem.h QtAudioSystem.cpp
+		QtApplication.h QtApplication.cpp)
 
 target_link_libraries(QtApplication
         Qt5::Widgets

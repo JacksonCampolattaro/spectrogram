@@ -47,6 +47,7 @@ private:
     void addData(const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
     float getIntensity(const int &y, const Fourier::FrequencyDomainBuffer &frequencyDomainBuffer);
     double getLogValue(const int &y);
+    double getLinearValue(const int &y);
 
     QCPColorMap *colorMap;
 

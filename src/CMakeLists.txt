@@ -5,4 +5,4 @@ add_subdirectory(CLIApplication)
 
 add_subdirectory(QtApplication)
 
-add_subdirectory(GtkmmApplication)
+#add_subdirectory(GtkmmApplication)
