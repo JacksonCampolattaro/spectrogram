@@ -3,6 +3,8 @@
 A live spectrogram visualizer for system audio.
 Originally inspired by the spectrogram in [Foobar2000](https://www.foobar2000.org/)
 
+![Cmake build process](https://github.com/JacksonCampolattaro/spectrogram/workflows/Cmake%20build%20process/badge.svg)
+
 ## Background
 
 A spectrogram is a type of plot for visualizing audio. 

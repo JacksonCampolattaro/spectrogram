@@ -7,6 +7,7 @@ add_executable(GtkmmApplication
 target_link_libraries(GtkmmApplication
         Audio
         Fourier
+        Visualizer
         ${GTKMM_LIBRARIES}
         )
 

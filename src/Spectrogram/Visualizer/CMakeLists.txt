@@ -1,5 +1,6 @@
 
-add_library(Visualizer)
+add_library(Visualizer
+        Visualizer.h)
 
 target_link_libraries(Visualizer
         Audio
@@ -9,6 +10,6 @@ target_include_directories(Visualizer PUBLIC
         ${PROJECT_SOURCE_DIR}/src)
 
 target_compile_options(Visualizer PRIVATE
-         -Werror
-         -Wall
-         -Wextra)
+        -Werror
+        -Wall
+        -Wextra)
