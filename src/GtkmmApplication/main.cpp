@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
 
     system.newBuffer.connect(textSpectrumVisualizer.slot_draw);
 
-    const auto &device = system.devices()[0];
-    system.start(device, std::chrono::seconds(2), device.sampleRate / 10);
+    const auto &device = system.devices()[2];
+    system.start(device, std::chrono::seconds(2), device.sampleRate / 40);
 
 //    TextSpectrumView textSpectrumView;
 //    window.add(textSpectrumView);

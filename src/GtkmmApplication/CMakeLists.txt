@@ -1,11 +1,14 @@
 
 find_package(Gtkmm)
 
+find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
+
 add_executable(GtkmmApplication
         main.cpp
         AudioSystem.h
         Visualizer/GtkmmVisualizer.cpp Visualizer/GtkmmVisualizer.h
-        Visualizer/TextSpectrumVisualizer.cpp Visualizer/TextSpectrumVisualizer.h)
+        Visualizer/TextSpectrumVisualizer.cpp Visualizer/TextSpectrumVisualizer.h
+        mainwindow.glade)
 
 target_link_libraries(GtkmmApplication
         Audio

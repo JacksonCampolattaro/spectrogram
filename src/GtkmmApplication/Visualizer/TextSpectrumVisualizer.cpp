@@ -13,8 +13,8 @@ TextSpectrumVisualizer::TextSpectrumVisualizer() : GtkmmVisualizer() {
 void TextSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) {
 
     std::stringstream stream;
-    for (int frequency = 0;
-         frequency < (int) buffer.maxFrequency(); frequency += (int) (1.0 + frequency * 1.01)) {
+    for (int frequency = 32;
+         frequency < (int) buffer.maxFrequency(); frequency = (int) ((float) frequency * 1.2)) {
 
 
         stream << frequency << ":\t";
