@@ -6,7 +6,7 @@
 
 namespace Spectrogram::Visualizer {
 
-    class Spectrum : protected Visualizer {
+    class Spectrum : public Visualizer {
     public:
 
         Spectrum();
@@ -15,7 +15,7 @@ namespace Spectrogram::Visualizer {
 
         void draw(const Audio::Buffer &buffer) override;
 
-        virtual void draw(const Fourier::FrequencyDomainBuffer &buffer) = 0;
+        virtual void drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) = 0;
 
     };
 

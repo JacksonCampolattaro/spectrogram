@@ -1,7 +1,7 @@
 #ifndef SPECTROGRAM_GTKMMVISUALIZER_H
 #define SPECTROGRAM_GTKMMVISUALIZER_H
 
-#include <Spectrogram/Visualizer/Visualizer.h>
+#include <Spectrogram/Visualizer/Spectrum.h>
 
 #include <sigc++/slot.h>
 
@@ -9,7 +9,7 @@
 
 using namespace Spectrogram;
 
-class GtkmmVisualizer : public Visualizer::Visualizer, public Gtk::Bin {
+class GtkmmVisualizer : public Visualizer::Spectrum, public Gtk::Bin {
 public:
 
     GtkmmVisualizer();

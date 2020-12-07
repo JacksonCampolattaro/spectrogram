@@ -1,6 +1,6 @@
 #include "TextSpectrumVisualizer.h"
 
-TextSpectrumVisualizer::TextSpectrumVisualizer() {
+TextSpectrumVisualizer::TextSpectrumVisualizer() : GtkmmVisualizer() {
 
     this->add(_scrolledWindow);
     _scrolledWindow.show();
@@ -10,7 +10,7 @@ TextSpectrumVisualizer::TextSpectrumVisualizer() {
     _textView.show();
 }
 
-void TextSpectrumVisualizer::draw(const Fourier::FrequencyDomainBuffer &buffer) {
+void TextSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) {
 
     std::stringstream stream;
     for (int frequency = 0;

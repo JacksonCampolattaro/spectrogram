@@ -3,21 +3,19 @@
 
 #include "GtkmmVisualizer.h"
 
-#include <Spectrogram/Visualizer/Spectrum.h>
-
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/textview.h>
 
 using namespace Spectrogram;
 
-class TextSpectrumVisualizer : public GtkmmVisualizer, public Visualizer::Spectrum {
+class TextSpectrumVisualizer : public GtkmmVisualizer {
 public:
 
     TextSpectrumVisualizer();
 
 protected:
 
-    void draw(const Fourier::FrequencyDomainBuffer &buffer) override;
+    void drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) override;
 
 private:
 

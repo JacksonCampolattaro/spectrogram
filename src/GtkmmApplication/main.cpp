@@ -19,11 +19,19 @@ int main(int argc, char *argv[]) {
 
     // Create a window with a TextSpectrumView
     Gtk::Window window;
-    window.set_default_size(200, 500);
+    window.set_default_size(300, 300);
     window.set_title("Spectrogram");
     TextSpectrumVisualizer textSpectrumVisualizer;
     window.add(textSpectrumVisualizer);
     textSpectrumVisualizer.show();
+
+    AudioSystem system(std::make_unique<Backend::Soundio>());
+
+    system.newBuffer.connect(textSpectrumVisualizer.slot_draw);
+
+    const auto &device = system.devices()[0];
+    system.start(device, std::chrono::seconds(2), device.sampleRate / 10);
+
 //    TextSpectrumView textSpectrumView;
 //    window.add(textSpectrumView);
 //    textSpectrumView.show();
