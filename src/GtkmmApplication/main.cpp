@@ -4,7 +4,6 @@
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
-#include <gtkmm/textview.h>
 
 #include <Spectrogram/Audio/System/Blocking.h>
 #include <Spectrogram/Audio/Backend/Soundio.h>
@@ -36,11 +35,6 @@ int main(int argc, char *argv[]) {
 
     // Tell the UI what devices are available
     textSpectrumView.setDevices(system.devices());
-
-    // Start the audio system
-//    auto device = system.devices()[2];
-//    std::cout << "device = " << device << "\n";
-//    system.start(device, std::chrono::seconds(2), device.sampleRate/60);
 
     // Run the app
     return app->run(window);
