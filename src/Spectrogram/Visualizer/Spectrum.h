@@ -3,7 +3,6 @@
 
 #include <Spectrogram/Visualizer/Visualizer.h>
 #include <Spectrogram/Fourier/FrequencyDomainBuffer.h>
-#include <Spectrogram/Fourier/Transformer.h>
 
 namespace Spectrogram::Visualizer {
 

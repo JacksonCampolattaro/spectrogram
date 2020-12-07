@@ -3,14 +3,12 @@ find_package(Gtkmm)
 
 add_executable(GtkmmApplication
         main.cpp
-        TextSpectrumView.h
         AudioSystem.h
         Visualizer/GtkmmVisualizer.cpp Visualizer/GtkmmVisualizer.h
         Visualizer/TextSpectrumVisualizer.cpp Visualizer/TextSpectrumVisualizer.h)
 
 target_link_libraries(GtkmmApplication
         Audio
-        Fourier
         Visualizer
         ${GTKMM_LIBRARIES}
         )

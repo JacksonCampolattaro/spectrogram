@@ -8,7 +8,7 @@ namespace Spectrogram::Visualizer {
     class Visualizer {
     public:
 
-        virtual void draw(const Audio::Buffer &buffer) = 0;
+        virtual void draw([[maybe_unused]] const Audio::Buffer &buffer) {};
 
     };
 

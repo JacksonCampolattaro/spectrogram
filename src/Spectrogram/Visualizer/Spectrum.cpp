@@ -1,8 +1,6 @@
-//
-// Created by jackcamp on 12/6/20.
-//
-
 #include "Spectrum.h"
+
+#include <Spectrogram/Fourier/Transformer.h>
 
 Spectrogram::Visualizer::Spectrum::Spectrum() : Visualizer() {}
 
