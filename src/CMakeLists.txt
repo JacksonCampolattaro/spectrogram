@@ -1,8 +1,17 @@
 
 add_subdirectory(Spectrogram)
 
-add_subdirectory(CLIApplication)
+option(BUILD_CLI "Build CLI based application" ON)
+if (BUILD_CLI)
+    add_subdirectory(CLIApplication)
+endif ()
 
-add_subdirectory(QtApplication)
+option(BUILD_QT "Build Qt based application" ON)
+if (BUILD_QT)
+    add_subdirectory(QtApplication)
+endif ()
 
-add_subdirectory(GtkmmApplication)
+option(BUILD_GTKMM "Build Gtkmm based application" ON)
+if (BUILD_GTKMM)
+    add_subdirectory(GtkmmApplication)
+endif ()
