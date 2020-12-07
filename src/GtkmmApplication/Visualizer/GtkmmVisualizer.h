@@ -2,6 +2,7 @@
 #define SPECTROGRAM_GTKMMVISUALIZER_H
 
 #include <Spectrogram/Visualizer/Visualizer.h>
+#include <Spectrogram/Fourier/Transformer.h>
 
 #include <sigc++/slot.h>
 
