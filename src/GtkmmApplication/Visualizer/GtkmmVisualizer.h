@@ -10,16 +10,12 @@
 
 using namespace Spectrogram;
 
-class GtkmmVisualizer : private Visualizer::Visualizer, public Gtk::Bin {
+class GtkmmVisualizer : public Visualizer::Visualizer, public Gtk::Bin {
 public:
 
     GtkmmVisualizer();
 
     sigc::slot<void(const Audio::Buffer &)> slot_draw;
-
-protected:
-
-    void draw(const Audio::Buffer &buffer) override;
 
 };
 

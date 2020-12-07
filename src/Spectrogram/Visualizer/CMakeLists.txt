@@ -1,6 +1,6 @@
 
 add_library(Visualizer
-        Visualizer.h)
+        Visualizer.h Spectrum.cpp Spectrum.h)
 
 target_link_libraries(Visualizer
         Audio

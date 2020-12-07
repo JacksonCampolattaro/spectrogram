@@ -1,12 +1,16 @@
 #ifndef SPECTROGRAM_TEXTSPECTRUMVISUALIZER_H
 #define SPECTROGRAM_TEXTSPECTRUMVISUALIZER_H
 
-#include "SpectrumVisualizer.h"
+#include "GtkmmVisualizer.h"
+
+#include <Spectrogram/Visualizer/Spectrum.h>
 
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/textview.h>
 
-class TextSpectrumVisualizer : public SpectrumVisualizer {
+using namespace Spectrogram;
+
+class TextSpectrumVisualizer : public GtkmmVisualizer, public Visualizer::Spectrum {
 public:
 
     TextSpectrumVisualizer();

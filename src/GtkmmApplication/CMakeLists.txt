@@ -6,7 +6,6 @@ add_executable(GtkmmApplication
         TextSpectrumView.h
         AudioSystem.h
         Visualizer/GtkmmVisualizer.cpp Visualizer/GtkmmVisualizer.h
-        Visualizer/SpectrumVisualizer.cpp Visualizer/SpectrumVisualizer.h
         Visualizer/TextSpectrumVisualizer.cpp Visualizer/TextSpectrumVisualizer.h)
 
 target_link_libraries(GtkmmApplication

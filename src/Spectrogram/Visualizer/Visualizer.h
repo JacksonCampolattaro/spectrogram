@@ -3,18 +3,15 @@
 
 #include <Spectrogram/Audio/Buffer.h>
 
-namespace Spectrogram {
+namespace Spectrogram::Visualizer {
 
-    namespace Visualizer {
+    class Visualizer {
+    public:
 
-        class Visualizer {
-        public:
+        virtual void draw(const Audio::Buffer &buffer) = 0;
 
-            virtual void draw(const Audio::Buffer &buffer) = 0;
+    };
 
-        };
-
-    }
 
 }
 
