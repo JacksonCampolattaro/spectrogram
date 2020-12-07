@@ -3,9 +3,7 @@ find_package(Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
 find_package(QCustomPlot REQUIRED)
 
 
-add_library(Visualizer
-        QtSpectrogram.h
-        QtSpectrogram.cpp)
+add_library(Visualizer)
 
 target_link_libraries(Visualizer
         ${QCustomPlot_LIBRARIES}
@@ -13,8 +11,7 @@ target_link_libraries(Visualizer
         Qt5::PrintSupport
         Audio
         Fourier
-        PNG
-        Settings)
+        PNG)
 
 target_include_directories(Visualizer PUBLIC
         ${PROJECT_SOURCE_DIR}/src)

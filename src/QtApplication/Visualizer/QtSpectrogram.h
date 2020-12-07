@@ -9,8 +9,9 @@
 #include <Spectrogram/Audio/Backend/Soundio.h>
 
 #include <Spectrogram/Fourier/FrequencyDomainBuffer.h>
-#include "Spectrogram/PNG/Writer.h"
-#include "Spectrogram/Settings/Profile.h"
+
+#include "QtApplication/Settings/Settings.h"
+#include "QtApplication/PNG/Writer.h"
 
 using namespace Spectrogram;
 

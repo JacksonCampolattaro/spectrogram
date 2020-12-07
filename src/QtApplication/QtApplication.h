@@ -12,10 +12,10 @@
 #include <QGridLayout>
 #include <QFormLayout>
 
-#include <Spectrogram/Visualizer/QtSpectrogram.h>
+#include <QtApplication/Visualizer/QtSpectrogram.h>
 #include <Spectrogram/Audio/DeviceList.h>
 
-#include "Spectrogram/Settings/Profile.h"
+#include "QtApplication/Settings/Settings.h"
 #include "QtAudioSystem.h"
 
 class QtApplication : public QMainWindow {

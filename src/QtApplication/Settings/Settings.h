@@ -1,8 +1,5 @@
-
-#ifndef SPECTROGRAM_PROFILE_H
-#define SPECTROGRAM_PROFILE_H
-
-#include <Spectrogram/Settings/Settings.h>
+#ifndef SPECTROGRAM_SETTINGS_H
+#define SPECTROGRAM_SETTINGS_H
 
 #include <toml.hpp>
 
@@ -75,4 +72,6 @@ namespace Settings {
 
 }
 
-#endif //SPECTROGRAM_PROFILE_H
+
+
+#endif //SPECTROGRAM_SETTINGS_H

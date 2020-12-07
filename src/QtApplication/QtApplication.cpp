@@ -46,8 +46,8 @@ QtApplication::QtApplication(QWidget *parent) :
         QMainWindow(parent) {
 
     // Set the size of the window, and it's initial location on the user's screen
-    winBounds = new QRect(
-				100, 100, 600, 400);
+//    winBounds = new QRect(
+//				100, 100, 600, 400);
 	setGeometry(100, 100, 600, 400);
 	//resize(500, 300);
 
