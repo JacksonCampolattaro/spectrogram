@@ -37,9 +37,12 @@ void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer
 
     for (size_t i = 0; i < _numBars; ++i) {
 
+        double minFrequency = ((double)i / (double)_numBars) * buffer.maxFrequency();
+        double maxFrequency = minFrequency + (buffer.maxFrequency() / (double)_numBars);
+
         auto &bar = _bars[i];
 
-        auto value = buffer.at(i)[0];
+        auto value = buffer.at(minFrequency, maxFrequency)[0];
 
         bar.set_value(value + 90.0);
     }

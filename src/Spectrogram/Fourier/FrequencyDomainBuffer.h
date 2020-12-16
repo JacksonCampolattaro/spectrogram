@@ -50,12 +50,13 @@ namespace Spectrogram::Fourier {
         }
 
         [[nodiscard]] Audio::Frame at(double lower, double upper) const {
+            assert(lower >= 0);
+            assert(upper <= maxFrequency());
+
             size_t lowerIndex = lower * time();
             size_t upperIndex = upper * time();
             size_t range = upperIndex - lowerIndex;
             assert(range > 0);
-            assert(lowerIndex > 0);
-            assert(upperIndex <= numFrames());
 
             Audio::Frame frame;
 
