@@ -5,7 +5,8 @@
 
 #include <map>
 #include <vector>
-#include <math.h>
+#include <cmath>
+#include <cassert>
 
 namespace Spectrogram::Fourier {
 
@@ -43,6 +44,30 @@ namespace Spectrogram::Fourier {
                     );
                 }
 
+            }
+
+            return frame;
+        }
+
+        [[nodiscard]] Audio::Frame at(double lower, double upper) const {
+            size_t lowerIndex = lower * time();
+            size_t upperIndex = upper * time();
+            size_t range = upperIndex - lowerIndex;
+            assert(range > 0);
+            assert(lowerIndex > 0);
+            assert(upperIndex <= numFrames());
+
+            Audio::Frame frame;
+
+            for (const auto &channel : channels()) {
+
+                Audio::Sample value = 0;
+                for (size_t i = lowerIndex; i < upperIndex; ++i) {
+
+                    value += channel[i] / (float) range;
+                }
+
+                frame.push_back(value);
             }
 
             return frame;
