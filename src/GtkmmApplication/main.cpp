@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
     const auto &device = system.devices()[1];
     std::cout << device << std::endl;
-    system.start(device, std::chrono::seconds(2), device.sampleRate / 10);
+    system.start(device, std::chrono::seconds(1), device.sampleRate / 4);
 
 //    TextSpectrumView textSpectrumView;
 //    window.add(textSpectrumView);
