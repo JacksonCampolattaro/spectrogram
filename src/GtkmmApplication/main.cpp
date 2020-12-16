@@ -1,6 +1,7 @@
 
 #include "AudioSystem.h"
 #include "Visualizer/TextSpectrumVisualizer.h"
+#include "Visualizer/BarSpectrumVisualizer.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -21,16 +22,17 @@ int main(int argc, char *argv[]) {
     Gtk::Window window;
     window.set_default_size(300, 300);
     window.set_title("Spectrogram");
-    TextSpectrumVisualizer textSpectrumVisualizer;
-    window.add(textSpectrumVisualizer);
-    textSpectrumVisualizer.show();
+    BarSpectrumVisualizer visualizer;
+    window.add(visualizer);
+    visualizer.show();
 
     AudioSystem system(std::make_unique<Backend::Soundio>());
 
-    system.newBuffer.connect(textSpectrumVisualizer.slot_draw);
+    system.newBuffer.connect(visualizer.slot_draw);
 
-    const auto &device = system.devices()[2];
-    system.start(device, std::chrono::seconds(2), device.sampleRate / 40);
+    const auto &device = system.devices()[1];
+    std::cout << device << std::endl;
+    system.start(device, std::chrono::seconds(2), device.sampleRate / 10);
 
 //    TextSpectrumView textSpectrumView;
 //    window.add(textSpectrumView);
