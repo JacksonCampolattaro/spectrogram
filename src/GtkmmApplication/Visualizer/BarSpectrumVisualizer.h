@@ -16,7 +16,7 @@ using namespace Spectrogram;
 class BarSpectrumVisualizer : public GtkmmVisualizer {
 public:
 
-    BarSpectrumVisualizer();
+    BarSpectrumVisualizer(size_t numBars);
 
 protected:
 
@@ -25,8 +25,8 @@ protected:
 private:
 
     Gtk::Box _box;
-    std::map<size_t, Gtk::LevelBar> _bars;
-
+    std::vector<Gtk::LevelBar> _bars;
+    size_t _numBars = 100;
 };
 
 

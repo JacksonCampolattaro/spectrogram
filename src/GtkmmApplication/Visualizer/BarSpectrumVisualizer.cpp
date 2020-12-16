@@ -4,18 +4,19 @@
 
 #include "BarSpectrumVisualizer.h"
 
-BarSpectrumVisualizer::BarSpectrumVisualizer() : GtkmmVisualizer(),
-                                                 _box(Gtk::Orientation::ORIENTATION_VERTICAL),
-                                                 _bars() {
+BarSpectrumVisualizer::BarSpectrumVisualizer(size_t numBars) : GtkmmVisualizer(),
+                                                               _box(Gtk::Orientation::ORIENTATION_VERTICAL),
+                                                               _bars(),
+                                                               _numBars(numBars) {
 
     this->add(_box);
     _box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
     _box.show();
 
-    for (int frequency = 30; frequency < 10000; frequency *= 1.04) {
+    for (size_t i = 0; i < _numBars; ++i) {
 
-        _bars.emplace(frequency, Gtk::LevelBar());
-        auto &bar = _bars.at(frequency);
+        _bars.emplace_back();
+        auto &bar = _bars[i];
 
         bar.set_max_value(90.0f);
         bar.set_min_value(0.0f);
@@ -34,9 +35,12 @@ BarSpectrumVisualizer::BarSpectrumVisualizer() : GtkmmVisualizer(),
 
 void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) {
 
-    for (auto &pair : _bars) {
-        auto frame = buffer.at((double) pair.first);
-        auto value = frame[0];
-        pair.second.set_value(value + 90.0);
+    for (size_t i = 0; i < _numBars; ++i) {
+
+        auto &bar = _bars[i];
+
+        auto value = buffer.at(i)[0];
+
+        bar.set_value(value + 90.0);
     }
 }
