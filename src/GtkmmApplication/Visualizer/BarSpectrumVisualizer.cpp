@@ -1,7 +1,3 @@
-//
-// Created by jackcamp on 12/16/20.
-//
-
 #include "BarSpectrumVisualizer.h"
 
 BarSpectrumVisualizer::BarSpectrumVisualizer(size_t numBars) : GtkmmVisualizer(),
@@ -37,8 +33,8 @@ void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer
 
     for (size_t i = 0; i < _numBars; ++i) {
 
-        double minFrequency = ((double)i / (double)_numBars) * buffer.maxFrequency();
-        double maxFrequency = minFrequency + (buffer.maxFrequency() / (double)_numBars);
+        double minFrequency = logScale(0, buffer.maxFrequency(), i * buffer.maxFrequency());
+        double maxFrequency = logScale(0, buffer.maxFrequency(), (i + 1.0) * buffer.maxFrequency());
 
         auto &bar = _bars[i];
 
@@ -46,4 +42,9 @@ void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer
 
         bar.set_value(value + 90.0);
     }
+}
+
+double BarSpectrumVisualizer::logScale(double min, double max, double value) {
+    auto normalized = (value - min) / (min - max);
+    return log2(normalized) * (max - min) + min;
 }

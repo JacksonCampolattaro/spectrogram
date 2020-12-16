@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     Gtk::Window window;
     window.set_default_size(300, 300);
     window.set_title("Spectrogram");
-    BarSpectrumVisualizer visualizer{100};
+    BarSpectrumVisualizer visualizer{50};
     window.add(visualizer);
     visualizer.show();
 
