@@ -31,20 +31,28 @@ BarSpectrumVisualizer::BarSpectrumVisualizer(size_t numBars) : GtkmmVisualizer()
 
 void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer &buffer) {
 
+    float minFrequency = 32.0;
+    float maxFrequency = buffer.maxFrequency() - 1;
+
     for (size_t i = 0; i < _numBars; ++i) {
 
-        double minFrequency = logScale(0, buffer.maxFrequency(), i * buffer.maxFrequency());
-        double maxFrequency = logScale(0, buffer.maxFrequency(), (i + 1.0) * buffer.maxFrequency());
+        auto f0 = ((float) i / (float) _numBars) * (maxFrequency - minFrequency) + minFrequency;
+        auto f1 = ((float) (i + 1) / (float) _numBars) * (maxFrequency - minFrequency) + minFrequency;
+
+        auto rangeStart = logScale(minFrequency, buffer.maxFrequency(), f0);
+        auto rangeEnd = logScale(minFrequency, buffer.maxFrequency(), f1);
 
         auto &bar = _bars[i];
 
-        auto value = buffer.at(minFrequency, maxFrequency)[0];
+        auto value = buffer.at(rangeStart, rangeEnd)[0];
 
         bar.set_value(value + 90.0);
     }
+
+    std::cout << std::endl;
 }
 
 double BarSpectrumVisualizer::logScale(double min, double max, double value) {
-    auto normalized = (value - min) / (min - max);
-    return log2(normalized) * (max - min) + min;
+
+    return pow(2, ((value - min) / (max - min)) * (log2(max) - log2(min)) + log2(min));
 }

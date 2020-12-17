@@ -24,7 +24,7 @@ protected:
 
 private:
 
-    double logScale(double min, double max, double value);
+    static double logScale(double min, double max, double value);
 
     Gtk::Box _box;
     std::vector<Gtk::LevelBar> _bars;
