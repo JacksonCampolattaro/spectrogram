@@ -28,7 +28,7 @@ private:
 
     Gtk::Box _box;
     std::vector<Gtk::LevelBar> _bars;
-    size_t _numBars = 100;
+    size_t _numBars = 50;
 };
 
 

@@ -15,6 +15,10 @@ namespace Spectrogram::Fourier {
         for (const auto &channel : buffer.channels())
             frequencyDomainBuffer.channels().push_back(processor.compute(channel));
 
+        for (auto &channel : frequencyDomainBuffer.channels())
+            for (auto &sample : channel)
+                sample = (sample + 90.0) / 90.0;
+
         return frequencyDomainBuffer;
     }
 
