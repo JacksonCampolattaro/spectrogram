@@ -51,40 +51,24 @@ namespace Spectrogram::Fourier {
 
         [[nodiscard]] Audio::Frame at(double lower, double upper) const {
             assert(lower >= 0);
-            assert(upper >= lower);
+            assert(upper > lower);
             assert(upper <= maxFrequency());
 
-            double range = upper - lower;
+            Audio::Frame frame;
+            frame.resize(at(0).size());
 
-//            size_t lowerIndex = lower * time();
-//            size_t upperIndex = upper * time();
+            // TODO: I hate this **even more**
 
-            if (range == 0) return at((lower + upper) / 2.0);
-
-            Audio::Frame frame = at(lower);
-
-            while (lower <= upper) {
-                lower += 1.0f;
-
-                auto f = at(lower);
-
-                for (size_t i = 0; i < f.size(); ++i) {
-                    frame[i] += f[i] / range;
+            int n = 10;
+            double value = lower;
+            for (int i = 0; i < n; ++i) {
+                auto f = at(value);
+                for (size_t j = 0; j < f.size(); ++j) {
+                    frame[j] += f[j] / (float) n;
                 }
-
+                value += (upper - lower) / n;
             }
 
-//            for (const auto &channel : channels()) {
-//
-//                double value = 0;
-//                for (size_t i = lowerIndex; i < upperIndex; ++i) {
-//
-//                    value += channel[i] / range;
-//                }
-//
-//                frame.push_back(value);
-//            }
-//
             return frame;
         }
 
