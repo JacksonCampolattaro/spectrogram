@@ -46,12 +46,9 @@ void BarSpectrumVisualizer::drawFrequencies(const Fourier::FrequencyDomainBuffer
         auto rangeStart = logScale(minFrequency, maxFrequency, f0);
         auto rangeEnd = logScale(minFrequency, maxFrequency, f1);
 
-//        std::cout << "(" << rangeStart << ", " << rangeEnd << ") " << std::endl;
-
         auto &bar = _bars[i];
 
         auto value = buffer.at(rangeStart, rangeEnd)[0];
-        std::cout << value << std::endl;
 
         bar.set_value(value);
     }

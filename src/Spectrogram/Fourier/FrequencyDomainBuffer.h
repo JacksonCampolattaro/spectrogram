@@ -59,7 +59,7 @@ namespace Spectrogram::Fourier {
 
             // TODO: I hate this **even more**
 
-            int n = 10;
+            int n = ceil(upper - lower);
             double value = lower;
             for (int i = 0; i < n; ++i) {
                 auto f = at(value);

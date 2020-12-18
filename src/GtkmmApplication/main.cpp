@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     Gtk::Window window;
     window.set_default_size(300, 300);
     window.set_title("Spectrogram");
-    BarSpectrumVisualizer visualizer{100};
+    BarSpectrumVisualizer visualizer{64};
     window.add(visualizer);
     visualizer.show();
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
     const auto &device = system.devices()[1];
     std::cout << device << std::endl;
-    system.start(device, std::chrono::seconds(1), device.sampleRate / 10);
+    system.start(device, std::chrono::seconds(1), device.sampleRate / 20);
 
 //    TextSpectrumView textSpectrumView;
 //    window.add(textSpectrumView);
