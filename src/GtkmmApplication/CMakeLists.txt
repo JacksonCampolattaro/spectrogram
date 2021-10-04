@@ -8,7 +8,7 @@ add_executable(GtkmmApplication
         AudioSystem.h
         Visualizer/GtkmmVisualizer.cpp Visualizer/GtkmmVisualizer.h
         Visualizer/TextSpectrumVisualizer.cpp Visualizer/TextSpectrumVisualizer.h
-        mainwindow.glade Visualizer/BarSpectrumVisualizer.cpp Visualizer/BarSpectrumVisualizer.h)
+        mainwindow.glade Visualizer/BarSpectrumVisualizer.cpp Visualizer/BarSpectrumVisualizer.h Visualizer/SpectrogramVisualizer.cpp Visualizer/SpectrogramVisualizer.h)
 
 target_link_libraries(GtkmmApplication
         Audio

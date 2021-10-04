@@ -36,7 +36,7 @@ namespace Spectrogram::Audio::Backend {
          * @tparam DataType the type being used to hold samples (e.g. float, int16_t ...)
          * @return the enum which corresponds the the chosen sample type
          */
-        template <typename DataType>
+        template<typename DataType>
         static SoundIoFormat sampleTypeToFormat() {
 
             if constexpr (std::is_same<DataType, float>::value)
